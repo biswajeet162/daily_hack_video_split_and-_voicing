@@ -1,0 +1,63 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\input_videos\\\ud83d\ude33 \ud83c\udf31 5 Easy Plant Growing Hacks You Should Try! \ud83e\udd2f #shorts #gardening #viral [wq5e6zBvU5M].mp4",
+  "duration_sec": 34.86666666666667,
+  "markers": [
+    {
+      "number": 1,
+      "time_sec": 0.8,
+      "score": 0.34469005636232025
+    },
+    {
+      "number": 2,
+      "time_sec": 8.0,
+      "score": 0.41225911296569395
+    },
+    {
+      "number": 3,
+      "time_sec": 14.4,
+      "score": 0.3914793879823967
+    },
+    {
+      "number": 4,
+      "time_sec": 20.266666666666666,
+      "score": 0.4433167144000767
+    },
+    {
+      "number": 5,
+      "time_sec": 28.0,
+      "score": 0.43921423512469304
+    }
+  ],
+  "parts": [
+    {
+      "part": 1,
+      "start_sec": 0.8,
+      "end_sec": 8.0,
+      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\output_videos\\\ud83d\ude33 \ud83c\udf31 5 Easy Plant Growing Hacks You Should Try! \ud83e\udd2f #shorts #gardening #viral [wq5e6zBvU5M]\\part_01.mp4"
+    },
+    {
+      "part": 2,
+      "start_sec": 8.0,
+      "end_sec": 14.4,
+      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\output_videos\\\ud83d\ude33 \ud83c\udf31 5 Easy Plant Growing Hacks You Should Try! \ud83e\udd2f #shorts #gardening #viral [wq5e6zBvU5M]\\part_02.mp4"
+    },
+    {
+      "part": 3,
+      "start_sec": 14.4,
+      "end_sec": 20.266666666666666,
+      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\output_videos\\\ud83d\ude33 \ud83c\udf31 5 Easy Plant Growing Hacks You Should Try! \ud83e\udd2f #shorts #gardening #viral [wq5e6zBvU5M]\\part_03.mp4"
+    },
+    {
+      "part": 4,
+      "start_sec": 20.266666666666666,
+      "end_sec": 28.0,
+      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\output_videos\\\ud83d\ude33 \ud83c\udf31 5 Easy Plant Growing Hacks You Should Try! \ud83e\udd2f #shorts #gardening #viral [wq5e6zBvU5M]\\part_04.mp4"
+    },
+    {
+      "part": 5,
+      "start_sec": 28.0,
+      "end_sec": 34.86666666666667,
+      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\output_videos\\\ud83d\ude33 \ud83c\udf31 5 Easy Plant Growing Hacks You Should Try! \ud83e\udd2f #shorts #gardening #viral [wq5e6zBvU5M]\\part_05.mp4"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "_comment": "Per-number trim settings (seconds). Applied when splitting video parts.",
+  "_help": {
+    "start_trim_sec": "Skip this many seconds after the number marker at the START of a part (hides the number card).",
+    "end_trim_sec": "Cut this many seconds BEFORE the next number marker at the END of a part (hides the next number card). Part 5 ignores end_trim_sec."
+  },
+  "1": {
+    "start_trim_sec": 0.5,
+    "end_trim_sec": 0.5
+  },
+  "2": {
+    "start_trim_sec": 0.5,
+    "end_trim_sec": 0.5
+  },
+  "3": {
+    "start_trim_sec": 0.5,
+    "end_trim_sec": 0.5
+  },
+  "4": {
+    "start_trim_sec": 0.5,
+    "end_trim_sec": 0.5
+  },
+  "5": {
+    "start_trim_sec": 0.5,
+    "end_trim_sec": 0.0
+  }
+}
