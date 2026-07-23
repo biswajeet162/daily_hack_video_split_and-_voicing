@@ -33,6 +33,11 @@ URL_RE = re.compile(
     r"https?://(?:www\.)?(?:youtube\.com/(?:watch\?v=|shorts/|live/)|youtu\.be/)[\w\-?=&%.]+",
     re.IGNORECASE,
 )
+VIDEO_ID_RE = re.compile(
+    r"(?:youtube\.com/(?:watch\?v=|shorts/|live/)|youtu\.be/)([\w-]{6,})",
+    re.IGNORECASE,
+)
+DOWNLOAD_ARCHIVE_PATH = OUTPUT_DIR / ".download_archive.txt"
 
 
 def extract_urls(text: str) -> list[str]:
@@ -60,6 +65,23 @@ def extract_urls(text: str) -> list[str]:
 
 def read_links_file(path: Path) -> list[str]:
     return extract_urls(path.read_text(encoding="utf-8"))
+
+
+def extract_video_id(url: str) -> str | None:
+    match = VIDEO_ID_RE.search(url)
+    return match.group(1) if match else None
+
+
+def load_download_archive() -> set[str]:
+    if not DOWNLOAD_ARCHIVE_PATH.exists():
+        return set()
+
+    ids: set[str] = set()
+    for line in DOWNLOAD_ARCHIVE_PATH.read_text(encoding="utf-8").splitlines():
+        parts = line.strip().split()
+        if len(parts) >= 2:
+            ids.add(parts[1])
+    return ids
 
 
 def prompt_links() -> list[str]:
@@ -92,7 +114,7 @@ def build_ydl_opts() -> dict:
         "quiet": False,
         "noprogress": False,
         # Avoid re-downloading the same video id
-        "download_archive": str(OUTPUT_DIR / ".download_archive.txt"),
+        "download_archive": str(DOWNLOAD_ARCHIVE_PATH),
     }
 
 
@@ -102,23 +124,45 @@ def download(urls: list[str]) -> int:
         return 1
 
     print(f"Saving to: {OUTPUT_DIR}")
-    print(f"Videos to download: {len(urls)}\n")
+    print(f"Links in file: {len(urls)}")
+
+    archive = load_download_archive()
+    pending: list[str] = []
+    skipped = 0
+    for url in urls:
+        video_id = extract_video_id(url)
+        if video_id and video_id in archive:
+            skipped += 1
+            print(f"  Skip (already downloaded): {url}")
+        else:
+            pending.append(url)
+
+    if skipped:
+        print(f"Skipped {skipped} already downloaded link(s)")
+    print(f"Videos to download: {len(pending)}\n")
+
+    if not pending:
+        print("Nothing new to download.")
+        return 0
 
     opts = build_ydl_opts()
     failed = 0
+    downloaded = 0
 
     with yt_dlp.YoutubeDL(opts) as ydl:
-        for i, url in enumerate(urls, 1):
-            print(f"[{i}/{len(urls)}] {url}")
+        for i, url in enumerate(pending, 1):
+            print(f"[{i}/{len(pending)}] {url}")
             try:
                 ydl.download([url])
+                downloaded += 1
             except Exception as exc:
                 failed += 1
                 print(f"  FAILED: {exc}", file=sys.stderr)
             print()
 
-    ok = len(urls) - failed
-    print(f"Done. {ok} succeeded, {failed} failed.")
+    print(
+        f"Done. Downloaded {downloaded}, skipped {skipped}, failed {failed}."
+    )
     return 0 if failed == 0 else 1
 
 

@@ -3,13 +3,18 @@
 
 Reads videos from input_videos/, matches reference_numbers/1.png .. 5.png,
 then exports parts into output_videos/<video_name>/ as part-01-<uuid>.mp4, etc.
-Re-running replaces previous part files in that folder.
+Tracks completed splits in input_videos/.split_processed.json so reruns skip
+videos that were already split. Existing output folders are synced into that
+tracker automatically.
 
-Preferred: double-click run.bat and choose 2.
+Preferred: double-click run.bat and choose 2 (splits every unprocessed
+video in input_videos/, one by one, skipping ones already done).
 
 Manual:
   conda run -n utube_env python 02_split_video.py
+  conda run -n utube_env python 02_split_video.py --latest-only
   conda run -n utube_env python 02_split_video.py --video "input_videos/my_video.mp4"
+  conda run -n utube_env python 02_split_video.py --force
 """
 
 from __future__ import annotations
@@ -20,6 +25,7 @@ import subprocess
 import sys
 import uuid
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 
 import cv2
@@ -30,6 +36,8 @@ INPUT_DIR = ROOT / "input_videos"
 OUTPUT_DIR = ROOT / "output_videos"
 REF_DIR = ROOT / "reference_numbers"
 TRIM_CONFIG_PATH = ROOT / "split_trim_config.json"
+PROCESSED_TRACKER_PATH = INPUT_DIR / ".split_processed.json"
+FAILED_TRACKER_PATH = INPUT_DIR / ".split_failed.json"
 
 NUMBERS = list(range(1, 6))
 SAMPLE_FPS = 4.0  # coarse scan: frames analyzed per second
@@ -338,33 +346,43 @@ def find_markers(
     for number in NUMBERS:
         min_margin = trim_config[number].min_score_margin
         if min_margin is None:
-            min_margin = 0.05 if number == 4 else MIN_SCORE_MARGIN
+            min_margin = 0.025 if number == 4 else MIN_SCORE_MARGIN
 
         candidates: list[tuple[float, float, float]] = []
 
-        for t, scores in timeline:
-            score = scores[number]
-            if score < MIN_SCORE:
-                continue
+        def collect_candidates(required_margin: float) -> list[tuple[float, float, float]]:
+            found: list[tuple[float, float, float]] = []
+            for t, scores in timeline:
+                score = scores[number]
+                if score < MIN_SCORE:
+                    continue
 
-            winner = max(scores, key=scores.get)
-            if winner != number:
-                continue
+                winner = max(scores, key=scores.get)
+                if winner != number:
+                    continue
 
-            margin = score_margin(scores, number)
-            if margin < min_margin:
-                continue
+                margin = score_margin(scores, number)
+                if margin < required_margin:
+                    continue
 
-            if t - last_time < MIN_GAP_SEC:
-                continue
+                if t - last_time < MIN_GAP_SEC:
+                    continue
 
-            t0 = max(0.0, t - PEAK_WINDOW_SEC)
-            t1 = t + PEAK_WINDOW_SEC
-            local = [scores[number] for ts, scores in timeline if t0 <= ts <= t1]
-            if score < max(local):
-                continue
+                t0 = max(0.0, t - PEAK_WINDOW_SEC)
+                t1 = t + PEAK_WINDOW_SEC
+                local = [scores[number] for ts, scores in timeline if t0 <= ts <= t1]
+                if score < max(local):
+                    continue
 
-            candidates.append((score, margin, t))
+                found.append((score, margin, t))
+            return found
+
+        candidates = collect_candidates(min_margin)
+        if not candidates and min_margin > 0.02:
+            relaxed = max(0.02, min_margin * 0.6)
+            candidates = collect_candidates(relaxed)
+            if candidates:
+                print(f"  Marker {number}: using relaxed margin {relaxed:.3f}")
 
         if not candidates:
             raise RuntimeError(
@@ -511,22 +529,191 @@ def get_video_duration(video_path: Path) -> float:
     return frames / fps
 
 
-def pick_videos(explicit: Path | None) -> list[Path]:
+def load_processed_tracker() -> dict:
+    if not PROCESSED_TRACKER_PATH.exists():
+        return {"videos": {}}
+
+    try:
+        data = json.loads(PROCESSED_TRACKER_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        print(f"  Warning: invalid tracker file, starting fresh: {PROCESSED_TRACKER_PATH.name}")
+        return {"videos": {}}
+
+    if not isinstance(data, dict):
+        return {"videos": {}}
+    data.setdefault("videos", {})
+    return data
+
+
+def save_processed_tracker(tracker: dict) -> None:
+    INPUT_DIR.mkdir(parents=True, exist_ok=True)
+    PROCESSED_TRACKER_PATH.write_text(json.dumps(tracker, indent=2), encoding="utf-8")
+
+
+def load_failed_tracker() -> dict:
+    if not FAILED_TRACKER_PATH.exists():
+        return {"videos": {}}
+
+    try:
+        data = json.loads(FAILED_TRACKER_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {"videos": {}}
+
+    if not isinstance(data, dict):
+        return {"videos": {}}
+    data.setdefault("videos", {})
+    return data
+
+
+def save_failed_tracker(tracker: dict) -> None:
+    INPUT_DIR.mkdir(parents=True, exist_ok=True)
+    if not tracker.get("videos"):
+        if FAILED_TRACKER_PATH.exists():
+            FAILED_TRACKER_PATH.unlink(missing_ok=True)
+        return
+    FAILED_TRACKER_PATH.write_text(json.dumps(tracker, indent=2), encoding="utf-8")
+
+
+def mark_video_failed(video_path: Path, tracker: dict, error: str) -> None:
+    tracker.setdefault("videos", {})[video_path.name] = {
+        "failed_at": datetime.now(timezone.utc).isoformat(),
+        "source": str(video_path),
+        "error": error,
+    }
+    save_failed_tracker(tracker)
+
+
+def clear_video_failed(video_path: Path, tracker: dict) -> None:
+    videos = tracker.setdefault("videos", {})
+    if video_path.name in videos:
+        del videos[video_path.name]
+        save_failed_tracker(tracker)
+
+
+def video_status(video_path: Path, processed_tracker: dict) -> str:
+    if is_video_processed(video_path, processed_tracker):
+        return "processed"
+    return "pending"
+
+
+def print_input_video_status(all_videos: list[Path], processed_tracker: dict, failed_tracker: dict) -> None:
+    print("\nInput video status:")
+    print(f"  Processed tracker: {PROCESSED_TRACKER_PATH}")
+    print(f"  Failed tracker:    {FAILED_TRACKER_PATH}")
+    for video in all_videos:
+        if is_video_processed(video, processed_tracker):
+            status = "PROCESSED (skip)"
+        elif video.name in failed_tracker.get("videos", {}):
+            err = failed_tracker["videos"][video.name].get("error", "unknown error")
+            status = f"PENDING (last split failed: {err[:80]})"
+        else:
+            status = "PENDING (not split yet)"
+        print(f"  - {video.name}")
+        print(f"      -> {status}")
+
+
+def output_manifest_path(video_path: Path) -> Path:
+    return OUTPUT_DIR / video_path.stem / "split_manifest.json"
+
+
+def is_video_processed(video_path: Path, tracker: dict) -> bool:
+    if video_path.name in tracker.get("videos", {}):
+        return True
+    return output_manifest_path(video_path).exists()
+
+
+def sync_tracker_from_output(tracker: dict, videos: list[Path]) -> dict:
+    """Backfill tracker entries from existing output folders/manifests."""
+    videos_dict = tracker.setdefault("videos", {})
+    changed = False
+
+    for video in videos:
+        if video.name in videos_dict:
+            continue
+
+        manifest_path = output_manifest_path(video)
+        if not manifest_path.exists():
+            continue
+
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+
+        videos_dict[video.name] = {
+            "processed_at": "synced_from_output",
+            "source": manifest.get("source", str(video)),
+            "output_dir": str(manifest_path.parent),
+            "manifest": str(manifest_path),
+            "parts_count": len(manifest.get("parts", [])),
+            "synced_from_output": True,
+        }
+        changed = True
+
+    if changed:
+        save_processed_tracker(tracker)
+        print(f"  Synced processed history to: {PROCESSED_TRACKER_PATH.name}")
+
+    return tracker
+
+
+def mark_video_processed(
+    video_path: Path,
+    tracker: dict,
+    parts_count: int,
+    out_dir: Path,
+    failed_tracker: dict | None = None,
+) -> None:
+    tracker.setdefault("videos", {})[video_path.name] = {
+        "processed_at": datetime.now(timezone.utc).isoformat(),
+        "source": str(video_path),
+        "output_dir": str(out_dir),
+        "manifest": str(out_dir / "split_manifest.json"),
+        "parts_count": parts_count,
+    }
+    save_processed_tracker(tracker)
+    if failed_tracker is not None:
+        clear_video_failed(video_path, failed_tracker)
+
+
+def pick_videos(
+    explicit: Path | None,
+    *,
+    skip_processed: bool = True,
+    tracker: dict | None = None,
+) -> list[Path]:
     if explicit:
         if not explicit.exists():
             raise FileNotFoundError(explicit)
         return [explicit]
 
-    videos = sorted(INPUT_DIR.glob("*.mp4"), key=lambda p: p.stat().st_mtime, reverse=True)
+    videos = sorted(INPUT_DIR.glob("*.mp4"), key=lambda p: p.stat().st_mtime)
     if not videos:
         raise FileNotFoundError(f"No .mp4 files found in {INPUT_DIR}")
-    return videos
+
+    if not skip_processed or tracker is None:
+        return videos
+
+    pending: list[Path] = []
+    for video in videos:
+        if is_video_processed(video, tracker):
+            print(f"  Skip (already split): {video.name}")
+        else:
+            pending.append(video)
+
+    skipped = len(videos) - len(pending)
+    if skipped:
+        print(f"  Skipped {skipped} already processed video(s)")
+
+    return pending
 
 
 def process_video(
     video_path: Path,
     refs: dict[int, ReferenceImage],
     trim_config: dict[int, TrimSettings],
+    tracker: dict | None = None,
+    failed_tracker: dict | None = None,
 ) -> int:
     print(f"\nProcessing: {video_path.name}")
 
@@ -586,6 +773,9 @@ def process_video(
 
     manifest_path = out_dir / "split_manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    if tracker is not None:
+        mark_video_processed(video_path, tracker, len(ranges), out_dir, failed_tracker)
+        print(f"  Marked as processed in: {PROCESSED_TRACKER_PATH.name}")
     print(f"  Saved {len(ranges)} parts to: {out_dir}")
     return len(ranges)
 
@@ -602,7 +792,12 @@ def main() -> int:
     parser.add_argument(
         "--latest-only",
         action="store_true",
-        help="Process only the newest video in input_videos/",
+        help="Process only the newest unprocessed video in input_videos/",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Re-process videos even if they were already split before",
     )
     parser.add_argument(
         "--trim-config",
@@ -611,6 +806,8 @@ def main() -> int:
         help=f"JSON trim settings per number (default: {TRIM_CONFIG_PATH.name})",
     )
     args = parser.parse_args()
+
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     try:
         refs = load_references()
@@ -624,27 +821,58 @@ def main() -> int:
         print(f"Trim config load failed: {exc}", file=sys.stderr)
         return 1
 
+    skip_processed = not args.force
+    tracker = load_processed_tracker()
+    failed_tracker = load_failed_tracker()
+    all_input_videos = sorted(INPUT_DIR.glob("*.mp4"), key=lambda p: p.stat().st_mtime)
+    if skip_processed:
+        tracker = sync_tracker_from_output(tracker, all_input_videos)
+
+    if all_input_videos:
+        print_input_video_status(all_input_videos, tracker, failed_tracker)
+
     try:
         if args.video:
-            videos = pick_videos(args.video)
+            videos = pick_videos(args.video, skip_processed=False)
         elif args.latest_only:
-            videos = pick_videos(None)[:1]
+            pending = pick_videos(None, skip_processed=skip_processed, tracker=tracker)
+            videos = pending[-1:] if pending else []
         else:
-            videos = pick_videos(None)
+            videos = pick_videos(None, skip_processed=skip_processed, tracker=tracker)
     except Exception as exc:
         print(str(exc), file=sys.stderr)
         return 1
 
-    total_parts = 0
-    for video in videos:
-        try:
-            total_parts += process_video(video, refs, trim_config)
-        except Exception as exc:
-            print(f"FAILED {video.name}: {exc}", file=sys.stderr)
-            return 1
+    if not videos:
+        print("No unprocessed videos found in input_videos/.")
+        print(f"Tracking file: {PROCESSED_TRACKER_PATH}")
+        print("Use --force to split a video again.")
+        return 0
 
-    print(f"\nDone. Exported {total_parts} part(s) total.")
-    return 0
+    print(f"\nVideos to split: {len(videos)}")
+    for i, video in enumerate(videos, 1):
+        print(f"  [{i}] {video.name}")
+
+    total_parts = 0
+    processed_count = 0
+    failed_count = 0
+
+    for i, video in enumerate(videos, 1):
+        print(f"\n========== [{i}/{len(videos)}] ==========")
+        try:
+            total_parts += process_video(
+                video, refs, trim_config, tracker, failed_tracker
+            )
+            processed_count += 1
+        except Exception as exc:
+            failed_count += 1
+            msg = str(exc)
+            print(f"FAILED {video.name}: {msg}", file=sys.stderr)
+            mark_video_failed(video, failed_tracker, msg)
+
+    print(f"\nDone. Split {processed_count} video(s), {failed_count} failed.")
+    print(f"Exported {total_parts} part(s) total.")
+    return 0 if failed_count == 0 else 1
 
 
 if __name__ == "__main__":

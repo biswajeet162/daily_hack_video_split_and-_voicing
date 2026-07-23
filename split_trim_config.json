@@ -4,11 +4,11 @@
     "start_trim_sec": "Extra seconds to skip after the number card ends (or after marker start if start_trim_from is marker_start).",
     "end_trim_sec": "Cut this many seconds BEFORE the next number marker at the END of a part. Part 5 ignores end_trim_sec.",
     "start_trim_from": "marker_end (recommended) waits until the card disappears. marker_start trims from detection time.",
-    "min_score_margin": "Optional. How much this number must beat the runner-up during matching. #4 uses 0.05 by default."
+    "min_score_margin": "Optional. How much this number must beat the runner-up during matching. #4 uses 0.025 by default."
   },
   "1": {
     "start_trim_sec": 0.1,
-    "end_trim_sec": 0.65,
+    "end_trim_sec": 0.8,
     "start_trim_from": "marker_end"
   },
   "2": {
@@ -18,14 +18,14 @@
   },
   "3": {
     "start_trim_sec": 0.1,
-    "end_trim_sec": 0.5,
+    "end_trim_sec": 0.8,
     "start_trim_from": "marker_end"
   },
   "4": {
-    "start_trim_sec": 0.1,
+    "start_trim_sec": 0.0,
     "end_trim_sec": 0.8,
     "start_trim_from": "marker_end",
-    "min_score_margin": 0.05
+    "min_score_margin": 0.025
   },
   "5": {
     "start_trim_sec": 0.1,

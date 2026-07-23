@@ -12,10 +12,13 @@ echo   DAILY HACKS VIDEOS - Task Runner
 echo   Conda env: utube_env
 echo ============================================
 echo.
-echo   [1] Download YouTube videos
+echo   [1] Download YouTube videos (all links in links.txt)
+echo       skips already downloaded (.download_archive.txt)
 echo       links.txt  -^>  input_videos\
 echo.
-echo   [2] Split video by number markers (1-5)
+echo   [2] Split all videos by number markers (1-5)
+echo       skips already split (.split_processed.json)
+echo       failed attempts logged in .split_failed.json
 echo       input_videos\  -^>  output_videos\
 echo.
 echo   [0] Exit
@@ -43,7 +46,7 @@ goto menu
 :run_02
 echo.
 echo Running [2] Split video by number markers...
-call conda run -n utube_env python "02_split_video.py" --latest-only
+call conda run -n utube_env python "02_split_video.py"
 echo.
 echo --------------------------------------------
 pause

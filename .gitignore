@@ -7,6 +7,8 @@
 *.flv
 *.wmv
 *.m4v
+*.pyc
+
 
 # Audio files
 *.mp3
