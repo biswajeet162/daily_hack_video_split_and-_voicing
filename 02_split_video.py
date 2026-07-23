@@ -99,6 +99,34 @@ def load_references() -> dict[int, ReferenceImage]:
     return refs
 
 
+def load_trim_config(config_path: Path = TRIM_CONFIG_PATH) -> dict[int, TrimSettings]:
+    if not config_path.exists():
+        defaults = {n: TrimSettings(0.5, 0.0 if n == 5 else 0.5) for n in NUMBERS}
+        print(f"  Trim config not found, using defaults: {config_path.name}")
+        return defaults
+
+    data = json.loads(config_path.read_text(encoding="utf-8"))
+    settings: dict[int, TrimSettings] = {}
+
+    for n in NUMBERS:
+        key = str(n)
+        if key not in data:
+            raise ValueError(f"split_trim_config.json missing entry for number {n}")
+
+        entry = data[key]
+        settings[n] = TrimSettings(
+            start_trim_sec=float(entry.get("start_trim_sec", 0.5)),
+            end_trim_sec=float(entry.get("end_trim_sec", 0.0 if n == 5 else 0.5)),
+        )
+
+    print(f"  Loaded trim config: {config_path.name}")
+    for n in NUMBERS:
+        t = settings[n]
+        print(f"    #{n}: start +{t.start_trim_sec:.2f}s, end -{t.end_trim_sec:.2f}s")
+
+    return settings
+
+
 def center_crop(frame: np.ndarray, ratio: float = 0.75) -> np.ndarray:
     h, w = frame.shape[:2]
     ch, cw = int(h * ratio), int(w * ratio)
@@ -218,15 +246,46 @@ def find_markers(timeline: list[tuple[float, dict[int, float]]]) -> list[MarkerH
     return hits
 
 
-def split_ranges(markers: list[MarkerHit], duration: float) -> list[tuple[int, float, float]]:
-    times = [m.time_sec for m in markers]
-    ranges: list[tuple[int, float, float]] = []
+def split_ranges(
+    markers: list[MarkerHit],
+    duration: float,
+    trim_config: dict[int, TrimSettings],
+) -> list[PartRange]:
+    ranges: list[PartRange] = []
 
-    for part_idx in range(len(times)):
-        start = times[part_idx]
-        end = times[part_idx + 1] if part_idx + 1 < len(times) else duration
-        if end - start >= 0.2:
-            ranges.append((part_idx + 1, start, end))
+    for part_idx, marker in enumerate(markers):
+        part_num = part_idx + 1
+        number = marker.number
+        raw_start = marker.time_sec
+        raw_end = markers[part_idx + 1].time_sec if part_idx + 1 < len(markers) else duration
+
+        trim = trim_config[number]
+        start = raw_start + trim.start_trim_sec
+        end = raw_end - trim.end_trim_sec if part_num < len(markers) else raw_end
+
+        # Keep valid, non-empty ranges after trimming
+        start = max(0.0, min(start, duration))
+        end = max(0.0, min(end, duration))
+        if end - start < 0.2:
+            print(
+                f"  Warning: part {part_num} too short after trim "
+                f"({start:.2f}s -> {end:.2f}s), using minimal bounds"
+            )
+            start = min(start, raw_end - 0.2)
+            end = max(end, start + 0.2)
+
+        ranges.append(
+            PartRange(
+                part=part_num,
+                marker_number=number,
+                raw_start_sec=raw_start,
+                raw_end_sec=raw_end,
+                start_sec=start,
+                end_sec=end,
+                start_trim_sec=trim.start_trim_sec,
+                end_trim_sec=trim.end_trim_sec if part_num < len(markers) else 0.0,
+            )
+        )
 
     return ranges
 
@@ -293,13 +352,17 @@ def pick_videos(explicit: Path | None) -> list[Path]:
     return videos
 
 
-def process_video(video_path: Path, refs: dict[int, ReferenceImage]) -> int:
+def process_video(
+    video_path: Path,
+    refs: dict[int, ReferenceImage],
+    trim_config: dict[int, TrimSettings],
+) -> int:
     print(f"\nProcessing: {video_path.name}")
 
     timeline = scan_video(video_path, refs)
     markers = find_markers(timeline)
     duration = get_video_duration(video_path)
-    ranges = split_ranges(markers, duration)
+    ranges = split_ranges(markers, duration, trim_config)
 
     safe_stem = video_path.stem
     out_dir = OUTPUT_DIR / safe_stem
@@ -308,6 +371,7 @@ def process_video(video_path: Path, refs: dict[int, ReferenceImage]) -> int:
     manifest = {
         "source": str(video_path),
         "duration_sec": duration,
+        "trim_config": str(TRIM_CONFIG_PATH),
         "markers": [
             {"number": m.number, "time_sec": m.time_sec, "score": m.score}
             for m in markers
@@ -315,15 +379,25 @@ def process_video(video_path: Path, refs: dict[int, ReferenceImage]) -> int:
         "parts": [],
     }
 
-    for part_num, start, end in ranges:
-        out_file = out_dir / f"part_{part_num:02d}.mp4"
-        print(f"  Exporting part {part_num}: {start:.2f}s -> {end:.2f}s")
-        export_part(video_path, out_file, start, end)
+    for part in ranges:
+        out_file = out_dir / f"part_{part.part:02d}.mp4"
+        print(
+            f"  Exporting part {part.part}: "
+            f"{part.start_sec:.2f}s -> {part.end_sec:.2f}s "
+            f"(raw {part.raw_start_sec:.2f}s -> {part.raw_end_sec:.2f}s, "
+            f"trim +{part.start_trim_sec:.2f}s / -{part.end_trim_sec:.2f}s)"
+        )
+        export_part(video_path, out_file, part.start_sec, part.end_sec)
         manifest["parts"].append(
             {
-                "part": part_num,
-                "start_sec": start,
-                "end_sec": end,
+                "part": part.part,
+                "marker_number": part.marker_number,
+                "raw_start_sec": part.raw_start_sec,
+                "raw_end_sec": part.raw_end_sec,
+                "start_trim_sec": part.start_trim_sec,
+                "end_trim_sec": part.end_trim_sec,
+                "start_sec": part.start_sec,
+                "end_sec": part.end_sec,
                 "file": str(out_file),
             }
         )
@@ -348,12 +422,24 @@ def main() -> int:
         action="store_true",
         help="Process only the newest video in input_videos/",
     )
+    parser.add_argument(
+        "--trim-config",
+        type=Path,
+        default=TRIM_CONFIG_PATH,
+        help=f"JSON trim settings per number (default: {TRIM_CONFIG_PATH.name})",
+    )
     args = parser.parse_args()
 
     try:
         refs = load_references()
     except Exception as exc:
         print(f"Reference load failed: {exc}", file=sys.stderr)
+        return 1
+
+    try:
+        trim_config = load_trim_config(args.trim_config)
+    except Exception as exc:
+        print(f"Trim config load failed: {exc}", file=sys.stderr)
         return 1
 
     try:
@@ -370,7 +456,7 @@ def main() -> int:
     total_parts = 0
     for video in videos:
         try:
-            total_parts += process_video(video, refs)
+            total_parts += process_video(video, refs, trim_config)
         except Exception as exc:
             print(f"FAILED {video.name}: {exc}", file=sys.stderr)
             return 1
