@@ -30,10 +30,13 @@ REF_DIR = ROOT / "reference_numbers"
 TRIM_CONFIG_PATH = ROOT / "split_trim_config.json"
 
 NUMBERS = list(range(1, 6))
-SAMPLE_FPS = 4.0  # frames analyzed per second of video
+SAMPLE_FPS = 4.0  # coarse scan: frames analyzed per second
+REFINE_FPS = 10.0  # fine scan around each detected marker
 MIN_SCORE = 0.06
+MIN_SCORE_MARGIN = 0.03  # winner must beat runner-up by at least this
 PEAK_WINDOW_SEC = 1.5
 MIN_GAP_SEC = 2.0
+MARKER_END_DROP_RATIO = 0.45  # card ended when score falls below peak * this
 
 
 @dataclass
@@ -46,16 +49,19 @@ class ReferenceImage:
 
 
 @dataclass
-class MarkerHit:
-    number: int
-    time_sec: float
-    score: float
-
-
-@dataclass
 class TrimSettings:
     start_trim_sec: float
     end_trim_sec: float
+    start_trim_from: str = "marker_end"  # "marker_start" or "marker_end"
+    min_score_margin: float | None = None  # override default margin for this number
+
+
+@dataclass
+class MarkerHit:
+    number: int
+    time_sec: float
+    end_sec: float
+    score: float
 
 
 @dataclass
@@ -64,10 +70,12 @@ class PartRange:
     marker_number: int
     raw_start_sec: float
     raw_end_sec: float
+    marker_end_sec: float
     start_sec: float
     end_sec: float
     start_trim_sec: float
     end_trim_sec: float
+    start_trim_from: str
 
 
 def load_references() -> dict[int, ReferenceImage]:
@@ -117,12 +125,22 @@ def load_trim_config(config_path: Path = TRIM_CONFIG_PATH) -> dict[int, TrimSett
         settings[n] = TrimSettings(
             start_trim_sec=float(entry.get("start_trim_sec", 0.5)),
             end_trim_sec=float(entry.get("end_trim_sec", 0.0 if n == 5 else 0.5)),
+            start_trim_from=str(entry.get("start_trim_from", "marker_end")),
+            min_score_margin=(
+                float(entry["min_score_margin"])
+                if "min_score_margin" in entry
+                else None
+            ),
         )
 
     print(f"  Loaded trim config: {config_path.name}")
     for n in NUMBERS:
         t = settings[n]
-        print(f"    #{n}: start +{t.start_trim_sec:.2f}s, end -{t.end_trim_sec:.2f}s")
+        margin = t.min_score_margin if t.min_score_margin is not None else MIN_SCORE_MARGIN
+        print(
+            f"    #{n}: start +{t.start_trim_sec:.2f}s from {t.start_trim_from}, "
+            f"end -{t.end_trim_sec:.2f}s, margin {margin:.2f}"
+        )
 
     return settings
 
@@ -135,12 +153,11 @@ def center_crop(frame: np.ndarray, ratio: float = 0.75) -> np.ndarray:
     return frame[y0 : y0 + ch, x0 : x0 + cw]
 
 
-def score_frame(frame: np.ndarray, ref: ReferenceImage) -> float:
+def score_components(frame: np.ndarray, ref: ReferenceImage) -> tuple[float, float, float]:
     crop = center_crop(frame)
     gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
     gray = cv2.resize(gray, (ref.gray.shape[1], ref.gray.shape[0]))
 
-    # ORB feature similarity (robust to lighting / compression)
     orb = cv2.ORB_create(nfeatures=2000)
     bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=False)
     _, frame_des = orb.detectAndCompute(gray, None)
@@ -157,13 +174,33 @@ def score_frame(frame: np.ndarray, ref: ReferenceImage) -> float:
                 good += 1
         orb_score = good / ref.keypoint_count
 
-    # Histogram similarity (captures overall look and feel)
     hist = cv2.calcHist([gray], [0], None, [64], [0, 256])
     cv2.normalize(hist, hist)
     hist_score = max(0.0, cv2.compareHist(ref.hist, hist, cv2.HISTCMP_CORREL))
 
-    # Weighted blend favors ORB but keeps histogram as tie-breaker
-    return (0.75 * orb_score) + (0.25 * hist_score)
+    ref_edges = cv2.Canny(ref.gray, 50, 150)
+    frame_edges = cv2.Canny(gray, 50, 150)
+    template_score = float(
+        cv2.matchTemplate(frame_edges, ref_edges, cv2.TM_CCOEFF_NORMED).max()
+    )
+    template_score = max(0.0, template_score)
+
+    return orb_score, hist_score, template_score
+
+
+def score_frame(frame: np.ndarray, ref: ReferenceImage) -> float:
+    orb_score, hist_score, template_score = score_components(frame, ref)
+    # Template edges help separate short cards like #4 from similar-looking scenes.
+    return (0.55 * orb_score) + (0.15 * hist_score) + (0.30 * template_score)
+
+
+def score_margin(scores: dict[int, float], number: int) -> float:
+    ordered = sorted(scores.values(), reverse=True)
+    if len(ordered) < 2:
+        return ordered[0] if ordered else 0.0
+    best = scores[number]
+    runner_up = max(v for n, v in scores.items() if n != number)
+    return best - runner_up
 
 
 def scan_video(video_path: Path, refs: dict[int, ReferenceImage]) -> list[tuple[float, dict[int, float]]]:
@@ -200,14 +237,110 @@ def scan_video(video_path: Path, refs: dict[int, ReferenceImage]) -> list[tuple[
     return timeline
 
 
-def find_markers(timeline: list[tuple[float, dict[int, float]]]) -> list[MarkerHit]:
+def read_frame_at(cap: cv2.VideoCapture, time_sec: float) -> np.ndarray | None:
+    cap.set(cv2.CAP_PROP_POS_MSEC, time_sec * 1000.0)
+    ok, frame = cap.read()
+    return frame if ok else None
+
+
+def score_at_time(
+    cap: cv2.VideoCapture,
+    refs: dict[int, ReferenceImage],
+    time_sec: float,
+) -> dict[int, float]:
+    frame = read_frame_at(cap, time_sec)
+    if frame is None:
+        return {n: 0.0 for n in NUMBERS}
+    return {n: score_frame(frame, refs[n]) for n in NUMBERS}
+
+
+def refine_marker_time(
+    video_path: Path,
+    refs: dict[int, ReferenceImage],
+    number: int,
+    coarse_time: float,
+    min_margin: float,
+) -> tuple[float, float]:
+    """Fine-scan around coarse hit to locate the true peak for this number."""
+    cap = cv2.VideoCapture(str(video_path))
+    if not cap.isOpened():
+        return coarse_time, 0.0
+
+    best_time = coarse_time
+    best_score = 0.0
+    search_start = max(0.0, coarse_time - 2.0)
+    search_end = coarse_time + 2.0
+    step = 1.0 / REFINE_FPS
+
+    t = search_start
+    while t <= search_end:
+        scores = score_at_time(cap, refs, t)
+        score = scores[number]
+        margin = score_margin(scores, number)
+        winner = max(scores, key=scores.get)
+
+        if winner == number and score > best_score and margin >= min_margin:
+            best_score = score
+            best_time = t
+
+        t += step
+
+    cap.release()
+    return best_time, best_score
+
+
+def find_marker_end(
+    video_path: Path,
+    refs: dict[int, ReferenceImage],
+    number: int,
+    peak_time: float,
+    peak_score: float,
+    duration: float,
+) -> float:
+    """Find when the number card finishes (score drops after the peak)."""
+    cap = cv2.VideoCapture(str(video_path))
+    if not cap.isOpened():
+        return peak_time + 0.8
+
+    threshold = max(MIN_SCORE, peak_score * MARKER_END_DROP_RATIO)
+    step = 1.0 / REFINE_FPS
+    low_streak = 0
+    end_time = peak_time
+
+    t = peak_time
+    while t <= min(duration, peak_time + 4.0):
+        scores = score_at_time(cap, refs, t)
+        if scores[number] < threshold:
+            low_streak += 1
+            if low_streak >= 2:
+                end_time = max(peak_time, t - step)
+                break
+        else:
+            low_streak = 0
+            end_time = t
+        t += step
+
+    cap.release()
+    return end_time
+
+
+def find_markers(
+    timeline: list[tuple[float, dict[int, float]]],
+    video_path: Path,
+    refs: dict[int, ReferenceImage],
+    trim_config: dict[int, TrimSettings],
+) -> list[MarkerHit]:
     hits: list[MarkerHit] = []
     last_time = -999.0
 
     for number in NUMBERS:
-        candidates: list[tuple[float, float]] = []
+        min_margin = trim_config[number].min_score_margin
+        if min_margin is None:
+            min_margin = 0.05 if number == 4 else MIN_SCORE_MARGIN
 
-        for i, (t, scores) in enumerate(timeline):
+        candidates: list[tuple[float, float, float]] = []
+
+        for t, scores in timeline:
             score = scores[number]
             if score < MIN_SCORE:
                 continue
@@ -216,21 +349,20 @@ def find_markers(timeline: list[tuple[float, dict[int, float]]]) -> list[MarkerH
             if winner != number:
                 continue
 
+            margin = score_margin(scores, number)
+            if margin < min_margin:
+                continue
+
             if t - last_time < MIN_GAP_SEC:
                 continue
 
-            # Local peak in a small time window
             t0 = max(0.0, t - PEAK_WINDOW_SEC)
             t1 = t + PEAK_WINDOW_SEC
-            local = [
-                scores[number]
-                for ts, scores in timeline
-                if t0 <= ts <= t1
-            ]
+            local = [scores[number] for ts, scores in timeline if t0 <= ts <= t1]
             if score < max(local):
                 continue
 
-            candidates.append((score, t))
+            candidates.append((score, margin, t))
 
         if not candidates:
             raise RuntimeError(
@@ -238,10 +370,31 @@ def find_markers(timeline: list[tuple[float, dict[int, float]]]) -> list[MarkerH
                 f"Try lowering MIN_SCORE or check reference_numbers/{number}.png"
             )
 
-        best_score, best_time = max(candidates, key=lambda x: x[0])
-        hits.append(MarkerHit(number=number, time_sec=best_time, score=best_score))
-        last_time = best_time
-        print(f"  Found marker {number} at {best_time:.2f}s (confidence {best_score:.3f})")
+        _, _, coarse_time = max(candidates, key=lambda x: x[0])
+        refined_time, refined_score = refine_marker_time(
+            video_path, refs, number, coarse_time, min_margin
+        )
+        if refined_score <= 0.0:
+            refined_time, refined_score = coarse_time, max(c[0] for c in candidates)
+
+        duration = get_video_duration(video_path)
+        marker_end = find_marker_end(
+            video_path, refs, number, refined_time, refined_score, duration
+        )
+
+        hits.append(
+            MarkerHit(
+                number=number,
+                time_sec=refined_time,
+                end_sec=marker_end,
+                score=refined_score,
+            )
+        )
+        last_time = refined_time
+        print(
+            f"  Found marker {number} at {refined_time:.2f}s "
+            f"(card ends {marker_end:.2f}s, confidence {refined_score:.3f})"
+        )
 
     return hits
 
@@ -260,8 +413,14 @@ def split_ranges(
         raw_end = markers[part_idx + 1].time_sec if part_idx + 1 < len(markers) else duration
 
         trim = trim_config[number]
-        start = raw_start + trim.start_trim_sec
+        trim_anchor = marker.end_sec if trim.start_trim_from == "marker_end" else raw_start
+        start = trim_anchor + trim.start_trim_sec
         end = raw_end - trim.end_trim_sec if part_num < len(markers) else raw_end
+
+        # When the next marker is close (short cards like #4), also hide its card end.
+        if part_num < len(markers):
+            next_marker = markers[part_idx + 1]
+            end = min(end, next_marker.time_sec - trim.end_trim_sec)
 
         # Keep valid, non-empty ranges after trimming
         start = max(0.0, min(start, duration))
@@ -280,10 +439,12 @@ def split_ranges(
                 marker_number=number,
                 raw_start_sec=raw_start,
                 raw_end_sec=raw_end,
+                marker_end_sec=marker.end_sec,
                 start_sec=start,
                 end_sec=end,
                 start_trim_sec=trim.start_trim_sec,
                 end_trim_sec=trim.end_trim_sec if part_num < len(markers) else 0.0,
+                start_trim_from=trim.start_trim_from,
             )
         )
 
@@ -292,44 +453,33 @@ def split_ranges(
 
 def export_part(video_path: Path, out_path: Path, start: float, end: float) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    # Accurate frame cuts (stream copy seeks to keyframes and can leave number cards in).
     cmd = [
         "ffmpeg",
         "-y",
+        "-i",
+        str(video_path),
         "-ss",
         f"{start:.3f}",
         "-to",
         f"{end:.3f}",
-        "-i",
-        str(video_path),
-        "-c",
-        "copy",
-        "-avoid_negative_ts",
-        "make_zero",
+        "-c:v",
+        "libx264",
+        "-preset",
+        "fast",
+        "-crf",
+        "18",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "128k",
+        "-movflags",
+        "+faststart",
         str(out_path),
     ]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
-        # Fallback: re-encode if stream copy fails around non-keyframe cuts
-        cmd = [
-            "ffmpeg",
-            "-y",
-            "-ss",
-            f"{start:.3f}",
-            "-to",
-            f"{end:.3f}",
-            "-i",
-            str(video_path),
-            "-c:v",
-            "libx264",
-            "-c:a",
-            "aac",
-            "-movflags",
-            "+faststart",
-            str(out_path),
-        ]
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        if result.returncode != 0:
-            raise RuntimeError(result.stderr[-800:])
+        raise RuntimeError(result.stderr[-800:])
 
 
 def get_video_duration(video_path: Path) -> float:
@@ -360,7 +510,7 @@ def process_video(
     print(f"\nProcessing: {video_path.name}")
 
     timeline = scan_video(video_path, refs)
-    markers = find_markers(timeline)
+    markers = find_markers(timeline, video_path, refs, trim_config)
     duration = get_video_duration(video_path)
     ranges = split_ranges(markers, duration, trim_config)
 
@@ -373,7 +523,12 @@ def process_video(
         "duration_sec": duration,
         "trim_config": str(TRIM_CONFIG_PATH),
         "markers": [
-            {"number": m.number, "time_sec": m.time_sec, "score": m.score}
+            {
+                "number": m.number,
+                "time_sec": m.time_sec,
+                "end_sec": m.end_sec,
+                "score": m.score,
+            }
             for m in markers
         ],
         "parts": [],
@@ -384,8 +539,9 @@ def process_video(
         print(
             f"  Exporting part {part.part}: "
             f"{part.start_sec:.2f}s -> {part.end_sec:.2f}s "
-            f"(raw {part.raw_start_sec:.2f}s -> {part.raw_end_sec:.2f}s, "
-            f"trim +{part.start_trim_sec:.2f}s / -{part.end_trim_sec:.2f}s)"
+            f"(marker {part.raw_start_sec:.2f}s, card ends {part.marker_end_sec:.2f}s, "
+            f"trim +{part.start_trim_sec:.2f}s from {part.start_trim_from} / "
+            f"-{part.end_trim_sec:.2f}s)"
         )
         export_part(video_path, out_file, part.start_sec, part.end_sec)
         manifest["parts"].append(
@@ -394,8 +550,10 @@ def process_video(
                 "marker_number": part.marker_number,
                 "raw_start_sec": part.raw_start_sec,
                 "raw_end_sec": part.raw_end_sec,
+                "marker_end_sec": part.marker_end_sec,
                 "start_trim_sec": part.start_trim_sec,
                 "end_trim_sec": part.end_trim_sec,
+                "start_trim_from": part.start_trim_from,
                 "start_sec": part.start_sec,
                 "end_sec": part.end_sec,
                 "file": str(out_file),
