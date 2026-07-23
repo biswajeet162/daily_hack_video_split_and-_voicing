@@ -7,28 +7,28 @@
     "min_score_margin": "Optional. How much this number must beat the runner-up during matching. #4 uses 0.05 by default."
   },
   "1": {
-    "start_trim_sec": 0.5,
+    "start_trim_sec": 0.1,
     "end_trim_sec": 0.65,
     "start_trim_from": "marker_end"
   },
   "2": {
-    "start_trim_sec": 0.5,
-    "end_trim_sec": 0.8,
+    "start_trim_sec": 0.1,
+    "end_trim_sec": 0.75,
     "start_trim_from": "marker_end"
   },
   "3": {
-    "start_trim_sec": 0.5,
+    "start_trim_sec": 0.1,
     "end_trim_sec": 0.5,
     "start_trim_from": "marker_end"
   },
   "4": {
-    "start_trim_sec": 0.2,
+    "start_trim_sec": 0.1,
     "end_trim_sec": 0.8,
     "start_trim_from": "marker_end",
     "min_score_margin": 0.05
   },
   "5": {
-    "start_trim_sec": 0.5,
+    "start_trim_sec": 0.1,
     "end_trim_sec": 0.0,
     "start_trim_from": "marker_end"
   }

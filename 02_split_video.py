@@ -2,7 +2,8 @@
 [2] Split videos by golden number markers (1-5) using computer vision.
 
 Reads videos from input_videos/, matches reference_numbers/1.png .. 5.png,
-then exports parts into output_videos/<video_name>/.
+then exports parts into output_videos/<video_name>/ as part-01-<uuid>.mp4, etc.
+Re-running replaces previous part files in that folder.
 
 Preferred: double-click run.bat and choose 2.
 
@@ -17,6 +18,7 @@ import argparse
 import json
 import subprocess
 import sys
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -451,8 +453,27 @@ def split_ranges(
     return ranges
 
 
+def part_filename(part_num: int) -> str:
+    return f"part-{part_num:02d}-{uuid.uuid4()}.mp4"
+
+
+def clear_previous_parts(out_dir: Path) -> None:
+    """Remove old split parts so reruns replace output instead of keeping stale files."""
+    if not out_dir.exists():
+        return
+    removed = 0
+    for pattern in ("part-*.mp4", "part_*.mp4"):
+        for old_file in out_dir.glob(pattern):
+            old_file.unlink(missing_ok=True)
+            removed += 1
+    if removed:
+        print(f"  Replaced {removed} previous part file(s) in output folder")
+
+
 def export_part(video_path: Path, out_path: Path, start: float, end: float) -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    if out_path.exists():
+        out_path.unlink()
     # Accurate frame cuts (stream copy seeks to keyframes and can leave number cards in).
     cmd = [
         "ffmpeg",
@@ -517,6 +538,7 @@ def process_video(
     safe_stem = video_path.stem
     out_dir = OUTPUT_DIR / safe_stem
     out_dir.mkdir(parents=True, exist_ok=True)
+    clear_previous_parts(out_dir)
 
     manifest = {
         "source": str(video_path),
@@ -535,9 +557,10 @@ def process_video(
     }
 
     for part in ranges:
-        out_file = out_dir / f"part_{part.part:02d}.mp4"
+        out_name = part_filename(part.part)
+        out_file = out_dir / out_name
         print(
-            f"  Exporting part {part.part}: "
+            f"  Exporting part {part.part} -> {out_name}: "
             f"{part.start_sec:.2f}s -> {part.end_sec:.2f}s "
             f"(marker {part.raw_start_sec:.2f}s, card ends {part.marker_end_sec:.2f}s, "
             f"trim +{part.start_trim_sec:.2f}s from {part.start_trim_from} / "
@@ -547,6 +570,7 @@ def process_video(
         manifest["parts"].append(
             {
                 "part": part.part,
+                "filename": out_name,
                 "marker_number": part.marker_number,
                 "raw_start_sec": part.raw_start_sec,
                 "raw_end_sec": part.raw_end_sec,
