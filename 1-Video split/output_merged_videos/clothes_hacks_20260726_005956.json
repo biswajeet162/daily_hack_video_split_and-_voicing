@@ -1,0 +1,281 @@
+{
+  "merge_id": "clothes_hacks_20260726_005956",
+  "category_slug": "clothes_hacks",
+  "category_name_en": "Clothes & Fabric Hacks",
+  "category_name_hi": "कपड़े से जुड़े हैक",
+  "merged_at": "2026-07-25T19:30:26.307082+00:00",
+  "clip_count": 6,
+  "raw_clip_duration_sec": 28.04,
+  "gap_added_sec": 6.0,
+  "gap_duration_sec": 1.2,
+  "total_duration_sec": 34.04,
+  "output_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_merged_videos\\clothes_hacks_20260726_005956.mp4",
+  "transition_config": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\merge_transition_config.json",
+  "merge_mode": "frame_flip_bridge",
+  "exit_sec": 0.6,
+  "enter_sec": 0.6,
+  "flip_count": 3,
+  "enter_start_scale": 0.55,
+  "flip_min_scale": 0.55,
+  "frame_trim_sec": 0.03333333333333333,
+  "bridge_transitions": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_flip_bridge",
+      "effect_name_en": "Frame Flip Bridge",
+      "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
+      "exit_sec": 0.6,
+      "enter_sec": 0.6,
+      "flip_count": 3,
+      "enter_start_scale": 0.55,
+      "flip_min_scale": 0.55,
+      "frame_trim_sec": 0.03333333333333333,
+      "bridge_duration_sec": 1.2,
+      "mode": "frame_flip_bridge"
+    },
+    {
+      "after_clip_order": 2,
+      "before_clip_order": 3,
+      "effect_type": "frame_flip_bridge",
+      "effect_name_en": "Frame Flip Bridge",
+      "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
+      "exit_sec": 0.6,
+      "enter_sec": 0.6,
+      "flip_count": 3,
+      "enter_start_scale": 0.55,
+      "flip_min_scale": 0.55,
+      "frame_trim_sec": 0.03333333333333333,
+      "bridge_duration_sec": 1.2,
+      "mode": "frame_flip_bridge"
+    },
+    {
+      "after_clip_order": 3,
+      "before_clip_order": 4,
+      "effect_type": "frame_flip_bridge",
+      "effect_name_en": "Frame Flip Bridge",
+      "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
+      "exit_sec": 0.6,
+      "enter_sec": 0.6,
+      "flip_count": 3,
+      "enter_start_scale": 0.55,
+      "flip_min_scale": 0.55,
+      "frame_trim_sec": 0.03333333333333333,
+      "bridge_duration_sec": 1.2,
+      "mode": "frame_flip_bridge"
+    },
+    {
+      "after_clip_order": 4,
+      "before_clip_order": 5,
+      "effect_type": "frame_flip_bridge",
+      "effect_name_en": "Frame Flip Bridge",
+      "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
+      "exit_sec": 0.6,
+      "enter_sec": 0.6,
+      "flip_count": 3,
+      "enter_start_scale": 0.55,
+      "flip_min_scale": 0.55,
+      "frame_trim_sec": 0.03333333333333333,
+      "bridge_duration_sec": 1.2,
+      "mode": "frame_flip_bridge"
+    },
+    {
+      "after_clip_order": 5,
+      "before_clip_order": 6,
+      "effect_type": "frame_flip_bridge",
+      "effect_name_en": "Frame Flip Bridge",
+      "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
+      "exit_sec": 0.6,
+      "enter_sec": 0.6,
+      "flip_count": 3,
+      "enter_start_scale": 0.55,
+      "flip_min_scale": 0.55,
+      "frame_trim_sec": 0.03333333333333333,
+      "bridge_duration_sec": 1.2,
+      "mode": "frame_flip_bridge"
+    }
+  ],
+  "gap_effects": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_flip_bridge",
+      "effect_name_en": "Frame Flip Bridge",
+      "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
+      "exit_sec": 0.6,
+      "enter_sec": 0.6,
+      "flip_count": 3,
+      "enter_start_scale": 0.55,
+      "flip_min_scale": 0.55,
+      "frame_trim_sec": 0.03333333333333333,
+      "bridge_duration_sec": 1.2,
+      "mode": "frame_flip_bridge"
+    },
+    {
+      "after_clip_order": 2,
+      "before_clip_order": 3,
+      "effect_type": "frame_flip_bridge",
+      "effect_name_en": "Frame Flip Bridge",
+      "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
+      "exit_sec": 0.6,
+      "enter_sec": 0.6,
+      "flip_count": 3,
+      "enter_start_scale": 0.55,
+      "flip_min_scale": 0.55,
+      "frame_trim_sec": 0.03333333333333333,
+      "bridge_duration_sec": 1.2,
+      "mode": "frame_flip_bridge"
+    },
+    {
+      "after_clip_order": 3,
+      "before_clip_order": 4,
+      "effect_type": "frame_flip_bridge",
+      "effect_name_en": "Frame Flip Bridge",
+      "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
+      "exit_sec": 0.6,
+      "enter_sec": 0.6,
+      "flip_count": 3,
+      "enter_start_scale": 0.55,
+      "flip_min_scale": 0.55,
+      "frame_trim_sec": 0.03333333333333333,
+      "bridge_duration_sec": 1.2,
+      "mode": "frame_flip_bridge"
+    },
+    {
+      "after_clip_order": 4,
+      "before_clip_order": 5,
+      "effect_type": "frame_flip_bridge",
+      "effect_name_en": "Frame Flip Bridge",
+      "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
+      "exit_sec": 0.6,
+      "enter_sec": 0.6,
+      "flip_count": 3,
+      "enter_start_scale": 0.55,
+      "flip_min_scale": 0.55,
+      "frame_trim_sec": 0.03333333333333333,
+      "bridge_duration_sec": 1.2,
+      "mode": "frame_flip_bridge"
+    },
+    {
+      "after_clip_order": 5,
+      "before_clip_order": 6,
+      "effect_type": "frame_flip_bridge",
+      "effect_name_en": "Frame Flip Bridge",
+      "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
+      "exit_sec": 0.6,
+      "enter_sec": 0.6,
+      "flip_count": 3,
+      "enter_start_scale": 0.55,
+      "flip_min_scale": 0.55,
+      "frame_trim_sec": 0.03333333333333333,
+      "bridge_duration_sec": 1.2,
+      "mode": "frame_flip_bridge"
+    }
+  ],
+  "clips": [
+    {
+      "order": 1,
+      "clip_key": "😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]/part-02-20661fce-25c1-4bd6-a5db-132811fcc3f8.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-02-20661fce-25c1-4bd6-a5db-132811fcc3f8.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-02-20661fce-25c1-4bd6-a5db-132811fcc3f8.transcription.json",
+      "text": "मग में सीमेंट डालें और छोटे पत्थर से शेप दें. सुखाने के बाद आपका प्यारा सा सीमेंट, बाउल या एश्ट्रे रेडी.",
+      "duration_sec": 6.04,
+      "categories": [
+        "clothes_hacks",
+        "cement_concrete_diy"
+      ]
+    },
+    {
+      "order": 2,
+      "clip_key": "😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]/part-01-18847d36-b9d0-4989-893c-2d37e13cbfe5.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-01-18847d36-b9d0-4989-893c-2d37e13cbfe5.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-01-18847d36-b9d0-4989-893c-2d37e13cbfe5.transcription.json",
+      "text": "सैंडल का वेलक्रो डीला हो गया, लाइटर से रोएं साफ करो, फिर नए जैसा चिपकेगा.",
+      "duration_sec": 4.0,
+      "categories": [
+        "clothes_hacks",
+        "shoe_hacks",
+        "plastic_reuse",
+        "cardboard_paper_craft",
+        "household_hacks"
+      ]
+    },
+    {
+      "order": 3,
+      "clip_key": "😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]/part-05-001cfa39-dc53-4750-bd55-5d165fe389de.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-05-001cfa39-dc53-4750-bd55-5d165fe389de.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-05-001cfa39-dc53-4750-bd55-5d165fe389de.transcription.json",
+      "text": "फूल की कली जैसा डिजाइन बनाओ। मेहमान कहेंगे ऐसी मिठाई तो पहली बार देखी है।",
+      "duration_sec": 4.76,
+      "categories": [
+        "clothes_hacks",
+        "household_hacks"
+      ]
+    },
+    {
+      "order": 4,
+      "clip_key": "😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]/part-03-376faa21-630f-4851-8a4c-dce74851d28f.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-03-376faa21-630f-4851-8a4c-dce74851d28f.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-03-376faa21-630f-4851-8a4c-dce74851d28f.transcription.json",
+      "text": "कंगी से ये शेल डिजाइन बनाओ। महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।",
+      "duration_sec": 4.36,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation",
+        "drill_tool_hacks"
+      ]
+    },
+    {
+      "order": 5,
+      "clip_key": "😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]/part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.transcription.json",
+      "text": "संत्रा छीलने का सबसे तेज तरीका अंगूठों से बीच में दबाएं और संत्रा तुरंत खुल जाएं",
+      "duration_sec": 4.62,
+      "categories": [
+        "fruit_hacks",
+        "clothes_hacks"
+      ]
+    },
+    {
+      "order": 6,
+      "clip_key": "😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]/part-02-90893741-e186-4529-931a-cdbdcccab9b5.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-02-90893741-e186-4529-931a-cdbdcccab9b5.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-02-90893741-e186-4529-931a-cdbdcccab9b5.transcription.json",
+      "text": "ऐसा कद्दू डिजाइन बनाओ। मेहमान मिठाई खाने से पहले उसे घुमा कर देखेंगे।",
+      "duration_sec": 4.26,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation",
+        "drinks_cooling"
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "order": 1,
+      "text": "मग में सीमेंट डालें और छोटे पत्थर से शेप दें. सुखाने के बाद आपका प्यारा सा सीमेंट, बाउल या एश्ट्रे रेडी."
+    },
+    {
+      "order": 2,
+      "text": "सैंडल का वेलक्रो डीला हो गया, लाइटर से रोएं साफ करो, फिर नए जैसा चिपकेगा."
+    },
+    {
+      "order": 3,
+      "text": "फूल की कली जैसा डिजाइन बनाओ। मेहमान कहेंगे ऐसी मिठाई तो पहली बार देखी है।"
+    },
+    {
+      "order": 4,
+      "text": "कंगी से ये शेल डिजाइन बनाओ। महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।"
+    },
+    {
+      "order": 5,
+      "text": "संत्रा छीलने का सबसे तेज तरीका अंगूठों से बीच में दबाएं और संत्रा तुरंत खुल जाएं"
+    },
+    {
+      "order": 6,
+      "text": "ऐसा कद्दू डिजाइन बनाओ। मेहमान मिठाई खाने से पहले उसे घुमा कर देखेंगे।"
+    }
+  ],
+  "full_dialogue_hindi": "मग में सीमेंट डालें और छोटे पत्थर से शेप दें. सुखाने के बाद आपका प्यारा सा सीमेंट, बाउल या एश्ट्रे रेडी.\n\nसैंडल का वेलक्रो डीला हो गया, लाइटर से रोएं साफ करो, फिर नए जैसा चिपकेगा.\n\nफूल की कली जैसा डिजाइन बनाओ। मेहमान कहेंगे ऐसी मिठाई तो पहली बार देखी है।\n\nकंगी से ये शेल डिजाइन बनाओ। महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।\n\nसंत्रा छीलने का सबसे तेज तरीका अंगूठों से बीच में दबाएं और संत्रा तुरंत खुल जाएं\n\nऐसा कद्दू डिजाइन बनाओ। मेहमान मिठाई खाने से पहले उसे घुमा कर देखेंगे।"
+}
