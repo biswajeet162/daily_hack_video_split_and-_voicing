@@ -42,36 +42,43 @@ CATEGORIES_PATH = ROOT / "video_categories" / "categories.json"
 MERGE_TRACKER_PATH = OUTPUT_DIR / ".merge_used_clips.json"
 TRANSITION_CONFIG_PATH = ROOT / "merge_transition_config.json"
 DEFAULT_CLIP_COUNT = 5
-DEFAULT_GAP_DURATION_SEC = 1.2
+DEFAULT_GAP_DURATION_SEC = 1.0
 OUTPUT_FPS = 30
+DEFAULT_TRANSITION_FPS = 60
 OUTPUT_AUDIO_RATE = 48000
 FRAME_TRIM_SEC = 1.0 / OUTPUT_FPS
-DEFAULT_ENTER_START_SCALE = 0.55
-DEFAULT_FLIP_MIN_SCALE = 0.55
-FFMPEG_ENCODE_ARGS = [
-    "-c:v",
-    "libx264",
-    "-preset",
-    "medium",
-    "-crf",
-    "18",
-    "-pix_fmt",
-    "yuv420p",
-    "-vsync",
-    "cfr",
-    "-r",
-    str(OUTPUT_FPS),
-    "-c:a",
-    "aac",
-    "-ar",
-    str(OUTPUT_AUDIO_RATE),
-    "-ac",
-    "2",
-    "-b:a",
-    "128k",
-    "-movflags",
-    "+faststart",
-]
+DEFAULT_FADE_OUT_SEC = 0.5
+DEFAULT_FADE_IN_SEC = 0.5
+
+
+def ffmpeg_encode_args(fps: int) -> list[str]:
+    return [
+        "-c:v",
+        "libx264",
+        "-preset",
+        "medium",
+        "-crf",
+        "18",
+        "-pix_fmt",
+        "yuv420p",
+        "-vsync",
+        "cfr",
+        "-r",
+        str(fps),
+        "-c:a",
+        "aac",
+        "-ar",
+        str(OUTPUT_AUDIO_RATE),
+        "-ac",
+        "2",
+        "-b:a",
+        "128k",
+        "-movflags",
+        "+faststart",
+    ]
+
+
+FFMPEG_ENCODE_ARGS = ffmpeg_encode_args(OUTPUT_FPS)
 
 
 def ensure_ffmpeg() -> None:
@@ -253,13 +260,13 @@ def load_transition_config(config_path: Path = TRANSITION_CONFIG_PATH) -> dict:
     if not config_path.exists():
         log.warn(f"Transition config not found, using defaults: {config_path.name}")
         return {
-            "mode": "frame_flip_bridge",
+            "mode": "frame_fade_bridge",
             "gap_duration_sec": DEFAULT_GAP_DURATION_SEC,
-            "exit_sec": DEFAULT_GAP_DURATION_SEC / 2,
-            "enter_sec": DEFAULT_GAP_DURATION_SEC / 2,
-            "flip_count": 3,
-            "enter_start_scale": DEFAULT_ENTER_START_SCALE,
-            "flip_min_scale": DEFAULT_FLIP_MIN_SCALE,
+            "fade_out_sec": DEFAULT_FADE_OUT_SEC,
+            "fade_in_sec": DEFAULT_FADE_IN_SEC,
+            "exit_sec": DEFAULT_FADE_OUT_SEC,
+            "enter_sec": DEFAULT_FADE_IN_SEC,
+            "transition_fps": DEFAULT_TRANSITION_FPS,
         }
 
     data = json.loads(config_path.read_text(encoding="utf-8"))
@@ -272,30 +279,34 @@ def load_transition_config(config_path: Path = TRANSITION_CONFIG_PATH) -> dict:
         raise ValueError("gap_duration_sec must be positive")
 
     exit_sec = float(
-        data.get("exit_sec") or data.get("fade_out_sec") or gap_duration / 2
+        data.get("exit_sec")
+        or data.get("fade_out_sec")
+        or gap_duration / 2
     )
     enter_sec = float(
-        data.get("enter_sec") or data.get("fade_in_sec") or gap_duration / 2
+        data.get("enter_sec")
+        or data.get("fade_in_sec")
+        or gap_duration / 2
     )
     if exit_sec <= 0 or enter_sec <= 0:
-        raise ValueError("exit_sec and enter_sec must be positive")
+        raise ValueError("exit_sec/fade_out_sec and enter_sec/fade_in_sec must be positive")
 
-    flip_count = int(data.get("flip_count") or 3)
-    if flip_count < 1:
-        raise ValueError("flip_count must be at least 1")
-
-    data["mode"] = data.get("mode", "frame_flip_bridge")
+    data["mode"] = data.get("mode", "frame_fade_bridge")
     data["gap_duration_sec"] = exit_sec + enter_sec
+    data["fade_out_sec"] = exit_sec
+    data["fade_in_sec"] = enter_sec
     data["exit_sec"] = exit_sec
     data["enter_sec"] = enter_sec
-    data["flip_count"] = flip_count
-    data["enter_start_scale"] = float(
-        data.get("enter_start_scale") or DEFAULT_ENTER_START_SCALE
-    )
-    data["flip_min_scale"] = float(
-        data.get("flip_min_scale") or DEFAULT_FLIP_MIN_SCALE
-    )
+    transition_fps = int(data.get("transition_fps") or DEFAULT_TRANSITION_FPS)
+    if transition_fps < 30:
+        raise ValueError("transition_fps must be at least 30")
+    data["transition_fps"] = transition_fps
+    data["output_fps"] = transition_fps
     return data
+
+
+def bridge_frame_count(duration_sec: float, fps: int) -> int:
+    return max(1, round(duration_sec * fps))
 
 
 def merge_target_size(video_paths: list[Path]) -> tuple[int, int]:
@@ -421,52 +432,22 @@ def extract_video_frame(
     raise RuntimeError(f"Unhandled frame position: {position}")
 
 
-def build_flip_fg_exit_filter(
-    width: int,
-    height: int,
-    exit_sec: float,
-    flip_count: int,
-    flip_min_scale: float,
-) -> str:
-    cycles = f"2*PI*{flip_count}*t/{exit_sec:.6f}"
-    flip = f"max({flip_min_scale:.4f},abs(cos({cycles})))"
-    return (
-        f"format=rgb24,{scale_fill_vf(width, height)},"
-        f"scale=w='iw*{flip}':h='ih*{flip}':eval=frame"
-    )
+def build_fade_frame_filter(width: int, height: int) -> str:
+    return f"format=rgb24,{scale_fill_vf(width, height)}"
 
 
-def build_flip_fg_enter_filter(
-    width: int,
-    height: int,
-    enter_sec: float,
-    flip_count: int,
-    enter_start_scale: float,
-    flip_min_scale: float,
-) -> str:
-    cycles = f"2*PI*{flip_count}*t/{enter_sec:.6f}"
-    flip = f"max({flip_min_scale:.4f},abs(cos({cycles})))"
-    zoom = f"({enter_start_scale:.4f}+(1-{enter_start_scale:.4f})*(t/{enter_sec:.6f}))"
-    return (
-        f"format=rgb24,{scale_fill_vf(width, height)},"
-        f"scale=w='iw*{zoom}*{flip}':h='ih*{zoom}*{flip}':eval=frame"
-    )
-
-
-def generate_flip_bridge_clip(
+def generate_fade_bridge_clip(
     output_path: Path,
     prev_video: Path,
     next_video: Path,
     *,
     width: int,
     height: int,
-    exit_sec: float,
-    enter_sec: float,
-    flip_count: int,
-    enter_start_scale: float,
-    flip_min_scale: float,
+    fade_out_sec: float,
+    fade_in_sec: float,
+    fps: int,
 ) -> None:
-    """Bridge: last frame flips out, first frame flips in from far."""
+    """Bridge: last frame fades out fully, then first frame fades in."""
     last_frame = extract_video_frame(
         prev_video,
         "last",
@@ -480,25 +461,9 @@ def generate_flip_bridge_clip(
         height=height,
     )
     temp_frames = [last_frame, first_frame]
-    total_duration = exit_sec + enter_sec
-    fg_exit = build_flip_fg_exit_filter(
-        width,
-        height,
-        exit_sec,
-        flip_count,
-        flip_min_scale,
-    )
-    fg_enter = build_flip_fg_enter_filter(
-        width,
-        height,
-        enter_sec,
-        flip_count,
-        enter_start_scale,
-        flip_min_scale,
-    )
-    fade_start = exit_sec * 0.75
-    fade_dur = exit_sec * 0.25
-    canvas = f"color=c=black:s={width}x{height}:r={OUTPUT_FPS}"
+    total_duration = fade_out_sec + fade_in_sec
+    frame_vf = build_fade_frame_filter(width, height)
+    canvas = f"color=c=black:s={width}x{height}:r={fps}"
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if output_path.exists():
@@ -512,47 +477,48 @@ def generate_flip_bridge_clip(
                 "-loop",
                 "1",
                 "-framerate",
-                str(OUTPUT_FPS),
+                str(fps),
                 "-t",
-                f"{exit_sec:.3f}",
+                f"{fade_out_sec:.3f}",
                 "-i",
                 str(last_frame),
                 "-loop",
                 "1",
                 "-framerate",
-                str(OUTPUT_FPS),
+                str(fps),
                 "-t",
-                f"{enter_sec:.3f}",
+                f"{fade_in_sec:.3f}",
                 "-i",
                 str(first_frame),
                 "-f",
                 "lavfi",
                 "-i",
-                f"{canvas}:d={exit_sec:.3f}",
+                f"{canvas}:d={fade_out_sec:.3f}",
                 "-f",
                 "lavfi",
                 "-i",
-                f"{canvas}:d={enter_sec:.3f}",
+                f"{canvas}:d={fade_in_sec:.3f}",
                 "-f",
                 "lavfi",
                 "-i",
                 f"anullsrc=r={OUTPUT_AUDIO_RATE}:cl=stereo",
                 "-filter_complex",
                 (
-                    f"[0:v]{fg_exit}[fg0];"
+                    f"[0:v]{frame_vf}[fg0];"
                     f"[2:v][fg0]overlay=x=(W-w)/2:y=(H-h)/2:shortest=1,"
-                    f"fade=t=out:st={fade_start:.6f}:d={fade_dur:.6f},"
-                    f"fps={OUTPUT_FPS},format=yuv420p[v0];"
-                    f"[1:v]{fg_enter}[fg1];"
+                    f"fade=t=out:st=0:d={fade_out_sec:.6f},"
+                    f"fps={fps},format=yuv420p[v0];"
+                    f"[1:v]{frame_vf}[fg1];"
                     f"[3:v][fg1]overlay=x=(W-w)/2:y=(H-h)/2:shortest=1,"
-                    f"fps={OUTPUT_FPS},format=yuv420p[v1];"
-                    f"[v0][v1]concat=n=2:v=1:a=0,format=yuv420p[v]"
+                    f"fade=t=in:st=0:d={fade_in_sec:.6f},"
+                    f"fps={fps},format=yuv420p[v1];"
+                    f"[v0][v1]concat=n=2:v=1:a=0,fps={fps},format=yuv420p[v]"
                 ),
                 "-map",
                 "[v]",
                 "-map",
                 "4:a",
-                *FFMPEG_ENCODE_ARGS,
+                *ffmpeg_encode_args(fps),
                 "-t",
                 f"{total_duration:.3f}",
                 "-shortest",
@@ -572,6 +538,7 @@ def normalize_clip_for_merge(
     height: int,
     trim_start: float = 0.0,
     trim_end: float = 0.0,
+    fps: int = OUTPUT_FPS,
 ) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if output_path.exists():
@@ -585,7 +552,7 @@ def normalize_clip_for_merge(
             f"({trim_start:.3f}s start, {trim_end:.3f}s end)."
         )
 
-    vf = f"{scale_fill_vf(width, height)},fps={OUTPUT_FPS},format=yuv420p"
+    vf = f"{scale_fill_vf(width, height)},fps={fps},format=yuv420p"
     cmd = [
         "ffmpeg",
         "-y",
@@ -600,14 +567,19 @@ def normalize_clip_for_merge(
             f"{playable:.6f}",
             "-vf",
             vf,
-            *FFMPEG_ENCODE_ARGS,
+            *ffmpeg_encode_args(fps),
             str(output_path),
         ]
     )
     _run_ffmpeg(cmd)
 
 
-def concat_video_pieces(pieces: list[Path], output_path: Path) -> None:
+def concat_video_pieces(
+    pieces: list[Path],
+    output_path: Path,
+    *,
+    fps: int = OUTPUT_FPS,
+) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if output_path.exists():
         output_path.unlink()
@@ -634,7 +606,7 @@ def concat_video_pieces(pieces: list[Path], output_path: Path) -> None:
                 "0",
                 "-i",
                 list_path,
-                *FFMPEG_ENCODE_ARGS,
+                *ffmpeg_encode_args(fps),
                 str(output_path),
             ]
         )
@@ -711,11 +683,12 @@ def merge_videos_with_ffmpeg(
         return []
 
     gap_duration = float(transition_config["gap_duration_sec"])
-    exit_sec = float(transition_config["exit_sec"])
-    enter_sec = float(transition_config["enter_sec"])
-    flip_count = int(transition_config["flip_count"])
-    enter_start_scale = float(transition_config["enter_start_scale"])
-    flip_min_scale = float(transition_config["flip_min_scale"])
+    fade_out_sec = float(transition_config["fade_out_sec"])
+    fade_in_sec = float(transition_config["fade_in_sec"])
+    transition_fps = int(transition_config["transition_fps"])
+    frame_trim_sec = 1.0 / transition_fps
+    fade_out_frames = bridge_frame_count(fade_out_sec, transition_fps)
+    fade_in_frames = bridge_frame_count(fade_in_sec, transition_fps)
     width, height = merge_target_size(video_paths)
 
     temp_cleanup: list[Path] = []
@@ -723,12 +696,12 @@ def merge_videos_with_ffmpeg(
     transition_log: list[dict] = []
 
     log.progress(
-        f"Normalizing {len(video_paths)} clip(s) to {width}x{height} @ {OUTPUT_FPS}fps "
-        f"(trim {FRAME_TRIM_SEC:.3f}s at each join to avoid duplicate frames)"
+        f"Normalizing {len(video_paths)} clip(s) to {width}x{height} @ {transition_fps}fps "
+        f"(trim {frame_trim_sec:.4f}s at each join to avoid duplicate frames)"
     )
     for index, clip_path in enumerate(video_paths):
-        trim_start = FRAME_TRIM_SEC if index > 0 else 0.0
-        trim_end = FRAME_TRIM_SEC if index < len(video_paths) - 1 else 0.0
+        trim_start = frame_trim_sec if index > 0 else 0.0
+        trim_end = frame_trim_sec if index < len(video_paths) - 1 else 0.0
         norm_file = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
         norm_file.close()
         norm_path = Path(norm_file.name)
@@ -739,6 +712,7 @@ def merge_videos_with_ffmpeg(
             height=height,
             trim_start=trim_start,
             trim_end=trim_end,
+            fps=transition_fps,
         )
         normalized_clips.append(norm_path)
         temp_cleanup.append(norm_path)
@@ -756,43 +730,43 @@ def merge_videos_with_ffmpeg(
         temp_cleanup.append(bridge_path)
 
         log.progress(
-            f"Flip bridge {index + 1}/{len(normalized_clips) - 1} after clip {index + 1}: "
-            f"last frame x{flip_count} flip + shrink {exit_sec:.2f}s, "
-            f"first frame zoom-in x{flip_count} flip {enter_sec:.2f}s"
+            f"Fade bridge {index + 1}/{len(normalized_clips) - 1} after clip {index + 1}: "
+            f"fade-out {fade_out_sec:.2f}s ({fade_out_frames} frames), "
+            f"fade-in {fade_in_sec:.2f}s ({fade_in_frames} frames) @ {transition_fps}fps"
         )
 
-        generate_flip_bridge_clip(
+        generate_fade_bridge_clip(
             bridge_path,
             video_paths[index],
             video_paths[index + 1],
             width=width,
             height=height,
-            exit_sec=exit_sec,
-            enter_sec=enter_sec,
-            flip_count=flip_count,
-            enter_start_scale=enter_start_scale,
-            flip_min_scale=flip_min_scale,
+            fade_out_sec=fade_out_sec,
+            fade_in_sec=fade_in_sec,
+            fps=transition_fps,
         )
         pieces.append(bridge_path)
         transition_log.append(
             {
                 "after_clip_order": index + 1,
                 "before_clip_order": index + 2,
-                "effect_type": "frame_flip_bridge",
-                "effect_name_en": "Frame Flip Bridge",
-                "effect_name_hi": "फ्रेम फ्लिप ब्रिज",
-                "exit_sec": exit_sec,
-                "enter_sec": enter_sec,
-                "flip_count": flip_count,
-                "enter_start_scale": enter_start_scale,
-                "flip_min_scale": flip_min_scale,
-                "frame_trim_sec": FRAME_TRIM_SEC,
+                "effect_type": "frame_fade_bridge",
+                "effect_name_en": "Frame Fade Bridge",
+                "effect_name_hi": "फ्रेम फेड ब्रिज",
+                "fade_out_sec": fade_out_sec,
+                "fade_in_sec": fade_in_sec,
+                "exit_sec": fade_out_sec,
+                "enter_sec": fade_in_sec,
+                "fade_out_frames": fade_out_frames,
+                "fade_in_frames": fade_in_frames,
+                "transition_fps": transition_fps,
+                "frame_trim_sec": frame_trim_sec,
                 "bridge_duration_sec": gap_duration,
-                "mode": transition_config.get("mode", "frame_flip_bridge"),
+                "mode": transition_config.get("mode", "frame_fade_bridge"),
             }
         )
 
-    concat_video_pieces(pieces, output_path)
+    concat_video_pieces(pieces, output_path, fps=transition_fps)
 
     for temp_path in temp_cleanup:
         temp_path.unlink(missing_ok=True)
@@ -852,13 +826,18 @@ def build_merge_json(
         "total_duration_sec": round(merged_total, 3),
         "output_video": str(output_video),
         "transition_config": str(TRANSITION_CONFIG_PATH),
-        "merge_mode": transition_config.get("mode", "frame_flip_bridge"),
+        "merge_mode": transition_config.get("mode", "frame_fade_bridge"),
+        "fade_out_sec": transition_config.get("fade_out_sec"),
+        "fade_in_sec": transition_config.get("fade_in_sec"),
         "exit_sec": transition_config.get("exit_sec"),
         "enter_sec": transition_config.get("enter_sec"),
-        "flip_count": transition_config.get("flip_count"),
-        "enter_start_scale": transition_config.get("enter_start_scale"),
-        "flip_min_scale": transition_config.get("flip_min_scale"),
-        "frame_trim_sec": FRAME_TRIM_SEC,
+        "transition_fps": transition_config.get("transition_fps"),
+        "output_fps": transition_config.get("output_fps"),
+        "frame_trim_sec": (
+            1.0 / transition_config["transition_fps"]
+            if transition_config.get("transition_fps")
+            else FRAME_TRIM_SEC
+        ),
         "bridge_transitions": transition_log,
         "gap_effects": transition_log,
         "clips": clip_rows,
@@ -917,9 +896,9 @@ def run_merge(
     transition_config = load_transition_config(transition_config_path)
     log.ok(
         f"Loaded transition config: {transition_config_path.name} "
-        f"(flip bridge: {transition_config['flip_count']} flips, "
-        f"{transition_config['exit_sec']:.2f}s exit + "
-        f"{transition_config['enter_sec']:.2f}s enter, no overlap)"
+        f"(fade bridge: {transition_config['fade_out_sec']:.2f}s fade-out + "
+        f"{transition_config['fade_in_sec']:.2f}s fade-in @ "
+        f"{transition_config['transition_fps']}fps, no overlap)"
     )
 
     records = iter_clip_records(force=force)
@@ -936,7 +915,7 @@ def run_merge(
     merge_id = merge_id_for(category_slug)
     output_video, output_json = output_paths(merge_id)
 
-    log.section(f"Merging {len(selected)} clip(s) with flip-bridge transitions")
+    log.section(f"Merging {len(selected)} clip(s) with fade-bridge transitions")
     for i, record in enumerate(selected, 1):
         log.bullet(f"[{i}] {record['clip_key']}")
         preview = (record.get("text") or "")[:80]
@@ -976,12 +955,19 @@ def run_merge(
     log.ok(f"Merged video saved: {output_video.name}")
     log.ok(f"Dialogue JSON saved: {output_json.name}")
     if transition_log:
+        fps = int(transition_config["transition_fps"])
+        fade_out_frames = bridge_frame_count(
+            float(transition_config["fade_out_sec"]),
+            fps,
+        )
+        fade_in_frames = bridge_frame_count(
+            float(transition_config["fade_in_sec"]),
+            fps,
+        )
         log.info(
-            "Flip bridges",
-            f"{len(transition_log)} x frame flip bridge "
-            f"({transition_config['exit_sec']:.2f}s + "
-            f"{transition_config['enter_sec']:.2f}s, "
-            f"{transition_config['flip_count']} flips each)",
+            "Fade bridges",
+            f"{len(transition_log)} x frame fade bridge @ {fps}fps "
+            f"({fade_out_frames} fade-out + {fade_in_frames} fade-in frames)",
         )
         log.info(
             "Duration",

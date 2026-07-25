@@ -1,9 +1,9 @@
 {
-  "mode": "frame_flip_bridge",
-  "gap_duration_sec": 1.2,
-  "exit_sec": 0.6,
-  "enter_sec": 0.6,
-  "flip_count": 3,
-  "enter_start_scale": 0.55,
-  "flip_min_scale": 0.55
+  "mode": "frame_fade_bridge",
+  "gap_duration_sec": 1.0,
+  "fade_out_sec": 0.5,
+  "fade_in_sec": 0.5,
+  "exit_sec": 0.5,
+  "enter_sec": 0.5,
+  "transition_fps": 60
 }
