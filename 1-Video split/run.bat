@@ -42,7 +42,8 @@ echo       Tracker: output_videos\.categorize_processed.json
 echo.
 echo   [5] Merge clips by category (interactive menu)
 echo       Input  : output_videos\ clips + Transcriptions\ JSON
-echo       Output : merged_videos\ (merged mp4 + dialogue json)
+echo       Output : output_merged_videos\ (merged mp4 + dialogue json)
+echo       Effects: merge_transition_config.json (random gap blink, no overlap)
 echo       Tracker: output_videos\.merge_used_clips.json
 echo.
 echo   [0] Exit

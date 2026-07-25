@@ -1,0 +1,150 @@
+{
+  "merge_id": "clothes_hacks_20260726_002847",
+  "category_slug": "clothes_hacks",
+  "category_name_en": "Clothes & Fabric Hacks",
+  "category_name_hi": "कपड़े से जुड़े हैक",
+  "merged_at": "2026-07-25T18:59:14.676268+00:00",
+  "clip_count": 5,
+  "raw_clip_duration_sec": 25.64,
+  "transition_overlap_sec": 4.0,
+  "total_duration_sec": 21.64,
+  "output_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\merged_videos\\clothes_hacks_20260726_002847.mp4",
+  "transition_config": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\merge_transition_config.json",
+  "transition_duration_sec": 1.0,
+  "transitions": [
+    {
+      "between_clip_orders": [
+        1,
+        2
+      ],
+      "effect_id": "radial",
+      "effect_name_en": "Radial Wipe",
+      "effect_name_hi": "रेडियल वाइप",
+      "ffmpeg_transition": "radial",
+      "duration_sec": 1.0
+    },
+    {
+      "between_clip_orders": [
+        2,
+        3
+      ],
+      "effect_id": "circleopen",
+      "effect_name_en": "Circle Open",
+      "effect_name_hi": "सर्कल ओपन",
+      "ffmpeg_transition": "circleopen",
+      "duration_sec": 1.0
+    },
+    {
+      "between_clip_orders": [
+        3,
+        4
+      ],
+      "effect_id": "wiperight",
+      "effect_name_en": "Wipe Right",
+      "effect_name_hi": "दाएं वाइप",
+      "ffmpeg_transition": "wiperight",
+      "duration_sec": 1.0
+    },
+    {
+      "between_clip_orders": [
+        4,
+        5
+      ],
+      "effect_id": "dissolve",
+      "effect_name_en": "Dissolve",
+      "effect_name_hi": "डिज़ॉल्व",
+      "ffmpeg_transition": "dissolve",
+      "duration_sec": 1.0
+    }
+  ],
+  "clips": [
+    {
+      "order": 1,
+      "clip_key": "😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]/part-01-e30b4335-7cfa-4ded-893f-a0006ad3626f.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-01-e30b4335-7cfa-4ded-893f-a0006ad3626f.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-01-e30b4335-7cfa-4ded-893f-a0006ad3626f.transcription.json",
+      "text": "डो से ऐसा मक्का बनाओ, महमान पूछेंगे ये खाने का है या सजाने का?",
+      "duration_sec": 4.22,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation",
+        "drinks_cooling"
+      ]
+    },
+    {
+      "order": 2,
+      "clip_key": "😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]/part-01-dfadbe3f-b13e-42e6-8a02-305b68135542.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-01-dfadbe3f-b13e-42e6-8a02-305b68135542.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-01-dfadbe3f-b13e-42e6-8a02-305b68135542.transcription.json",
+      "text": "ग्लव्स में सीमेंट भरें और सुखा कर अपना खुद का मजबूत और स्टाइलिश हैंड शेप मोबाईल होल्डर तैयार करें।",
+      "duration_sec": 5.9,
+      "categories": [
+        "clothes_hacks",
+        "household_hacks",
+        "drill_tool_hacks",
+        "plant_propagation"
+      ]
+    },
+    {
+      "order": 3,
+      "clip_key": "😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]/part-02-2e6eba72-8358-4303-bea6-a724561555c6.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-02-2e6eba72-8358-4303-bea6-a724561555c6.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-02-2e6eba72-8358-4303-bea6-a724561555c6.transcription.json",
+      "text": "मूंग को गीले कपड़े में लपेट कर रखे, एक हफ़ते में ही ताजा और हेल्दी स्प्राउट्स तैयार हो जाएंगे.",
+      "duration_sec": 5.04,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation",
+        "drinks_cooling"
+      ]
+    },
+    {
+      "order": 4,
+      "clip_key": "😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]/part-04-f80c0428-0018-48f7-86af-564338b6c2f8.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-04-f80c0428-0018-48f7-86af-564338b6c2f8.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-04-f80c0428-0018-48f7-86af-564338b6c2f8.transcription.json",
+      "text": "तरबूस के बीच को मिट्टी में दबा कर पानी दें, देखते ही देखते हैं आपका तरबूस का पौधा बड़ा होने लगेगा,",
+      "duration_sec": 6.12,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation"
+      ]
+    },
+    {
+      "order": 5,
+      "clip_key": "😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]/part-03-376faa21-630f-4851-8a4c-dce74851d28f.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-03-376faa21-630f-4851-8a4c-dce74851d28f.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-03-376faa21-630f-4851-8a4c-dce74851d28f.transcription.json",
+      "text": "कंगी से ये शेल डिजाइन बनाओ। महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।",
+      "duration_sec": 4.36,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation",
+        "drill_tool_hacks"
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "order": 1,
+      "text": "डो से ऐसा मक्का बनाओ, महमान पूछेंगे ये खाने का है या सजाने का?"
+    },
+    {
+      "order": 2,
+      "text": "ग्लव्स में सीमेंट भरें और सुखा कर अपना खुद का मजबूत और स्टाइलिश हैंड शेप मोबाईल होल्डर तैयार करें।"
+    },
+    {
+      "order": 3,
+      "text": "मूंग को गीले कपड़े में लपेट कर रखे, एक हफ़ते में ही ताजा और हेल्दी स्प्राउट्स तैयार हो जाएंगे."
+    },
+    {
+      "order": 4,
+      "text": "तरबूस के बीच को मिट्टी में दबा कर पानी दें, देखते ही देखते हैं आपका तरबूस का पौधा बड़ा होने लगेगा,"
+    },
+    {
+      "order": 5,
+      "text": "कंगी से ये शेल डिजाइन बनाओ। महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।"
+    }
+  ],
+  "full_dialogue_hindi": "डो से ऐसा मक्का बनाओ, महमान पूछेंगे ये खाने का है या सजाने का?\n\nग्लव्स में सीमेंट भरें और सुखा कर अपना खुद का मजबूत और स्टाइलिश हैंड शेप मोबाईल होल्डर तैयार करें।\n\nमूंग को गीले कपड़े में लपेट कर रखे, एक हफ़ते में ही ताजा और हेल्दी स्प्राउट्स तैयार हो जाएंगे.\n\nतरबूस के बीच को मिट्टी में दबा कर पानी दें, देखते ही देखते हैं आपका तरबूस का पौधा बड़ा होने लगेगा,\n\nकंगी से ये शेल डिजाइन बनाओ। महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।"
+}

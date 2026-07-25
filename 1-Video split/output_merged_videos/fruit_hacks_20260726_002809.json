@@ -1,0 +1,91 @@
+{
+  "merge_id": "fruit_hacks_20260726_002809",
+  "category_slug": "fruit_hacks",
+  "category_name_en": "Fruit Hacks",
+  "category_name_hi": "फल से जुड़े हैक",
+  "merged_at": "2026-07-25T18:58:15.421507+00:00",
+  "clip_count": 3,
+  "raw_clip_duration_sec": 16.08,
+  "transition_overlap_sec": 2.0,
+  "total_duration_sec": 14.08,
+  "output_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\merged_videos\\fruit_hacks_20260726_002809.mp4",
+  "transition_config": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\merge_transition_config.json",
+  "transition_duration_sec": 1.0,
+  "transitions": [
+    {
+      "between_clip_orders": [
+        1,
+        2
+      ],
+      "effect_id": "wiperight",
+      "effect_name_en": "Wipe Right",
+      "effect_name_hi": "दाएं वाइप",
+      "ffmpeg_transition": "wiperight",
+      "duration_sec": 1.0
+    },
+    {
+      "between_clip_orders": [
+        2,
+        3
+      ],
+      "effect_id": "wiperight",
+      "effect_name_en": "Wipe Right",
+      "effect_name_hi": "दाएं वाइप",
+      "ffmpeg_transition": "wiperight",
+      "duration_sec": 1.0
+    }
+  ],
+  "clips": [
+    {
+      "order": 1,
+      "clip_key": "😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]/part-05-22101521-3ea2-44e6-b87f-7ba584e4e5f2.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-05-22101521-3ea2-44e6-b87f-7ba584e4e5f2.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-05-22101521-3ea2-44e6-b87f-7ba584e4e5f2.transcription.json",
+      "text": "सेब के बीज को गमले में लगा कर पानी दें। कुछ ही हफ्तों में आपका छोटा सा एपल पौधा उगना शुरू हो जाएगा।",
+      "duration_sec": 6.46,
+      "categories": [
+        "fruit_hacks",
+        "household_hacks"
+      ]
+    },
+    {
+      "order": 2,
+      "clip_key": "😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]/part-04-eb15c50e-1ed4-48a2-be72-f56d18a551d5.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-04-eb15c50e-1ed4-48a2-be72-f56d18a551d5.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-04-eb15c50e-1ed4-48a2-be72-f56d18a551d5.transcription.json",
+      "text": "आम खाने का निंजा तरीका, छिलके पर कट्स लगाएं और परफेक्ट स्लाइस तुरंत बाहर आ जाएंगे।",
+      "duration_sec": 5.0,
+      "categories": [
+        "fruit_hacks",
+        "clothes_hacks"
+      ]
+    },
+    {
+      "order": 3,
+      "clip_key": "😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]/part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.transcription.json",
+      "text": "संत्रा छीलने का सबसे तेज तरीका अंगूठों से बीच में दबाएं और संत्रा तुरंत खुल जाएं",
+      "duration_sec": 4.62,
+      "categories": [
+        "fruit_hacks",
+        "clothes_hacks"
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "order": 1,
+      "text": "सेब के बीज को गमले में लगा कर पानी दें। कुछ ही हफ्तों में आपका छोटा सा एपल पौधा उगना शुरू हो जाएगा।"
+    },
+    {
+      "order": 2,
+      "text": "आम खाने का निंजा तरीका, छिलके पर कट्स लगाएं और परफेक्ट स्लाइस तुरंत बाहर आ जाएंगे।"
+    },
+    {
+      "order": 3,
+      "text": "संत्रा छीलने का सबसे तेज तरीका अंगूठों से बीच में दबाएं और संत्रा तुरंत खुल जाएं"
+    }
+  ],
+  "full_dialogue_hindi": "सेब के बीज को गमले में लगा कर पानी दें। कुछ ही हफ्तों में आपका छोटा सा एपल पौधा उगना शुरू हो जाएगा।\n\nआम खाने का निंजा तरीका, छिलके पर कट्स लगाएं और परफेक्ट स्लाइस तुरंत बाहर आ जाएंगे।\n\nसंत्रा छीलने का सबसे तेज तरीका अंगूठों से बीच में दबाएं और संत्रा तुरंत खुल जाएं"
+}

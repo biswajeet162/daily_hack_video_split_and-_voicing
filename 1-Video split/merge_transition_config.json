@@ -1,0 +1,67 @@
+{
+  "mode": "gap_between_clips",
+  "gap_duration_sec": 1.0,
+  "pick_random_effect": true,
+  "effects": [
+    {
+      "id": "white_blink",
+      "name_en": "White Blink",
+      "name_hi": "सफेद ब्लिंक",
+      "effect_type": "white_blink"
+    },
+    {
+      "id": "black_blink",
+      "name_en": "Black Blink",
+      "name_hi": "काला ब्लिंक",
+      "effect_type": "black_blink"
+    },
+    {
+      "id": "strobe_blink",
+      "name_en": "Strobe Blink",
+      "name_hi": "स्ट्रोब ब्लिंक",
+      "effect_type": "strobe_blink"
+    },
+    {
+      "id": "soft_white_flash",
+      "name_en": "Soft White Flash",
+      "name_hi": "हल्की सफेद फ्लैश",
+      "effect_type": "soft_white_flash"
+    },
+    {
+      "id": "soft_black_flash",
+      "name_en": "Soft Black Flash",
+      "name_hi": "हल्की काली फ्लैश",
+      "effect_type": "soft_black_flash"
+    },
+    {
+      "id": "gray_pulse",
+      "name_en": "Gray Pulse",
+      "name_hi": "ग्रे पल्स",
+      "effect_type": "gray_pulse"
+    },
+    {
+      "id": "static_burst",
+      "name_en": "Static Burst",
+      "name_hi": "स्टैटिक बर्स्ट",
+      "effect_type": "static_burst"
+    },
+    {
+      "id": "double_white_blink",
+      "name_en": "Double White Blink",
+      "name_hi": "डबल सफेद ब्लिंक",
+      "effect_type": "double_white_blink"
+    },
+    {
+      "id": "fade_through_black",
+      "name_en": "Fade Through Black",
+      "name_hi": "काले से फेड",
+      "effect_type": "fade_through_black"
+    },
+    {
+      "id": "fade_through_white",
+      "name_en": "Fade Through White",
+      "name_hi": "सफेद से फेड",
+      "effect_type": "fade_through_white"
+    }
+  ]
+}

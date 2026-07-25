@@ -31,12 +31,12 @@ __pycache__/
 # .transcribe_processed.json, .split_processed.json, split_trim_config.json
 # ---------------------------------------------------------------------------
 1-Video split/output_videos/**/*.mp4
-1-Video split/merged_videos/**/*.mp4
+1-Video split/output_merged_videos/**/*.mp4
 
 # Keep empty media folders in the repo
 !1-Video split/input_videos/.gitkeep
 !1-Video split/output_videos/.gitkeep
-!1-Video split/merged_videos/.gitkeep
+!1-Video split/output_merged_videos/.gitkeep
 
 # ---------------------------------------------------------------------------
 # 2-HOLO_GRAM_VOICE_OVER — generated media (JSON/txt ignored there only)
