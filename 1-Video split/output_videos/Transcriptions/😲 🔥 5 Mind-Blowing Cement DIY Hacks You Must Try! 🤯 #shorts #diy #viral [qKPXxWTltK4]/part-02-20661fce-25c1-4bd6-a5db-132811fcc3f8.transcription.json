@@ -22,5 +22,26 @@
       "duration_sec": 3.48,
       "text": "सुखाने के बाद आपका प्यारा सा सीमेंट, बाउल या एश्ट्रे रेडी."
     }
-  ]
+  ],
+  "categories": [
+    "clothes_hacks",
+    "cement_concrete_diy"
+  ],
+  "category_names_en": [
+    "Clothes & Fabric Hacks",
+    "Cement & Concrete DIY"
+  ],
+  "category_names_hi": [
+    "कपड़े से जुड़े हैक",
+    "सीमेंट और कंक्रीट DIY"
+  ],
+  "categorized_at": "2026-07-25T18:41:09.479696+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

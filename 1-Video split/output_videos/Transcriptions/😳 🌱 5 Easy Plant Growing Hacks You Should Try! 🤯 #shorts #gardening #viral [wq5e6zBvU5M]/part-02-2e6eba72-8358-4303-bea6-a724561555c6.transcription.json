@@ -16,5 +16,29 @@
       "duration_sec": 5.04,
       "text": "मूंग को गीले कपड़े में लपेट कर रखे, एक हफ़ते में ही ताजा और हेल्दी स्प्राउट्स तैयार हो जाएंगे."
     }
-  ]
+  ],
+  "categories": [
+    "clothes_hacks",
+    "plant_propagation",
+    "drinks_cooling"
+  ],
+  "category_names_en": [
+    "Clothes & Fabric Hacks",
+    "Plant Propagation",
+    "Drinks & Cooling Tips"
+  ],
+  "category_names_hi": [
+    "कपड़े से जुड़े हैक",
+    "पौधे उगाना और propagation",
+    "पेय और ठंडक के टिप्स"
+  ],
+  "categorized_at": "2026-07-25T18:41:30.358219+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

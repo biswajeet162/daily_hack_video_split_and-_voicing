@@ -16,5 +16,35 @@
       "duration_sec": 4.34,
       "text": "अंडे की खाली ट्रे में पानी भरो, जमा दो, बड़े गोल आईस क्यूब्स तैयार."
     }
-  ]
+  ],
+  "categories": [
+    "drinks_cooling",
+    "fridge_storage",
+    "leftover_reuse",
+    "cleaning_kitchen",
+    "utensils_tools"
+  ],
+  "category_names_en": [
+    "Drinks & Cooling Tips",
+    "Fridge & Food Storage",
+    "Leftover Reuse",
+    "Kitchen Cleaning",
+    "Utensils & Tool Hacks"
+  ],
+  "category_names_hi": [
+    "पेय और ठंडक के टिप्स",
+    "फ्रिज और भोजन स्टोरेज",
+    "बचे खाने का उपयोग",
+    "रसोई की सफाई",
+    "बर्तन और टूल हैक"
+  ],
+  "categorized_at": "2026-07-25T18:42:08.261339+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

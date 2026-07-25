@@ -35,6 +35,11 @@ echo       Input  : output_videos\ (all .mp4 clips)
 echo       Output : output_videos\Transcriptions\
 echo       Tracker: output_videos\.transcribe_processed.json
 echo.
+echo   [4] Categorize transcriptions with Ollama (llama3.1:8b)
+echo       Input  : output_videos\Transcriptions\*.transcription.json
+echo       Output : same JSON file updated with categories
+echo       Tracker: output_videos\.categorize_processed.json
+echo.
 echo   [0] Exit
 echo.
 echo ============================================================
@@ -43,6 +48,7 @@ set /p choice="Enter task number to run: "
 if "%choice%"=="1" goto run_01
 if "%choice%"=="2" goto run_02
 if "%choice%"=="3" goto run_03
+if "%choice%"=="4" goto run_04
 if "%choice%"=="0" goto end
 echo.
 echo   [XX] Invalid choice. Try again.
@@ -67,6 +73,13 @@ goto menu
 call :print_task_header 3 "Transcribe split clips to Hindi" "output_videos mp4 to transcription json"
 call :run_python 03_transcribe_videos.py
 call :print_task_footer 3
+pause
+goto menu
+
+:run_04
+call :print_task_header 4 "Categorize transcriptions with Ollama" "Hindi text to categories in same JSON"
+call :run_python 04_categorize_transcriptions.py
+call :print_task_footer 4
 pause
 goto menu
 

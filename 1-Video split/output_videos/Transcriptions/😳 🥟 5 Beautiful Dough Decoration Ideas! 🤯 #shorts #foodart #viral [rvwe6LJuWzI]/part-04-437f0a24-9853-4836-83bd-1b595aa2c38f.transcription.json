@@ -16,5 +16,29 @@
       "duration_sec": 4.08,
       "text": "दिल वाला डिजाइन बनाओ, महमान पहली नजर में ही इसके दीवाने हो जाएंगे।"
     }
-  ]
+  ],
+  "categories": [
+    "clothes_hacks",
+    "drill_tool_hacks",
+    "plant_propagation"
+  ],
+  "category_names_en": [
+    "Clothes & Fabric Hacks",
+    "Drill & Tool Hacks",
+    "Plant Propagation"
+  ],
+  "category_names_hi": [
+    "कपड़े से जुड़े हैक",
+    "ड्रिल और टूल हैक",
+    "पौधे उगाना और propagation"
+  ],
+  "categorized_at": "2026-07-25T18:42:38.340816+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

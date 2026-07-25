@@ -16,5 +16,26 @@
       "duration_sec": 5.64,
       "text": "चीवी छीलने का अनोखा जुगाड डेंटल फ्लॉस स्टिक का इस्तेमाल करें और छिलका एकदम आसानी से अलग"
     }
-  ]
+  ],
+  "categories": [
+    "household_hacks",
+    "kitchen_hacks"
+  ],
+  "category_names_en": [
+    "Household Hacks",
+    "Kitchen Hacks"
+  ],
+  "category_names_hi": [
+    "घरेलू हैक",
+    "रसोई के हैक"
+  ],
+  "categorized_at": "2026-07-25T18:39:14.507331+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

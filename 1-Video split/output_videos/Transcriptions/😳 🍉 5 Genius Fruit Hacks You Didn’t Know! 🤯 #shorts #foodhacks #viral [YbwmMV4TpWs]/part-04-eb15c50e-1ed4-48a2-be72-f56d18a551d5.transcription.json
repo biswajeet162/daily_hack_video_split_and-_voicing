@@ -16,5 +16,26 @@
       "duration_sec": 5.0,
       "text": "आम खाने का निंजा तरीका, छिलके पर कट्स लगाएं और परफेक्ट स्लाइस तुरंत बाहर आ जाएंगे।"
     }
-  ]
+  ],
+  "categories": [
+    "fruit_hacks",
+    "clothes_hacks"
+  ],
+  "category_names_en": [
+    "Fruit Hacks",
+    "Clothes & Fabric Hacks"
+  ],
+  "category_names_hi": [
+    "फल से जुड़े हैक",
+    "कपड़े से जुड़े हैक"
+  ],
+  "categorized_at": "2026-07-25T18:41:58.779477+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

@@ -22,5 +22,26 @@
       "duration_sec": 3.92,
       "text": "कुछ ही हफ्तों में आपका छोटा सा एपल पौधा उगना शुरू हो जाएगा।"
     }
-  ]
+  ],
+  "categories": [
+    "fruit_hacks",
+    "household_hacks"
+  ],
+  "category_names_en": [
+    "Fruit Hacks",
+    "Household Hacks"
+  ],
+  "category_names_hi": [
+    "फल से जुड़े हैक",
+    "घरेलू हैक"
+  ],
+  "categorized_at": "2026-07-25T18:41:42.639596+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

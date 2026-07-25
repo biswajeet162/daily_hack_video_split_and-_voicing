@@ -16,5 +16,26 @@
       "duration_sec": 6.08,
       "text": "फुलगोबी को सीमेंट के घोल में डुबोएं और उसे पत्थर सा मजबूत बनाकर अपने गार्डन के लिए आर्ट पीस बनाएं।"
     }
-  ]
+  ],
+  "categories": [
+    "cement_concrete_diy",
+    "plant_propagation"
+  ],
+  "category_names_en": [
+    "Cement & Concrete DIY",
+    "Plant Propagation"
+  ],
+  "category_names_hi": [
+    "सीमेंट और कंक्रीट DIY",
+    "पौधे उगाना और propagation"
+  ],
+  "categorized_at": "2026-07-25T18:41:22.227866+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

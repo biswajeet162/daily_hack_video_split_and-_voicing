@@ -16,5 +16,26 @@
       "duration_sec": 4.64,
       "text": "पद्दू से बीज निकालना हुआ आसान, बस एक गिलास ले और जटके में सारे बीज बाहर."
     }
-  ]
+  ],
+  "categories": [
+    "fruit_hacks",
+    "drinks_cooling"
+  ],
+  "category_names_en": [
+    "Fruit Hacks",
+    "Drinks & Cooling Tips"
+  ],
+  "category_names_hi": [
+    "फल से जुड़े हैक",
+    "पेय और ठंडक के टिप्स"
+  ],
+  "categorized_at": "2026-07-25T18:41:46.616187+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

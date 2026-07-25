@@ -16,5 +16,29 @@
       "duration_sec": 4.14,
       "text": "दस्ट पैन पर कंगा लगा दो, जाडू के सारे बाल एक जटके में निकल जाएंगे।"
     }
-  ]
+  ],
+  "categories": [
+    "clothes_hacks",
+    "household_hacks",
+    "drill_tool_hacks"
+  ],
+  "category_names_en": [
+    "Clothes & Fabric Hacks",
+    "Household Hacks",
+    "Drill & Tool Hacks"
+  ],
+  "category_names_hi": [
+    "कपड़े से जुड़े हैक",
+    "घरेलू हैक",
+    "ड्रिल और टूल हैक"
+  ],
+  "categorized_at": "2026-07-25T18:42:21.595488+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

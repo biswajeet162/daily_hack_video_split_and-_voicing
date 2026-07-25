@@ -16,5 +16,26 @@
       "duration_sec": 6.0,
       "text": "रहसुन को स्टिक में लगा कर पानी में रखें। पाँच दिन बाद जड़े निकलाएंगी और आपका नया पौधा तैयार हो जाएगा।"
     }
-  ]
+  ],
+  "categories": [
+    "plant_propagation",
+    "clothes_hacks"
+  ],
+  "category_names_en": [
+    "Plant Propagation",
+    "Clothes & Fabric Hacks"
+  ],
+  "category_names_hi": [
+    "पौधे उगाना और propagation",
+    "कपड़े से जुड़े हैक"
+  ],
+  "categorized_at": "2026-07-25T18:41:26.206720+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

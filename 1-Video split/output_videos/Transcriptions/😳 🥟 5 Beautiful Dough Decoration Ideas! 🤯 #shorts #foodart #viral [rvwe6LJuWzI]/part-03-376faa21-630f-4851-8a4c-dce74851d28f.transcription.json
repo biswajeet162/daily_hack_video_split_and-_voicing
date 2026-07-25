@@ -22,5 +22,29 @@
       "duration_sec": 2.6,
       "text": "महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।"
     }
-  ]
+  ],
+  "categories": [
+    "clothes_hacks",
+    "plant_propagation",
+    "drill_tool_hacks"
+  ],
+  "category_names_en": [
+    "Clothes & Fabric Hacks",
+    "Plant Propagation",
+    "Drill & Tool Hacks"
+  ],
+  "category_names_hi": [
+    "कपड़े से जुड़े हैक",
+    "पौधे उगाना और propagation",
+    "ड्रिल और टूल हैक"
+  ],
+  "categorized_at": "2026-07-25T18:42:34.092558+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }

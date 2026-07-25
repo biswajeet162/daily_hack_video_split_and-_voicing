@@ -16,5 +16,26 @@
       "duration_sec": 4.76,
       "text": "फूल की कली जैसा डिजाइन बनाओ। मेहमान कहेंगे ऐसी मिठाई तो पहली बार देखी है।"
     }
-  ]
+  ],
+  "categories": [
+    "clothes_hacks",
+    "household_hacks"
+  ],
+  "category_names_en": [
+    "Clothes & Fabric Hacks",
+    "Household Hacks"
+  ],
+  "category_names_hi": [
+    "कपड़े से जुड़े हैक",
+    "घरेलू हैक"
+  ],
+  "categorized_at": "2026-07-25T18:42:42.390482+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
 }
