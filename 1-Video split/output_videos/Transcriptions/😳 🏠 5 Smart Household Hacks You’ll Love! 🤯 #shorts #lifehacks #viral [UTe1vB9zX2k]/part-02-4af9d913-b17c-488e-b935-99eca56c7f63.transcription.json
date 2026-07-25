@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-02-4af9d913-b17c-488e-b935-99eca56c7f63.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:28:49.912986+00:00",
+  "start_sec": 0.0,
+  "end_sec": 4.34,
+  "duration_sec": 4.34,
+  "text": "अंडे की खाली ट्रे में पानी भरो, जमा दो, बड़े गोल आईस क्यूब्स तैयार.",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 4.34,
+      "duration_sec": 4.34,
+      "text": "अंडे की खाली ट्रे में पानी भरो, जमा दो, बड़े गोल आईस क्यूब्स तैयार."
+    }
+  ]
+}

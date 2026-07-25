@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-01-e30b4335-7cfa-4ded-893f-a0006ad3626f.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:29:14.754220+00:00",
+  "start_sec": 0.0,
+  "end_sec": 4.22,
+  "duration_sec": 4.22,
+  "text": "डो से ऐसा मक्का बनाओ, महमान पूछेंगे ये खाने का है या सजाने का?",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 4.22,
+      "duration_sec": 4.22,
+      "text": "डो से ऐसा मक्का बनाओ, महमान पूछेंगे ये खाने का है या सजाने का?"
+    }
+  ]
+}

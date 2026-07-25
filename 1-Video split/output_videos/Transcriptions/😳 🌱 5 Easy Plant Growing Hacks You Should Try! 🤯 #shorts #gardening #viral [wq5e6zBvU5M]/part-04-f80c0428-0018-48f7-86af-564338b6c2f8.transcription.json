@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-04-f80c0428-0018-48f7-86af-564338b6c2f8.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:28:44.758846+00:00",
+  "start_sec": 0.0,
+  "end_sec": 6.12,
+  "duration_sec": 6.12,
+  "text": "तरबूस के बीच को मिट्टी में दबा कर पानी दें, देखते ही देखते हैं आपका तरबूस का पौधा बड़ा होने लगेगा,",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 6.12,
+      "duration_sec": 6.12,
+      "text": "तरबूस के बीच को मिट्टी में दबा कर पानी दें, देखते ही देखते हैं आपका तरबूस का पौधा बड़ा होने लगेगा,"
+    }
+  ]
+}

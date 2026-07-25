@@ -1,0 +1,26 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-03-a5749dbe-769c-4565-bedd-e26b50ec48b1.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:29:00.850106+00:00",
+  "start_sec": 0.0,
+  "end_sec": 6.04,
+  "duration_sec": 6.04,
+  "text": "आनी गुडिया को सीमेंट में डूबोएं और उसे एक अनोखा विंटेज लुक दें। घर के डेकोरेशन के लिए बहतरीन शोप।",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 3.8,
+      "duration_sec": 3.8,
+      "text": "आनी गुडिया को सीमेंट में डूबोएं और उसे एक अनोखा विंटेज लुक दें।"
+    },
+    {
+      "start_sec": 3.8,
+      "end_sec": 6.04,
+      "duration_sec": 2.24,
+      "text": "घर के डेकोरेशन के लिए बहतरीन शोप।"
+    }
+  ]
+}

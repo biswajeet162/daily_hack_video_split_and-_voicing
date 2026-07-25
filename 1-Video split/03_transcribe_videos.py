@@ -2,7 +2,7 @@
 [3] Transcribe split videos in output_videos/ to Hindi using faster-whisper.
 
 Scans output_videos/ recursively for *.mp4, transcribes speech in Hindi,
-and writes a JSON file next to each video (<name>.transcription.json).
+and writes a JSON file under output_videos/Transcriptions/ (mirrors clip folders).
 Tracks completed transcriptions in output_videos/.transcribe_processed.json
 so reruns skip videos that were already transcribed.
 
@@ -43,6 +43,7 @@ log.configure_stdio()
 
 ROOT = Path(__file__).resolve().parent
 OUTPUT_DIR = ROOT / "output_videos"
+TRANSCRIPTIONS_DIR = OUTPUT_DIR / "Transcriptions"
 PROCESSED_TRACKER_PATH = OUTPUT_DIR / ".transcribe_processed.json"
 FAILED_TRACKER_PATH = OUTPUT_DIR / ".transcribe_failed.json"
 DEFAULT_MODEL = "large-v3"
@@ -74,7 +75,65 @@ def get_whisper_model(model_name: str, device: str, compute_type: str) -> Whispe
         raise
 
 def transcription_path(video_path: Path) -> Path:
+    rel = video_path.relative_to(OUTPUT_DIR)
+    return TRANSCRIPTIONS_DIR / rel.with_suffix(".transcription.json")
+
+
+def legacy_transcription_path(video_path: Path) -> Path:
     return video_path.with_suffix(".transcription.json")
+
+
+def find_transcription_path(video_path: Path) -> Path | None:
+    new_path = transcription_path(video_path)
+    if new_path.exists():
+        return new_path
+    legacy = legacy_transcription_path(video_path)
+    if legacy.exists():
+        return legacy
+    return None
+
+
+def migrate_legacy_transcriptions(videos: list[Path]) -> int:
+    """Move old sidecar JSON files into output_videos/Transcriptions/."""
+    TRANSCRIPTIONS_DIR.mkdir(parents=True, exist_ok=True)
+    moved = 0
+
+    for video in videos:
+        legacy = legacy_transcription_path(video)
+        if not legacy.exists():
+            continue
+
+        target = transcription_path(video)
+        target.parent.mkdir(parents=True, exist_ok=True)
+
+        if target.exists():
+            legacy.unlink(missing_ok=True)
+            continue
+
+        shutil.move(str(legacy), str(target))
+        moved += 1
+
+    return moved
+
+
+def refresh_tracker_transcription_paths(tracker: dict, videos: list[Path]) -> None:
+    videos_dict = tracker.setdefault("videos", {})
+    changed = False
+
+    for video in videos:
+        key = video_key(video)
+        if key not in videos_dict:
+            continue
+        current = find_transcription_path(video)
+        if current is None:
+            continue
+        if videos_dict[key].get("transcription") != str(current):
+            videos_dict[key]["transcription"] = str(current)
+            changed = True
+
+    if changed:
+        save_processed_tracker(tracker)
+        log.ok(f"Updated transcription paths in {PROCESSED_TRACKER_PATH.name}")
 
 
 def video_key(video_path: Path) -> str:
@@ -130,7 +189,7 @@ def is_video_processed(video_path: Path, tracker: dict) -> bool:
     key = video_key(video_path)
     if key in tracker.get("videos", {}):
         return True
-    return transcription_path(video_path).exists()
+    return find_transcription_path(video_path) is not None
 
 
 def sync_tracker_from_output(tracker: dict, videos: list[Path]) -> dict:
@@ -143,8 +202,8 @@ def sync_tracker_from_output(tracker: dict, videos: list[Path]) -> dict:
         if key in videos_dict:
             continue
 
-        transcript_path = transcription_path(video)
-        if not transcript_path.exists():
+        transcript_path = find_transcription_path(video)
+        if transcript_path is None:
             continue
 
         try:
@@ -209,7 +268,12 @@ def clear_video_failed(video_path: Path, tracker: dict) -> None:
 def list_output_videos() -> list[Path]:
     if not OUTPUT_DIR.exists():
         return []
-    return sorted(OUTPUT_DIR.rglob("*.mp4"), key=lambda p: p.stat().st_mtime)
+    clips: list[Path] = []
+    for path in OUTPUT_DIR.rglob("*.mp4"):
+        if TRANSCRIPTIONS_DIR in path.parents:
+            continue
+        clips.append(path)
+    return sorted(clips, key=lambda p: p.stat().st_mtime)
 
 
 def resolve_video_arg(video_arg: Path) -> Path:
@@ -360,7 +424,13 @@ def transcribe_video(
 
 def save_transcription(video_path: Path, payload: dict) -> Path:
     out_path = transcription_path(video_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    legacy = legacy_transcription_path(video_path)
+    if legacy.exists() and legacy.resolve() != out_path.resolve():
+        legacy.unlink(missing_ok=True)
+
     return out_path
 
 
@@ -435,7 +505,7 @@ def main() -> int:
         [
             ("Project root", ROOT),
             ("Input clips", f"{OUTPUT_DIR}\\**\\*.mp4"),
-            ("Output files", f"{OUTPUT_DIR}\\**\\*.transcription.json"),
+            ("Transcriptions", TRANSCRIPTIONS_DIR),
             ("Processed tracker", PROCESSED_TRACKER_PATH),
             ("Failed tracker", FAILED_TRACKER_PATH),
         ],
@@ -445,6 +515,12 @@ def main() -> int:
     tracker = load_processed_tracker()
     failed_tracker = load_failed_tracker()
     all_output_videos = list_output_videos()
+
+    moved = migrate_legacy_transcriptions(all_output_videos)
+    if moved:
+        log.ok(f"Moved {moved} existing transcription JSON file(s) into Transcriptions/")
+
+    refresh_tracker_transcription_paths(tracker, all_output_videos)
 
     if skip_processed:
         tracker = sync_tracker_from_output(tracker, all_output_videos)
@@ -543,7 +619,7 @@ def main() -> int:
             ("Transcribed", processed_count),
             ("Failed", failed_count),
             ("Total attempted", len(videos)),
-            ("Output folder", OUTPUT_DIR),
+            ("Transcriptions folder", TRANSCRIPTIONS_DIR),
             ("Processed tracker", PROCESSED_TRACKER_PATH),
         ],
         success=failed_count == 0,

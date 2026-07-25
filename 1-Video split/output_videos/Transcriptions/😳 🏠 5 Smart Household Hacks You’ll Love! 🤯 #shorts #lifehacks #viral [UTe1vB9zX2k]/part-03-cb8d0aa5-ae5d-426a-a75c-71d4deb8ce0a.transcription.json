@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-03-cb8d0aa5-ae5d-426a-a75c-71d4deb8ce0a.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:28:51.321011+00:00",
+  "start_sec": 0.0,
+  "end_sec": 2.94,
+  "duration_sec": 2.94,
+  "text": "नल में टूथ पेस्ट का डक्कन लगा दो, पानी शौवर जैसा निकेता है.",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 2.94,
+      "duration_sec": 2.94,
+      "text": "नल में टूथ पेस्ट का डक्कन लगा दो, पानी शौवर जैसा निकेता है."
+    }
+  ]
+}

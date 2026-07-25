@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-02-6250ff79-5404-4477-aa97-5ae2160b97bf.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:29:07.961983+00:00",
+  "start_sec": 0.0,
+  "end_sec": 3.82,
+  "duration_sec": 3.82,
+  "text": "जूसर नहीं है, किचन के चिम्टे से नीमू दबाएं और पल भर में सारा रस बाहर.",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 3.82,
+      "duration_sec": 3.82,
+      "text": "जूसर नहीं है, किचन के चिम्टे से नीमू दबाएं और पल भर में सारा रस बाहर."
+    }
+  ]
+}

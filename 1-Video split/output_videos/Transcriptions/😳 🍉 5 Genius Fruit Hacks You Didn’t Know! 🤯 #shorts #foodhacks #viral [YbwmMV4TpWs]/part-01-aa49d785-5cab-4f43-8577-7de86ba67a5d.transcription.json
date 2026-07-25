@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-01-aa49d785-5cab-4f43-8577-7de86ba67a5d.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:29:06.502069+00:00",
+  "start_sec": 0.0,
+  "end_sec": 4.64,
+  "duration_sec": 4.64,
+  "text": "पद्दू से बीज निकालना हुआ आसान, बस एक गिलास ले और जटके में सारे बीज बाहर.",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 4.64,
+      "duration_sec": 4.64,
+      "text": "पद्दू से बीज निकालना हुआ आसान, बस एक गिलास ले और जटके में सारे बीज बाहर."
+    }
+  ]
+}

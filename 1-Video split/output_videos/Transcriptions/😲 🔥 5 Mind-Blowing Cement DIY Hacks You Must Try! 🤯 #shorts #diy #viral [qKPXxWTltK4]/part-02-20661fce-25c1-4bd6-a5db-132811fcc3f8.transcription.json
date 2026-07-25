@@ -1,0 +1,26 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-02-20661fce-25c1-4bd6-a5db-132811fcc3f8.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:28:58.681513+00:00",
+  "start_sec": 0.0,
+  "end_sec": 6.04,
+  "duration_sec": 6.04,
+  "text": "मग में सीमेंट डालें और छोटे पत्थर से शेप दें. सुखाने के बाद आपका प्यारा सा सीमेंट, बाउल या एश्ट्रे रेडी.",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 2.44,
+      "duration_sec": 2.44,
+      "text": "मग में सीमेंट डालें और छोटे पत्थर से शेप दें."
+    },
+    {
+      "start_sec": 2.56,
+      "end_sec": 6.04,
+      "duration_sec": 3.48,
+      "text": "सुखाने के बाद आपका प्यारा सा सीमेंट, बाउल या एश्ट्रे रेडी."
+    }
+  ]
+}

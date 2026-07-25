@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-05-001cfa39-dc53-4750-bd55-5d165fe389de.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:29:20.979670+00:00",
+  "start_sec": 0.0,
+  "end_sec": 4.76,
+  "duration_sec": 4.76,
+  "text": "फूल की कली जैसा डिजाइन बनाओ। मेहमान कहेंगे ऐसी मिठाई तो पहली बार देखी है।",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 4.76,
+      "duration_sec": 4.76,
+      "text": "फूल की कली जैसा डिजाइन बनाओ। मेहमान कहेंगे ऐसी मिठाई तो पहली बार देखी है।"
+    }
+  ]
+}

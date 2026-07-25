@@ -1,0 +1,26 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-03-376faa21-630f-4851-8a4c-dce74851d28f.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:29:17.921776+00:00",
+  "start_sec": 0.0,
+  "end_sec": 4.36,
+  "duration_sec": 4.36,
+  "text": "कंगी से ये शेल डिजाइन बनाओ। महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 1.76,
+      "duration_sec": 1.76,
+      "text": "कंगी से ये शेल डिजाइन बनाओ।"
+    },
+    {
+      "start_sec": 1.76,
+      "end_sec": 4.36,
+      "duration_sec": 2.6,
+      "text": "महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।"
+    }
+  ]
+}

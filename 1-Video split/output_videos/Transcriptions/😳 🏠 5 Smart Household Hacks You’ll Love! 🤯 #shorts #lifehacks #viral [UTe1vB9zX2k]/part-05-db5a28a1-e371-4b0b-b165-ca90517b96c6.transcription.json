@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-05-db5a28a1-e371-4b0b-b165-ca90517b96c6.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:28:54.264193+00:00",
+  "start_sec": 0.0,
+  "end_sec": 4.14,
+  "duration_sec": 4.14,
+  "text": "दस्ट पैन पर कंगा लगा दो, जाडू के सारे बाल एक जटके में निकल जाएंगे।",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 4.14,
+      "duration_sec": 4.14,
+      "text": "दस्ट पैन पर कंगा लगा दो, जाडू के सारे बाल एक जटके में निकल जाएंगे।"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-02-2e6eba72-8358-4303-bea6-a724561555c6.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:28:40.829237+00:00",
+  "start_sec": 0.0,
+  "end_sec": 5.04,
+  "duration_sec": 5.04,
+  "text": "मूंग को गीले कपड़े में लपेट कर रखे, एक हफ़ते में ही ताजा और हेल्दी स्प्राउट्स तैयार हो जाएंगे.",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 5.04,
+      "duration_sec": 5.04,
+      "text": "मूंग को गीले कपड़े में लपेट कर रखे, एक हफ़ते में ही ताजा और हेल्दी स्प्राउट्स तैयार हो जाएंगे."
+    }
+  ]
+}

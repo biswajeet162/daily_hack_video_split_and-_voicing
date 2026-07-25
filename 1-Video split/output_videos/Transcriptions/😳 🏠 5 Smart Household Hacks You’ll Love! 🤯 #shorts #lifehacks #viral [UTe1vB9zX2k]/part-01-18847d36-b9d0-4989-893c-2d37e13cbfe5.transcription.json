@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-01-18847d36-b9d0-4989-893c-2d37e13cbfe5.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:28:48.412484+00:00",
+  "start_sec": 0.0,
+  "end_sec": 4.0,
+  "duration_sec": 4.0,
+  "text": "सैंडल का वेलक्रो डीला हो गया, लाइटर से रोएं साफ करो, फिर नए जैसा चिपकेगा.",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 4.0,
+      "duration_sec": 4.0,
+      "text": "सैंडल का वेलक्रो डीला हो गया, लाइटर से रोएं साफ करो, फिर नए जैसा चिपकेगा."
+    }
+  ]
+}

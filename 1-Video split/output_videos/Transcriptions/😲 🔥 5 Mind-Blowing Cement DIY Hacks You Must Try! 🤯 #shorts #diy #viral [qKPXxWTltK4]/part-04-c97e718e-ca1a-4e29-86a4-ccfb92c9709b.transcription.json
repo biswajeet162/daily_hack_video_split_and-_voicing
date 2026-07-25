@@ -1,0 +1,26 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-04-c97e718e-ca1a-4e29-86a4-ccfb92c9709b.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-25T18:29:02.934754+00:00",
+  "start_sec": 0.0,
+  "end_sec": 6.42,
+  "duration_sec": 6.42,
+  "text": "ब्रेड की स्लाइस को सीमेंट में डुबोएं और सुखाएं चाय या कॉफी के लिए आपका एकदम नया और यूनिक कॉस्टर तैयार",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 2.8,
+      "duration_sec": 2.8,
+      "text": "ब्रेड की स्लाइस को सीमेंट में डुबोएं और सुखाएं"
+    },
+    {
+      "start_sec": 2.8,
+      "end_sec": 6.42,
+      "duration_sec": 3.62,
+      "text": "चाय या कॉफी के लिए आपका एकदम नया और यूनिक कॉस्टर तैयार"
+    }
+  ]
+}
