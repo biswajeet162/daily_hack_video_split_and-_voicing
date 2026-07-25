@@ -40,6 +40,11 @@ echo       Input  : output_videos\Transcriptions\*.transcription.json
 echo       Output : same JSON file updated with categories
 echo       Tracker: output_videos\.categorize_processed.json
 echo.
+echo   [5] Merge clips by category (interactive menu)
+echo       Input  : output_videos\ clips + Transcriptions\ JSON
+echo       Output : merged_videos\ (merged mp4 + dialogue json)
+echo       Tracker: output_videos\.merge_used_clips.json
+echo.
 echo   [0] Exit
 echo.
 echo ============================================================
@@ -49,6 +54,7 @@ if "%choice%"=="1" goto run_01
 if "%choice%"=="2" goto run_02
 if "%choice%"=="3" goto run_03
 if "%choice%"=="4" goto run_04
+if "%choice%"=="5" goto run_05
 if "%choice%"=="0" goto end
 echo.
 echo   [XX] Invalid choice. Try again.
@@ -80,6 +86,13 @@ goto menu
 call :print_task_header 4 "Categorize transcriptions with Ollama" "Hindi text to categories in same JSON"
 call :run_python 04_categorize_transcriptions.py
 call :print_task_footer 4
+pause
+goto menu
+
+:run_05
+call :print_task_header 5 "Merge clips by category" "pick category and clip count interactively"
+call :run_python 05_merge_by_category.py --interactive
+call :print_task_footer 5
 pause
 goto menu
 

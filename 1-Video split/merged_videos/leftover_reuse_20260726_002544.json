@@ -1,0 +1,53 @@
+{
+  "merge_id": "leftover_reuse_20260726_002544",
+  "category_slug": "leftover_reuse",
+  "category_name_en": "Leftover Reuse",
+  "category_name_hi": "बचे खाने का उपयोग",
+  "merged_at": "2026-07-25T18:55:48.457151+00:00",
+  "clip_count": 2,
+  "total_duration_sec": 7.94,
+  "output_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\merged_videos\\leftover_reuse_20260726_002544.mp4",
+  "clips": [
+    {
+      "order": 1,
+      "clip_key": "😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]/part-02-4af9d913-b17c-488e-b935-99eca56c7f63.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-02-4af9d913-b17c-488e-b935-99eca56c7f63.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-02-4af9d913-b17c-488e-b935-99eca56c7f63.transcription.json",
+      "text": "अंडे की खाली ट्रे में पानी भरो, जमा दो, बड़े गोल आईस क्यूब्स तैयार.",
+      "duration_sec": 4.34,
+      "categories": [
+        "drinks_cooling",
+        "fridge_storage",
+        "leftover_reuse",
+        "cleaning_kitchen",
+        "utensils_tools"
+      ]
+    },
+    {
+      "order": 2,
+      "clip_key": "😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]/part-04-fedd4689-c251-4d6a-abff-9c053c4b791f.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-04-fedd4689-c251-4d6a-abff-9c053c4b791f.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-04-fedd4689-c251-4d6a-abff-9c053c4b791f.transcription.json",
+      "text": "पुला पैकेट ऐसे सील करो, सामान लंबे समय तक ताजा रहेगा.",
+      "duration_sec": 3.6,
+      "categories": [
+        "fridge_storage",
+        "drinks_cooling",
+        "leftover_reuse",
+        "cleaning_kitchen",
+        "utensils_tools"
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "order": 1,
+      "text": "अंडे की खाली ट्रे में पानी भरो, जमा दो, बड़े गोल आईस क्यूब्स तैयार."
+    },
+    {
+      "order": 2,
+      "text": "पुला पैकेट ऐसे सील करो, सामान लंबे समय तक ताजा रहेगा."
+    }
+  ],
+  "full_dialogue_hindi": "अंडे की खाली ट्रे में पानी भरो, जमा दो, बड़े गोल आईस क्यूब्स तैयार.\n\nपुला पैकेट ऐसे सील करो, सामान लंबे समय तक ताजा रहेगा."
+}
