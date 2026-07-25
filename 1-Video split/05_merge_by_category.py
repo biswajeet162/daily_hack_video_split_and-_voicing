@@ -224,27 +224,13 @@ def load_transition_config(config_path: Path = TRANSITION_CONFIG_PATH) -> dict:
     if not config_path.exists():
         log.warn(f"Transition config not found, using defaults: {config_path.name}")
         return {
-            "mode": "gap_between_clips",
+            "mode": "frame_bridge",
             "gap_duration_sec": DEFAULT_GAP_DURATION_SEC,
-            "pick_random_effect": True,
-            "effects": [
-                {"id": "white_blink", "name_en": "White Blink", "effect_type": "white_blink"},
-                {"id": "black_blink", "name_en": "Black Blink", "effect_type": "black_blink"},
-                {"id": "strobe_blink", "name_en": "Strobe Blink", "effect_type": "strobe_blink"},
-            ],
+            "fade_out_sec": DEFAULT_GAP_DURATION_SEC / 2,
+            "fade_in_sec": DEFAULT_GAP_DURATION_SEC / 2,
         }
 
     data = json.loads(config_path.read_text(encoding="utf-8"))
-    effects = data.get("effects") or []
-    if not effects:
-        raise ValueError(f"No gap effects defined in {config_path}")
-
-    for effect in effects:
-        if not (effect.get("effect_type") or effect.get("id")):
-            raise ValueError(
-                f"Effect entry is missing effect_type in {config_path.name}"
-            )
-
     gap_duration = float(
         data.get("gap_duration_sec")
         or data.get("transition_duration_sec")
@@ -253,135 +239,138 @@ def load_transition_config(config_path: Path = TRANSITION_CONFIG_PATH) -> dict:
     if gap_duration <= 0:
         raise ValueError("gap_duration_sec must be positive")
 
-    data["mode"] = data.get("mode", "gap_between_clips")
-    data["gap_duration_sec"] = gap_duration
-    data.setdefault("pick_random_effect", True)
+    fade_out = float(data.get("fade_out_sec") or gap_duration / 2)
+    fade_in = float(data.get("fade_in_sec") or gap_duration / 2)
+    if fade_out <= 0 or fade_in <= 0:
+        raise ValueError("fade_out_sec and fade_in_sec must be positive")
+
+    data["mode"] = data.get("mode", "frame_bridge")
+    data["gap_duration_sec"] = fade_out + fade_in
+    data["fade_out_sec"] = fade_out
+    data["fade_in_sec"] = fade_in
     return data
 
 
-def pick_random_transition_effect(config: dict) -> dict:
-    effects = config.get("effects") or []
-    return random.choice(effects)
+def extract_video_frame(video_path: Path, position: str) -> Path:
+    frame_file = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
+    frame_file.close()
+    frame_path = Path(frame_file.name)
+
+    if position == "first":
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(video_path),
+            "-vf",
+            "select=eq(n\\,0)",
+            "-vframes",
+            "1",
+            str(frame_path),
+        ]
+    elif position == "last":
+        duration = probe_duration_seconds(video_path)
+        seek = max(0.0, duration - 0.04)
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-ss",
+            f"{seek:.3f}",
+            "-i",
+            str(video_path),
+            "-vframes",
+            "1",
+            str(frame_path),
+        ]
+    else:
+        raise ValueError(f"Unknown frame position: {position}")
+
+    _run_ffmpeg(cmd)
+    if not frame_path.exists() or frame_path.stat().st_size == 0:
+        raise RuntimeError(f"Failed to extract {position} frame from {video_path.name}")
+    return frame_path
 
 
-def effect_type_name(effect: dict) -> str:
-    return str(effect.get("effect_type") or effect.get("id") or "white_blink")
-
-
-def build_gap_lavfi_and_filter(
-    effect_type: str,
-    *,
-    width: int,
-    height: int,
-    duration_sec: float,
-) -> tuple[str, str]:
-    d = duration_sec
-    q = d * 0.25
-    h = d * 0.5
-    base = f"s={width}x{height}:d={d}:r={OUTPUT_FPS}"
-
-    presets: dict[str, tuple[str, str]] = {
-        "white_blink": (
-            f"color=c=white:{base}",
-            f"format=yuv420p,fade=t=in:st=0:d={q},fade=t=out:st={d - q}:d={q}",
-        ),
-        "black_blink": (
-            f"color=c=black:{base}",
-            f"format=yuv420p,fade=t=in:st=0:d={q},fade=t=out:st={d - q}:d={q}",
-        ),
-        "strobe_blink": (
-            f"color=c=black:{base}",
-            "format=yuv420p,geq=lum='if(eq(mod(floor(T*8),2),0),255,0)':cb=128:cr=128",
-        ),
-        "soft_white_flash": (
-            f"color=c=white:{base}",
-            f"format=yuv420p,fade=t=in:st=0:d={q},fade=t=out:st={d - q}:d={q}",
-        ),
-        "soft_black_flash": (
-            f"color=c=black:{base}",
-            f"format=yuv420p,fade=t=in:st=0:d={q},fade=t=out:st={d - q}:d={q}",
-        ),
-        "gray_pulse": (
-            f"color=c=gray:{base}",
-            f"format=yuv420p,fade=t=in:st=0:d={h},fade=t=out:st={h}:d={h}",
-        ),
-        "static_burst": (
-            f"color=c=black:{base}",
-            "format=yuv420p,noise=alls=18:allf=t+u,eq=brightness=0.08:contrast=1.2",
-        ),
-        "double_white_blink": (
-            f"color=c=white:{base}",
-            f"format=yuv420p,fade=t=in:st=0:d={d * 0.12},fade=t=out:st={d * 0.12}:d={d * 0.12},"
-            f"fade=t=in:st={d * 0.45}:d={d * 0.12},fade=t=out:st={d * 0.57}:d={d * 0.12}",
-        ),
-        "fade_through_black": (
-            f"color=c=black:{base}",
-            f"format=yuv420p,fade=t=in:st=0:d={h},fade=t=out:st={h}:d={h}",
-        ),
-        "fade_through_white": (
-            f"color=c=white:{base}",
-            f"format=yuv420p,fade=t=in:st=0:d={h},fade=t=out:st={h}:d={h}",
-        ),
-    }
-
-    if effect_type not in presets:
-        log.warn(f"Unknown effect_type '{effect_type}', using white_blink")
-        effect_type = "white_blink"
-
-    lavfi, vf = presets[effect_type]
-    return lavfi, vf
-
-
-def generate_gap_clip(
+def generate_frame_bridge_clip(
     output_path: Path,
-    effect: dict,
+    prev_video: Path,
+    next_video: Path,
     *,
     width: int,
     height: int,
-    duration_sec: float,
+    fade_out_sec: float,
+    fade_in_sec: float,
 ) -> None:
-    effect_type = effect_type_name(effect)
-    lavfi, vf = build_gap_lavfi_and_filter(
-        effect_type,
-        width=width,
-        height=height,
-        duration_sec=duration_sec,
+    """1s bridge: last frame of prev fades out, then first frame of next fades in."""
+    last_frame = extract_video_frame(prev_video, "last")
+    first_frame = extract_video_frame(next_video, "first")
+    temp_frames = [last_frame, first_frame]
+    total_duration = fade_out_sec + fade_in_sec
+
+    scale_pad = (
+        f"scale={width}:{height}:force_original_aspect_ratio=decrease,"
+        f"pad={width}:{height}:(ow-iw)/2:(oh-ih)/2"
     )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if output_path.exists():
         output_path.unlink()
 
-    _run_ffmpeg(
-        [
-            "ffmpeg",
-            "-y",
-            "-f",
-            "lavfi",
-            "-i",
-            lavfi,
-            "-f",
-            "lavfi",
-            "-i",
-            f"anullsrc=r={OUTPUT_AUDIO_RATE}:cl=stereo",
-            "-vf",
-            vf,
-            "-c:v",
-            "libx264",
-            "-preset",
-            "fast",
-            "-crf",
-            "18",
-            "-c:a",
-            "aac",
-            "-b:a",
-            "128k",
-            "-t",
-            f"{duration_sec:.3f}",
-            "-movflags",
-            "+faststart",
-            str(output_path),
-        ]
-    )
+    try:
+        _run_ffmpeg(
+            [
+                "ffmpeg",
+                "-y",
+                "-loop",
+                "1",
+                "-t",
+                f"{fade_out_sec:.3f}",
+                "-i",
+                str(last_frame),
+                "-loop",
+                "1",
+                "-t",
+                f"{fade_in_sec:.3f}",
+                "-i",
+                str(first_frame),
+                "-f",
+                "lavfi",
+                "-i",
+                f"anullsrc=r={OUTPUT_AUDIO_RATE}:cl=stereo",
+                "-filter_complex",
+                (
+                    f"[0:v]{scale_pad},fade=t=out:st=0:d={fade_out_sec:.3f},"
+                    f"format=yuv420p[v0];"
+                    f"[1:v]{scale_pad},fade=t=in:st=0:d={fade_in_sec:.3f},"
+                    f"format=yuv420p[v1];"
+                    f"[v0][v1]concat=n=2:v=1:a=0,format=yuv420p[v]"
+                ),
+                "-map",
+                "[v]",
+                "-map",
+                "2:a",
+                "-c:v",
+                "libx264",
+                "-preset",
+                "fast",
+                "-crf",
+                "18",
+                "-c:a",
+                "aac",
+                "-b:a",
+                "128k",
+                "-r",
+                str(OUTPUT_FPS),
+                "-t",
+                f"{total_duration:.3f}",
+                "-shortest",
+                "-movflags",
+                "+faststart",
+                str(output_path),
+            ]
+        )
+    finally:
+        for frame_path in temp_frames:
+            frame_path.unlink(missing_ok=True)
 
 
 def concat_video_pieces(pieces: list[Path], output_path: Path) -> None:
@@ -521,10 +510,12 @@ def merge_videos_with_ffmpeg(
         return []
 
     gap_duration = float(transition_config["gap_duration_sec"])
+    fade_out_sec = float(transition_config["fade_out_sec"])
+    fade_in_sec = float(transition_config["fade_in_sec"])
     width, height = probe_video_size(video_paths[0])
     pieces: list[Path] = []
-    gap_temp_paths: list[Path] = []
-    gap_log: list[dict] = []
+    bridge_temp_paths: list[Path] = []
+    transition_log: list[dict] = []
 
     for index, clip_path in enumerate(video_paths):
         pieces.append(clip_path)
@@ -532,45 +523,48 @@ def merge_videos_with_ffmpeg(
         if index >= len(video_paths) - 1:
             continue
 
-        effect = pick_random_transition_effect(transition_config)
-        gap_file = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
-        gap_file.close()
-        gap_path = Path(gap_file.name)
-        gap_temp_paths.append(gap_path)
+        next_clip_path = video_paths[index + 1]
+        bridge_file = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
+        bridge_file.close()
+        bridge_path = Path(bridge_file.name)
+        bridge_temp_paths.append(bridge_path)
 
         log.progress(
-            f"Gap {index + 1}/{len(video_paths) - 1} after clip {index + 1}: "
-            f"{effect.get('name_en', effect_type_name(effect))} "
-            f"({effect_type_name(effect)}, {gap_duration:.2f}s, no overlap)"
+            f"Bridge {index + 1}/{len(video_paths) - 1} after clip {index + 1}: "
+            f"last frame fade-out {fade_out_sec:.2f}s + "
+            f"first frame fade-in {fade_in_sec:.2f}s (no overlap)"
         )
 
-        generate_gap_clip(
-            gap_path,
-            effect,
+        generate_frame_bridge_clip(
+            bridge_path,
+            clip_path,
+            next_clip_path,
             width=width,
             height=height,
-            duration_sec=gap_duration,
+            fade_out_sec=fade_out_sec,
+            fade_in_sec=fade_in_sec,
         )
-        pieces.append(gap_path)
-        gap_log.append(
+        pieces.append(bridge_path)
+        transition_log.append(
             {
                 "after_clip_order": index + 1,
                 "before_clip_order": index + 2,
-                "effect_id": effect.get("id", effect_type_name(effect)),
-                "effect_name_en": effect.get("name_en", effect_type_name(effect)),
-                "effect_name_hi": effect.get("name_hi", ""),
-                "effect_type": effect_type_name(effect),
-                "gap_duration_sec": gap_duration,
-                "mode": "gap_between_clips",
+                "effect_type": "frame_fade_bridge",
+                "effect_name_en": "Frame Fade Bridge",
+                "effect_name_hi": "फ्रेम फेड ब्रिज",
+                "fade_out_sec": fade_out_sec,
+                "fade_in_sec": fade_in_sec,
+                "bridge_duration_sec": gap_duration,
+                "mode": transition_config.get("mode", "frame_bridge"),
             }
         )
 
     concat_video_pieces(pieces, output_path)
 
-    for gap_path in gap_temp_paths:
-        gap_path.unlink(missing_ok=True)
+    for bridge_path in bridge_temp_paths:
+        bridge_path.unlink(missing_ok=True)
 
-    return gap_log
+    return transition_log
 
 
 def build_merge_json(
@@ -625,7 +619,10 @@ def build_merge_json(
         "total_duration_sec": round(merged_total, 3),
         "output_video": str(output_video),
         "transition_config": str(TRANSITION_CONFIG_PATH),
-        "merge_mode": transition_config.get("mode", "gap_between_clips"),
+        "merge_mode": transition_config.get("mode", "frame_bridge"),
+        "fade_out_sec": transition_config.get("fade_out_sec"),
+        "fade_in_sec": transition_config.get("fade_in_sec"),
+        "bridge_transitions": transition_log,
         "gap_effects": transition_log,
         "clips": clip_rows,
         "dialogues": [
@@ -682,9 +679,9 @@ def run_merge(
 
     transition_config = load_transition_config(transition_config_path)
     log.ok(
-        f"Loaded gap config: {transition_config_path.name} "
-        f"({transition_config['gap_duration_sec']:.2f}s between clips, "
-        f"{len(transition_config.get('effects', []))} effects, random pick, no overlap)"
+        f"Loaded transition config: {transition_config_path.name} "
+        f"(frame bridge: {transition_config['fade_out_sec']:.2f}s fade-out + "
+        f"{transition_config['fade_in_sec']:.2f}s fade-in, no overlap)"
     )
 
     records = iter_clip_records(force=force)
@@ -701,7 +698,7 @@ def run_merge(
     merge_id = merge_id_for(category_slug)
     output_video, output_json = output_paths(merge_id)
 
-    log.section(f"Merging {len(selected)} clip(s) with gap effects between clips")
+    log.section(f"Merging {len(selected)} clip(s) with frame-bridge transitions")
     for i, record in enumerate(selected, 1):
         log.bullet(f"[{i}] {record['clip_key']}")
         preview = (record.get("text") or "")[:80]
@@ -741,12 +738,16 @@ def run_merge(
     log.ok(f"Merged video saved: {output_video.name}")
     log.ok(f"Dialogue JSON saved: {output_json.name}")
     if transition_log:
-        used = ", ".join(item["effect_name_en"] for item in transition_log)
-        log.info("Gap effects used", used)
+        log.info(
+            "Bridge transitions",
+            f"{len(transition_log)} x frame fade bridge "
+            f"({transition_config['fade_out_sec']:.2f}s + "
+            f"{transition_config['fade_in_sec']:.2f}s)",
+        )
         log.info(
             "Duration",
             f"{payload['raw_clip_duration_sec']:.2f}s clips + "
-            f"{payload['gap_added_sec']:.2f}s gaps = "
+            f"{payload['gap_added_sec']:.2f}s bridges = "
             f"{payload['total_duration_sec']:.2f}s total",
         )
     log.info("Merge tracker", MERGE_TRACKER_PATH)
