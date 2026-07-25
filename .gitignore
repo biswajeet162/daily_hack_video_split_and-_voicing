@@ -1,4 +1,10 @@
-# Video files
+# Python
+__pycache__/
+*.pyc
+
+# ---------------------------------------------------------------------------
+# Video / audio — never commit large media files
+# ---------------------------------------------------------------------------
 *.mp4
 *.mov
 *.avi
@@ -7,10 +13,7 @@
 *.flv
 *.wmv
 *.m4v
-*.pyc
 
-
-# Audio files
 *.mp3
 *.wav
 *.flac
@@ -21,3 +24,30 @@
 *.opus
 *.aiff
 *.aif
+
+# ---------------------------------------------------------------------------
+# 1-Video split — ignore downloaded + split clips (mp4 only)
+# JSON stays tracked: split_manifest.json, *.transcription.json,
+# .transcribe_processed.json, .split_processed.json, split_trim_config.json
+# ---------------------------------------------------------------------------
+1-Video split/input_videos/**/*.mp4
+1-Video split/output_videos/**/*.mp4
+
+# Keep empty media folders in the repo
+!1-Video split/input_videos/.gitkeep
+!1-Video split/output_videos/.gitkeep
+
+# ---------------------------------------------------------------------------
+# 2-HOLO_GRAM_VOICE_OVER — generated media (JSON/txt ignored there only)
+# ---------------------------------------------------------------------------
+2-HOLO_GRAM_VOICE_OVER/split_videos/
+2-HOLO_GRAM_VOICE_OVER/chunks/
+2-HOLO_GRAM_VOICE_OVER/uploads/
+2-HOLO_GRAM_VOICE_OVER/recordings/
+2-HOLO_GRAM_VOICE_OVER/recordings_fixed/
+2-HOLO_GRAM_VOICE_OVER/transcription_folder/
+2-HOLO_GRAM_VOICE_OVER/merged_parts/
+2-HOLO_GRAM_VOICE_OVER/final_output.mp4
+2-HOLO_GRAM_VOICE_OVER/story.mp4
+2-HOLO_GRAM_VOICE_OVER/transcript.json
+2-HOLO_GRAM_VOICE_OVER/*.txt

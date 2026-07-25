@@ -1,0 +1,20 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-01-6b625766-ecf5-4000-8681-ebfa60308cab.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cpu",
+  "compute_type": "int8",
+  "processed_at": "2026-07-25T18:12:56.371213+00:00",
+  "start_sec": 0.0,
+  "end_sec": 6.0,
+  "duration_sec": 6.0,
+  "text": "रहसुन को स्टिक में लगा कर पानी में रखें। पाँच दिन बाद जड़े निकलाएंगी और आपका नया पौधा तैयार हो जाएगा।",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 6.0,
+      "duration_sec": 6.0,
+      "text": "रहसुन को स्टिक में लगा कर पानी में रखें। पाँच दिन बाद जड़े निकलाएंगी और आपका नया पौधा तैयार हो जाएगा।"
+    }
+  ]
+}
