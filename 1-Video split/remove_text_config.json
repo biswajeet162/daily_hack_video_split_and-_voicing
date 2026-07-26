@@ -1,10 +1,11 @@
 {
-  "languages": ["en", "hi"],
-  "detect_interval_sec": 0.5,
+  "languages": ["en", "hi", "ch_sim"],
   "box_padding_px": 14,
   "min_confidence": 0.25,
   "inpaint_radius": 5,
   "ocr_gpu": true,
+  "ocr_scale": 0.75,
+  "progress_every_frames": 30,
   "video_crf": 18,
   "video_preset": "fast"
 }

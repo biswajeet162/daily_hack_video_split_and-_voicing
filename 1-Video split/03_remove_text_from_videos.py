@@ -1,11 +1,11 @@
 """
-[3] Remove on-screen text (English / Hindi) from split clip MP4s in output_videos/.
+[3] Remove on-screen text (English / Hindi / Chinese) from split clip MP4s.
 
-Uses EasyOCR to detect text regions and OpenCV inpainting to erase them frame by
-frame. Replaces each clip in place while keeping the original audio track.
+Scans EVERY frame with EasyOCR on GPU (when available), inpaints detected text,
+and replaces each clip in place while keeping the original audio.
 
-Tracks completed clips in output_videos/.text_removed_processed.json so reruns
-skip videos that were already cleaned.
+One-time per clip: tracks completed work in output_videos/.text_removed_processed.json
+so reruns skip chunks that were already cleaned.
 
 Preferred: double-click run.bat and choose 3.
 
@@ -29,6 +29,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import lru_cache
@@ -48,23 +49,29 @@ TRANSCRIPTIONS_DIR = OUTPUT_DIR / "Transcriptions"
 CONFIG_PATH = ROOT / "remove_text_config.json"
 PROCESSED_TRACKER_PATH = OUTPUT_DIR / ".text_removed_processed.json"
 FAILED_TRACKER_PATH = OUTPUT_DIR / ".text_removed_failed.json"
-DEFAULT_LANGUAGES = ("en", "hi")
-DEFAULT_DETECT_INTERVAL_SEC = 0.5
+DEFAULT_LANGUAGES = ("en", "hi", "ch_sim")
 DEFAULT_BOX_PADDING_PX = 14
 DEFAULT_MIN_CONFIDENCE = 0.25
 DEFAULT_INPAINT_RADIUS = 5
+DEFAULT_OCR_SCALE = 0.75
+DEFAULT_PROGRESS_EVERY_FRAMES = 30
 DEFAULT_VIDEO_CRF = 18
 DEFAULT_VIDEO_PRESET = "fast"
+PROCESSING_MODE = "per_frame"
+# Rough seconds-per-frame for ETA (EasyOCR + inpaint on typical 1080x1920 shorts).
+GPU_SEC_PER_FRAME_AT_FULL_SCALE = 0.18
+CPU_SEC_PER_FRAME_AT_FULL_SCALE = 0.45
 
 
 @dataclass
 class RemoveTextSettings:
     languages: tuple[str, ...]
-    detect_interval_sec: float
     box_padding_px: int
     min_confidence: float
     inpaint_radius: int
     ocr_gpu: bool
+    ocr_scale: float
+    progress_every_frames: int
     video_crf: int
     video_preset: str
 
@@ -76,12 +83,6 @@ class VideoInfo:
     fps: float
     frame_count: int
     duration_sec: float
-
-
-@dataclass
-class TimedBoxes:
-    time_sec: float
-    boxes: list[tuple[int, int, int, int]]
 
 
 def ensure_ffmpeg() -> None:
@@ -98,11 +99,12 @@ def load_config(config_path: Path) -> RemoveTextSettings:
         log.warn(f"Config not found, using defaults: {config_path.name}")
         return RemoveTextSettings(
             languages=DEFAULT_LANGUAGES,
-            detect_interval_sec=DEFAULT_DETECT_INTERVAL_SEC,
             box_padding_px=DEFAULT_BOX_PADDING_PX,
             min_confidence=DEFAULT_MIN_CONFIDENCE,
             inpaint_radius=DEFAULT_INPAINT_RADIUS,
             ocr_gpu=True,
+            ocr_scale=DEFAULT_OCR_SCALE,
+            progress_every_frames=DEFAULT_PROGRESS_EVERY_FRAMES,
             video_crf=DEFAULT_VIDEO_CRF,
             video_preset=DEFAULT_VIDEO_PRESET,
         )
@@ -111,11 +113,14 @@ def load_config(config_path: Path) -> RemoveTextSettings:
     languages = tuple(data.get("languages") or DEFAULT_LANGUAGES)
     return RemoveTextSettings(
         languages=languages,
-        detect_interval_sec=float(data.get("detect_interval_sec", DEFAULT_DETECT_INTERVAL_SEC)),
         box_padding_px=int(data.get("box_padding_px", DEFAULT_BOX_PADDING_PX)),
         min_confidence=float(data.get("min_confidence", DEFAULT_MIN_CONFIDENCE)),
         inpaint_radius=int(data.get("inpaint_radius", DEFAULT_INPAINT_RADIUS)),
         ocr_gpu=bool(data.get("ocr_gpu", True)),
+        ocr_scale=float(data.get("ocr_scale", DEFAULT_OCR_SCALE)),
+        progress_every_frames=int(
+            data.get("progress_every_frames", DEFAULT_PROGRESS_EVERY_FRAMES)
+        ),
         video_crf=int(data.get("video_crf", DEFAULT_VIDEO_CRF)),
         video_preset=str(data.get("video_preset", DEFAULT_VIDEO_PRESET)),
     )
@@ -195,6 +200,7 @@ def mark_video_processed(
     tracker.setdefault("videos", {})[key] = {
         "processed_at": datetime.now(timezone.utc).isoformat(),
         "source": str(video_path),
+        "processing_mode": PROCESSING_MODE,
         **payload,
     }
     save_processed_tracker(tracker)
@@ -274,7 +280,9 @@ def print_video_status(
     for video in all_videos:
         key = video_key(video)
         if is_video_processed(video, processed_tracker):
-            status = "PROCESSED (skip)"
+            entry = processed_tracker["videos"][key]
+            mode = entry.get("processing_mode", "unknown")
+            status = f"PROCESSED (skip, {mode})"
         elif key in failed_tracker.get("videos", {}):
             err = failed_tracker["videos"][key].get("error", "unknown error")
             status = f"PENDING (last attempt failed: {err[:80]})"
@@ -335,6 +343,27 @@ def probe_video_info(video_path: Path) -> VideoInfo:
     )
 
 
+def estimate_processing_time(
+    info: VideoInfo,
+    settings: RemoveTextSettings,
+) -> tuple[float, float]:
+    """Return (seconds_per_frame, total_seconds) rough ETA."""
+    base = GPU_SEC_PER_FRAME_AT_FULL_SCALE if settings.ocr_gpu else CPU_SEC_PER_FRAME_AT_FULL_SCALE
+    scale = max(0.25, min(settings.ocr_scale, 1.0))
+    sec_per_frame = base * (1.0 / scale) ** 1.6 + 0.008
+    total_sec = sec_per_frame * max(1, info.frame_count)
+    return sec_per_frame, total_sec
+
+
+def format_duration(seconds: float) -> str:
+    seconds = max(0.0, seconds)
+    if seconds < 60:
+        return f"{seconds:.0f}s"
+    minutes = int(seconds // 60)
+    rem = int(seconds % 60)
+    return f"{minutes}m {rem}s"
+
+
 def polygon_to_box(polygon: list, width: int, height: int, padding: int) -> tuple[int, int, int, int]:
     xs = [int(round(p[0])) for p in polygon]
     ys = [int(round(p[1])) for p in polygon]
@@ -345,59 +374,50 @@ def polygon_to_box(polygon: list, width: int, height: int, padding: int) -> tupl
     return x1, y1, x2, y2
 
 
-def detect_text_boxes(
+def detect_text_boxes_on_frame(
     reader: easyocr.Reader,
     frame: np.ndarray,
     min_confidence: float,
     padding: int,
+    ocr_scale: float,
 ) -> list[tuple[int, int, int, int]]:
     height, width = frame.shape[:2]
-    detections = reader.readtext(frame, detail=1, paragraph=False)
+    scale = max(0.25, min(ocr_scale, 1.0))
+
+    if scale < 0.999:
+        ocr_frame = cv2.resize(
+            frame,
+            (max(1, int(width * scale)), max(1, int(height * scale))),
+            interpolation=cv2.INTER_AREA,
+        )
+        ocr_h, ocr_w = ocr_frame.shape[:2]
+    else:
+        ocr_frame = frame
+        ocr_h, ocr_w = height, width
+
+    detections = reader.readtext(ocr_frame, detail=1, paragraph=False)
     boxes: list[tuple[int, int, int, int]] = []
+    inv_scale_x = width / ocr_w
+    inv_scale_y = height / ocr_h
+
     for item in detections:
         if len(item) < 3:
             continue
         polygon, _text, confidence = item[0], item[1], float(item[2])
-        if confidence < min_confidence:
+        if confidence < min_confidence or not polygon:
             continue
-        if not polygon:
+
+        xs = [int(round(p[0] * inv_scale_x)) for p in polygon]
+        ys = [int(round(p[1] * inv_scale_y)) for p in polygon]
+        x1 = max(0, min(xs) - padding)
+        y1 = max(0, min(ys) - padding)
+        x2 = min(width - 1, max(xs) + padding)
+        y2 = min(height - 1, max(ys) + padding)
+        if x2 <= x1 or y2 <= y1:
             continue
-        box = polygon_to_box(polygon, width, height, padding)
-        if box[2] <= box[0] or box[3] <= box[1]:
-            continue
-        boxes.append(box)
+        boxes.append((x1, y1, x2, y2))
+
     return boxes
-
-
-def merge_boxes(boxes: list[tuple[int, int, int, int]]) -> list[tuple[int, int, int, int]]:
-    if not boxes:
-        return []
-    merged = list(boxes)
-    changed = True
-    while changed:
-        changed = False
-        next_boxes: list[tuple[int, int, int, int]] = []
-        used = [False] * len(merged)
-        for i, box_a in enumerate(merged):
-            if used[i]:
-                continue
-            x1, y1, x2, y2 = box_a
-            for j in range(i + 1, len(merged)):
-                if used[j]:
-                    continue
-                bx1, by1, bx2, by2 = merged[j]
-                overlaps = not (bx2 < x1 or bx1 > x2 or by2 < y1 or by1 > y2)
-                if overlaps:
-                    x1 = min(x1, bx1)
-                    y1 = min(y1, by1)
-                    x2 = max(x2, bx2)
-                    y2 = max(y2, by2)
-                    used[j] = True
-                    changed = True
-            used[i] = True
-            next_boxes.append((x1, y1, x2, y2))
-        merged = next_boxes
-    return merged
 
 
 def boxes_to_mask(shape: tuple[int, int], boxes: list[tuple[int, int, int, int]]) -> np.ndarray:
@@ -412,58 +432,6 @@ def inpaint_frame(frame: np.ndarray, mask: np.ndarray, radius: int) -> np.ndarra
     if not np.any(mask):
         return frame
     return cv2.inpaint(frame, mask, radius, cv2.INPAINT_TELEA)
-
-
-def sample_detection_times(duration_sec: float, interval_sec: float) -> list[float]:
-    if duration_sec <= 0:
-        return [0.0]
-    times = list(np.arange(0.0, duration_sec, interval_sec))
-    if not times or times[-1] < max(0.0, duration_sec - 0.05):
-        times.append(max(0.0, duration_sec - 0.05))
-    return times
-
-
-def build_timed_boxes(
-    reader: easyocr.Reader,
-    video_path: Path,
-    info: VideoInfo,
-    settings: RemoveTextSettings,
-) -> list[TimedBoxes]:
-    cap = cv2.VideoCapture(str(video_path))
-    if not cap.isOpened():
-        raise RuntimeError(f"Could not open video: {video_path}")
-
-    timed_boxes: list[TimedBoxes] = []
-    sample_times = sample_detection_times(info.duration_sec, settings.detect_interval_sec)
-
-    for sample_time in sample_times:
-        cap.set(cv2.CAP_PROP_POS_MSEC, sample_time * 1000.0)
-        ok, frame = cap.read()
-        if not ok or frame is None:
-            continue
-        boxes = detect_text_boxes(
-            reader,
-            frame,
-            settings.min_confidence,
-            settings.box_padding_px,
-        )
-        boxes = merge_boxes(boxes)
-        timed_boxes.append(TimedBoxes(time_sec=sample_time, boxes=boxes))
-
-    cap.release()
-    return timed_boxes
-
-
-def boxes_for_time(timed_boxes: list[TimedBoxes], time_sec: float) -> list[tuple[int, int, int, int]]:
-    if not timed_boxes:
-        return []
-    chosen = timed_boxes[0]
-    for item in timed_boxes:
-        if item.time_sec <= time_sec:
-            chosen = item
-        else:
-            break
-    return chosen.boxes
 
 
 def mux_audio(source_video: Path, cleaned_video: Path, output_video: Path) -> None:
@@ -498,20 +466,22 @@ def remove_text_from_video(
     settings: RemoveTextSettings,
 ) -> dict:
     info = probe_video_info(video_path)
-    timed_boxes = build_timed_boxes(reader, video_path, info, settings)
-    total_boxes = sum(len(item.boxes) for item in timed_boxes)
-
-    if total_boxes == 0:
-        return {
-            "duration_sec": round(info.duration_sec, 3),
-            "text_regions_found": 0,
-            "frames_inpainted": 0,
-            "changed": False,
-        }
+    sec_per_frame_est, total_est = estimate_processing_time(info, settings)
+    log.info(
+        "Estimated time",
+        f"~{format_duration(total_est)} for {info.frame_count} frames "
+        f"({info.duration_sec:.1f}s clip, ~{sec_per_frame_est:.2f}s/frame)",
+    )
 
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
         raise RuntimeError(f"Could not open video: {video_path}")
+
+    started = time.perf_counter()
+    frame_index = 0
+    frames_with_text = 0
+    total_text_regions = 0
+    changed = False
 
     with tempfile.TemporaryDirectory(prefix="remove_text_") as tmp_dir:
         temp_video = Path(tmp_dir) / "cleaned_noaudio.mp4"
@@ -523,29 +493,62 @@ def remove_text_from_video(
             (info.width, info.height),
         )
         if not writer.isOpened():
+            cap.release()
             raise RuntimeError("Could not create temporary video writer")
 
-        frame_index = 0
-        inpainted_frames = 0
-        fps = info.fps if info.fps > 0 else 30.0
+        total_frames = max(1, info.frame_count)
+        progress_step = max(1, settings.progress_every_frames)
 
         while True:
             ok, frame = cap.read()
             if not ok or frame is None:
                 break
 
-            time_sec = frame_index / fps
-            boxes = boxes_for_time(timed_boxes, time_sec)
+            boxes = detect_text_boxes_on_frame(
+                reader,
+                frame,
+                settings.min_confidence,
+                settings.box_padding_px,
+                settings.ocr_scale,
+            )
+
             if boxes:
                 mask = boxes_to_mask(frame.shape[:2], boxes)
                 frame = inpaint_frame(frame, mask, settings.inpaint_radius)
-                inpainted_frames += 1
+                frames_with_text += 1
+                total_text_regions += len(boxes)
+                changed = True
 
             writer.write(frame)
             frame_index += 1
 
+            if frame_index == 1 or frame_index % progress_step == 0 or frame_index == total_frames:
+                elapsed = time.perf_counter() - started
+                fps_done = frame_index / elapsed if elapsed > 0 else 0.0
+                remaining_frames = max(0, total_frames - frame_index)
+                eta_sec = remaining_frames / fps_done if fps_done > 0 else 0.0
+                pct = 100.0 * frame_index / total_frames
+                log.progress(
+                    f"Frame {frame_index}/{total_frames} ({pct:.0f}%)  "
+                    f"|  text on {frames_with_text} frame(s)  "
+                    f"|  ETA {format_duration(eta_sec)}"
+                )
+
         writer.release()
         cap.release()
+
+        if not changed:
+            processing_sec = time.perf_counter() - started
+            return {
+                "duration_sec": round(info.duration_sec, 3),
+                "frame_count": frame_index,
+                "frames_with_text": 0,
+                "total_text_regions": 0,
+                "processing_sec": round(processing_sec, 1),
+                "ocr_gpu": settings.ocr_gpu,
+                "languages": list(settings.languages),
+                "changed": False,
+            }
 
         temp_with_audio = Path(tmp_dir) / "cleaned_with_audio.mp4"
         mux_audio(video_path, temp_video, temp_with_audio)
@@ -573,18 +576,22 @@ def remove_text_from_video(
         if result.returncode != 0:
             raise RuntimeError(result.stderr[-800:])
 
-    unique_regions = len({box for item in timed_boxes for box in item.boxes})
+    processing_sec = time.perf_counter() - started
     return {
         "duration_sec": round(info.duration_sec, 3),
-        "text_regions_found": unique_regions,
-        "frames_inpainted": inpainted_frames,
+        "frame_count": frame_index,
+        "frames_with_text": frames_with_text,
+        "total_text_regions": total_text_regions,
+        "processing_sec": round(processing_sec, 1),
+        "ocr_gpu": settings.ocr_gpu,
+        "languages": list(settings.languages),
         "changed": True,
     }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Remove on-screen English/Hindi text from split MP4 clips"
+        description="Remove on-screen English/Hindi/Chinese text from split MP4 clips (per frame)"
     )
     parser.add_argument(
         "--video",
@@ -611,7 +618,7 @@ def main() -> int:
         "--device",
         choices=("auto", "cuda", "cpu"),
         default="auto",
-        help="OCR device preference (default: auto)",
+        help="OCR device preference (default: auto = GPU when available)",
     )
     args = parser.parse_args()
 
@@ -619,7 +626,7 @@ def main() -> int:
 
     log.banner(
         "[3] REMOVE ON-SCREEN TEXT FROM CLIPS",
-        "EasyOCR (English + Hindi) + OpenCV inpainting",
+        "Per-frame EasyOCR (English + Hindi + Chinese) + OpenCV inpainting",
     )
 
     try:
@@ -633,22 +640,24 @@ def main() -> int:
     if args.device == "cpu":
         settings = RemoveTextSettings(
             languages=settings.languages,
-            detect_interval_sec=settings.detect_interval_sec,
             box_padding_px=settings.box_padding_px,
             min_confidence=settings.min_confidence,
             inpaint_radius=settings.inpaint_radius,
             ocr_gpu=False,
+            ocr_scale=settings.ocr_scale,
+            progress_every_frames=settings.progress_every_frames,
             video_crf=settings.video_crf,
             video_preset=settings.video_preset,
         )
     elif args.device == "cuda":
         settings = RemoveTextSettings(
             languages=settings.languages,
-            detect_interval_sec=settings.detect_interval_sec,
             box_padding_px=settings.box_padding_px,
             min_confidence=settings.min_confidence,
             inpaint_radius=settings.inpaint_radius,
             ocr_gpu=True,
+            ocr_scale=settings.ocr_scale,
+            progress_every_frames=settings.progress_every_frames,
             video_crf=settings.video_crf,
             video_preset=settings.video_preset,
         )
@@ -694,9 +703,11 @@ def main() -> int:
         "Queue summary",
         [
             ("Clips to clean", str(len(videos))),
+            ("Scan mode", "every frame (one-time per clip)"),
             ("OCR languages", ", ".join(settings.languages)),
-            ("Detect interval", f"{settings.detect_interval_sec:.2f}s"),
             ("OCR device", "GPU" if settings.ocr_gpu else "CPU"),
+            ("OCR scale", f"{settings.ocr_scale:.2f} (detect on scaled frame, inpaint full res)"),
+            ("Tracker", PROCESSED_TRACKER_PATH.name),
         ],
     )
     for i, video in enumerate(videos, 1):
@@ -706,7 +717,8 @@ def main() -> int:
     log.info("Languages", ", ".join(settings.languages))
     try:
         reader = get_ocr_reader(settings.languages, settings.ocr_gpu)
-        log.ok("OCR reader ready")
+        device_label = "GPU" if settings.ocr_gpu else "CPU"
+        log.ok(f"OCR reader ready on {device_label}")
     except Exception as exc:
         log.fail(f"Failed to load EasyOCR: {exc}")
         return 1
@@ -717,21 +729,24 @@ def main() -> int:
 
     for i, video in enumerate(videos, 1):
         rel = video_key(video)
-        log.step(i, len(videos), f"Removing text: {rel}")
+        log.step(i, len(videos), f"Removing text (frame-by-frame): {rel}")
         log.info("Source clip", video)
         try:
-            log.progress("Detecting text regions and inpainting frames...")
             payload = remove_text_from_video(video, reader, settings)
             mark_video_processed(video, tracker, payload, failed_tracker)
             processed_count += 1
             if payload.get("changed"):
                 changed_count += 1
                 log.ok(
-                    f"Removed {payload['text_regions_found']} text region(s) "
-                    f"across {payload['frames_inpainted']} frame(s)"
+                    f"Cleaned {payload['frames_with_text']}/{payload['frame_count']} frame(s), "
+                    f"{payload['total_text_regions']} text region(s), "
+                    f"took {format_duration(payload['processing_sec'])}"
                 )
             else:
-                log.ok("No on-screen text detected; clip left unchanged")
+                log.ok(
+                    f"No on-screen text detected in {payload['frame_count']} frame(s); "
+                    f"scanned in {format_duration(payload['processing_sec'])}"
+                )
         except Exception as exc:
             failed_count += 1
             msg = str(exc)

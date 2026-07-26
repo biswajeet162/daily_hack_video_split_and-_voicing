@@ -11,7 +11,7 @@ conda activate utube_env
 pip install -r requirements.txt
 ```
 
-Step **[3] Remove text** uses **EasyOCR** (English + Hindi) and **OpenCV inpainting** to erase on-screen text from each split clip.
+Step **[3] Remove text** scans **every frame** with **EasyOCR on GPU** (English, Hindi, Chinese), inpaints detected text, and tracks finished chunks in `output_videos/.text_removed_processed.json` so each clip is only processed once.
 
 Step **[4] Transcribe** uses **faster-whisper** with the **large-v3** model (same engine as `2-HOLO_GRAM_VOICE_OVER`). GPU is used when available; it falls back to CPU automatically.
 

@@ -30,8 +30,9 @@ echo       Refs   : reference_numbers\1.png .. 5.png
 echo       Output : output_videos\^<video name^>\part-XX-*.mp4
 echo       Tracker: input_videos\.split_processed.json
 echo.
-echo   [3] Remove on-screen text from clips (English + Hindi)
+echo   [3] Remove on-screen text from clips (per-frame, GPU OCR)
 echo       Input  : output_videos\ (all .mp4 clips)
+echo       Langs  : English, Hindi, Chinese (EasyOCR)
 echo       Output : same clip files, text inpainted out
 echo       Tracker: output_videos\.text_removed_processed.json
 echo.
@@ -83,7 +84,7 @@ pause
 goto menu
 
 :run_03
-call :print_task_header 3 "Remove on-screen text from clips" "EasyOCR + OpenCV inpainting"
+call :print_task_header 3 "Remove on-screen text from clips" "per-frame GPU OCR + inpainting"
 call :run_python 03_remove_text_from_videos.py
 call :print_task_footer 3
 pause
