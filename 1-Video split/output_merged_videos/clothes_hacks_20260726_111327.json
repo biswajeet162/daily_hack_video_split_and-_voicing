@@ -1,0 +1,461 @@
+{
+  "merge_id": "clothes_hacks_20260726_111327",
+  "category_slug": "clothes_hacks",
+  "category_name_en": "Clothes & Fabric Hacks",
+  "category_name_hi": "कपड़े से जुड़े हैक",
+  "merged_at": "2026-07-26T05:44:07.152533+00:00",
+  "clip_count": 5,
+  "raw_clip_duration_sec": 25.76,
+  "gap_added_sec": 4.0,
+  "gap_duration_sec": 1.0,
+  "total_duration_sec": 29.76,
+  "output_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_merged_videos\\clothes_hacks_20260726_111327.mp4",
+  "transition_config": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\merge_transition_config.json",
+  "merge_mode": "frame_fade_bridge",
+  "fade_out_sec": 0.5,
+  "fade_in_sec": 0.5,
+  "exit_sec": 0.5,
+  "enter_sec": 0.5,
+  "transition_fps": 60,
+  "output_fps": 60,
+  "frame_trim_sec": 0.016666666666666666,
+  "clip_labels": [
+    {
+      "order": 1,
+      "label": "कपड़े सजावट"
+    },
+    {
+      "order": 2,
+      "label": "चाय कॉफी"
+    },
+    {
+      "order": 3,
+      "label": "कपड़े और"
+    },
+    {
+      "order": 4,
+      "label": "पौधे उगाना"
+    },
+    {
+      "order": 5,
+      "label": "कपड़े पौधे"
+    }
+  ],
+  "clip_label_overlay": {
+    "method": "png_overlay",
+    "layout": "inline",
+    "font": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\assets\\fonts\\NotoSansDevanagari-Regular.ttf",
+    "font_size": 0,
+    "line_gap": 10,
+    "left_margin": 24,
+    "top_margin": 36,
+    "color": "RANDOM",
+    "random_color": true
+  },
+  "bridge_transitions": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े सजावट"
+        },
+        {
+          "order": 2,
+          "label": "चाय कॉफी"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े और"
+        },
+        {
+          "order": 4,
+          "label": "पौधे उगाना"
+        },
+        {
+          "order": 5,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 2,
+      "before_clip_order": 3,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े सजावट"
+        },
+        {
+          "order": 2,
+          "label": "चाय कॉफी"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े और"
+        },
+        {
+          "order": 4,
+          "label": "पौधे उगाना"
+        },
+        {
+          "order": 5,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 3,
+      "before_clip_order": 4,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े सजावट"
+        },
+        {
+          "order": 2,
+          "label": "चाय कॉफी"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े और"
+        },
+        {
+          "order": 4,
+          "label": "पौधे उगाना"
+        },
+        {
+          "order": 5,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 4,
+      "before_clip_order": 5,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े सजावट"
+        },
+        {
+          "order": 2,
+          "label": "चाय कॉफी"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े और"
+        },
+        {
+          "order": 4,
+          "label": "पौधे उगाना"
+        },
+        {
+          "order": 5,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    }
+  ],
+  "gap_effects": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े सजावट"
+        },
+        {
+          "order": 2,
+          "label": "चाय कॉफी"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े और"
+        },
+        {
+          "order": 4,
+          "label": "पौधे उगाना"
+        },
+        {
+          "order": 5,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 2,
+      "before_clip_order": 3,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े सजावट"
+        },
+        {
+          "order": 2,
+          "label": "चाय कॉफी"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े और"
+        },
+        {
+          "order": 4,
+          "label": "पौधे उगाना"
+        },
+        {
+          "order": 5,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 3,
+      "before_clip_order": 4,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े सजावट"
+        },
+        {
+          "order": 2,
+          "label": "चाय कॉफी"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े और"
+        },
+        {
+          "order": 4,
+          "label": "पौधे उगाना"
+        },
+        {
+          "order": 5,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 4,
+      "before_clip_order": 5,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े सजावट"
+        },
+        {
+          "order": 2,
+          "label": "चाय कॉफी"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े और"
+        },
+        {
+          "order": 4,
+          "label": "पौधे उगाना"
+        },
+        {
+          "order": 5,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    }
+  ],
+  "clips": [
+    {
+      "order": 1,
+      "clip_key": "😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]/part-03-a5749dbe-769c-4565-bedd-e26b50ec48b1.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-03-a5749dbe-769c-4565-bedd-e26b50ec48b1.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-03-a5749dbe-769c-4565-bedd-e26b50ec48b1.transcription.json",
+      "display_label": "कपड़े सजावट",
+      "text": "आनी गुडिया को सीमेंट में डूबोएं और उसे एक अनोखा विंटेज लुक दें। घर के डेकोरेशन के लिए बहतरीन शोप।",
+      "duration_sec": 6.04,
+      "categories": [
+        "clothes_hacks",
+        "household_hacks"
+      ]
+    },
+    {
+      "order": 2,
+      "clip_key": "😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]/part-04-c97e718e-ca1a-4e29-86a4-ccfb92c9709b.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-04-c97e718e-ca1a-4e29-86a4-ccfb92c9709b.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😲 🔥 5 Mind-Blowing Cement DIY Hacks You Must Try! 🤯 #shorts #diy #viral [qKPXxWTltK4]\\part-04-c97e718e-ca1a-4e29-86a4-ccfb92c9709b.transcription.json",
+      "display_label": "चाय कॉफी",
+      "text": "ब्रेड की स्लाइस को सीमेंट में डुबोएं और सुखाएं चाय या कॉफी के लिए आपका एकदम नया और यूनिक कॉस्टर तैयार",
+      "duration_sec": 6.42,
+      "categories": [
+        "clothes_hacks",
+        "drinks_cooling"
+      ]
+    },
+    {
+      "order": 3,
+      "clip_key": "😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]/part-01-18847d36-b9d0-4989-893c-2d37e13cbfe5.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-01-18847d36-b9d0-4989-893c-2d37e13cbfe5.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-01-18847d36-b9d0-4989-893c-2d37e13cbfe5.transcription.json",
+      "display_label": "कपड़े और",
+      "text": "सैंडल का वेलक्रो डीला हो गया, लाइटर से रोएं साफ करो, फिर नए जैसा चिपकेगा.",
+      "duration_sec": 4.0,
+      "categories": [
+        "clothes_hacks",
+        "shoe_hacks"
+      ]
+    },
+    {
+      "order": 4,
+      "clip_key": "😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]/part-02-2e6eba72-8358-4303-bea6-a724561555c6.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-02-2e6eba72-8358-4303-bea6-a724561555c6.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🌱 5 Easy Plant Growing Hacks You Should Try! 🤯 #shorts #gardening #viral [wq5e6zBvU5M]\\part-02-2e6eba72-8358-4303-bea6-a724561555c6.transcription.json",
+      "display_label": "पौधे उगाना",
+      "text": "मूंग को गीले कपड़े में लपेट कर रखे, एक हफ़ते में ही ताजा और हेल्दी स्प्राउट्स तैयार हो जाएंगे.",
+      "duration_sec": 5.04,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation"
+      ]
+    },
+    {
+      "order": 5,
+      "clip_key": "😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]/part-02-90893741-e186-4529-931a-cdbdcccab9b5.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-02-90893741-e186-4529-931a-cdbdcccab9b5.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-02-90893741-e186-4529-931a-cdbdcccab9b5.transcription.json",
+      "display_label": "कपड़े पौधे",
+      "text": "ऐसा कद्दू डिजाइन बनाओ। मेहमान मिठाई खाने से पहले उसे घुमा कर देखेंगे।",
+      "duration_sec": 4.26,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation"
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "order": 1,
+      "text": "आनी गुडिया को सीमेंट में डूबोएं और उसे एक अनोखा विंटेज लुक दें। घर के डेकोरेशन के लिए बहतरीन शोप।"
+    },
+    {
+      "order": 2,
+      "text": "ब्रेड की स्लाइस को सीमेंट में डुबोएं और सुखाएं चाय या कॉफी के लिए आपका एकदम नया और यूनिक कॉस्टर तैयार"
+    },
+    {
+      "order": 3,
+      "text": "सैंडल का वेलक्रो डीला हो गया, लाइटर से रोएं साफ करो, फिर नए जैसा चिपकेगा."
+    },
+    {
+      "order": 4,
+      "text": "मूंग को गीले कपड़े में लपेट कर रखे, एक हफ़ते में ही ताजा और हेल्दी स्प्राउट्स तैयार हो जाएंगे."
+    },
+    {
+      "order": 5,
+      "text": "ऐसा कद्दू डिजाइन बनाओ। मेहमान मिठाई खाने से पहले उसे घुमा कर देखेंगे।"
+    }
+  ],
+  "full_dialogue_hindi": "आनी गुडिया को सीमेंट में डूबोएं और उसे एक अनोखा विंटेज लुक दें। घर के डेकोरेशन के लिए बहतरीन शोप।\n\nब्रेड की स्लाइस को सीमेंट में डुबोएं और सुखाएं चाय या कॉफी के लिए आपका एकदम नया और यूनिक कॉस्टर तैयार\n\nसैंडल का वेलक्रो डीला हो गया, लाइटर से रोएं साफ करो, फिर नए जैसा चिपकेगा.\n\nमूंग को गीले कपड़े में लपेट कर रखे, एक हफ़ते में ही ताजा और हेल्दी स्प्राउट्स तैयार हो जाएंगे.\n\nऐसा कद्दू डिजाइन बनाओ। मेहमान मिठाई खाने से पहले उसे घुमा कर देखेंगे।"
+}
