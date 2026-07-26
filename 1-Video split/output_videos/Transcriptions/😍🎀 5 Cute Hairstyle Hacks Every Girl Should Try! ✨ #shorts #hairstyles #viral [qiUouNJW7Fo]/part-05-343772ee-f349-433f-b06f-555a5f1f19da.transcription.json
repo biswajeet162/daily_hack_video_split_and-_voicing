@@ -1,0 +1,42 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-05-343772ee-f349-433f-b06f-555a5f1f19da.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-26T15:33:28.778397+00:00",
+  "start_sec": 0.0,
+  "end_sec": 6.64,
+  "duration_sec": 6.64,
+  "text": "ये प्रिंसस हेरस्टाइल लगाते ही लोग पूछेंगे पालर से बनवाया है या खुद बनाया बस एक फ्लावर क्लिप और लुग तैयार",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 6.64,
+      "duration_sec": 6.64,
+      "text": "ये प्रिंसस हेरस्टाइल लगाते ही लोग पूछेंगे पालर से बनवाया है या खुद बनाया बस एक फ्लावर क्लिप और लुग तैयार"
+    }
+  ],
+  "categories": [
+    "clothes_hacks",
+    "plant_propagation"
+  ],
+  "display_label": "कपड़े पौधे",
+  "category_names_en": [
+    "Clothes & Fabric Hacks",
+    "Plant Propagation"
+  ],
+  "category_names_hi": [
+    "कपड़े से जुड़े हैक",
+    "पौधे उगाना और propagation"
+  ],
+  "categorized_at": "2026-07-26T15:34:07.133108+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
+}

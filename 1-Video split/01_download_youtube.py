@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -47,26 +48,42 @@ VIDEO_ID_RE = re.compile(
 
 
 def extract_urls(text: str) -> list[str]:
-    """Pull YouTube URLs from free-form text (one per line or mixed)."""
-    found = URL_RE.findall(text)
-    # Also accept bare lines that look like youtu URLs without http
-    for line in text.splitlines():
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        if "youtu" in line.lower() and line not in found:
-            if not line.startswith("http"):
-                line = "https://" + line
-            if URL_RE.match(line) or "youtube.com" in line or "youtu.be" in line:
-                found.append(line)
-    # Preserve order, drop duplicates
+    """Pull YouTube URLs from non-comment lines only (ignores # example lines in links.txt)."""
     seen: set[str] = set()
     urls: list[str] = []
-    for u in found:
-        if u not in seen:
-            seen.add(u)
-            urls.append(u)
+
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+
+        if "#" in line:
+            line = line.split("#", 1)[0].strip()
+        if not line:
+            continue
+
+        if not line.startswith("http") and "youtu" in line.lower():
+            line = "https://" + line.lstrip("/")
+
+        for match in URL_RE.findall(line):
+            if match not in seen:
+                seen.add(match)
+                urls.append(match)
+
     return urls
+
+
+def dedupe_urls_by_video_id(urls: list[str]) -> list[str]:
+    seen_ids: set[str] = set()
+    unique: list[str] = []
+    for url in urls:
+        video_id = extract_video_id(url)
+        if video_id and video_id in seen_ids:
+            continue
+        if video_id:
+            seen_ids.add(video_id)
+        unique.append(url)
+    return unique
 
 
 def read_links_file(path: Path) -> list[str]:
@@ -106,7 +123,7 @@ def prompt_links() -> list[str]:
 
 def build_ydl_opts() -> dict:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    return {
+    opts: dict = {
         "format": FORMAT,
         "outtmpl": str(OUTPUT_DIR / "%(title)s [%(id)s].%(ext)s"),
         "merge_output_format": "mp4",
@@ -122,6 +139,13 @@ def build_ydl_opts() -> dict:
         "download_archive": str(DOWNLOAD_ARCHIVE_PATH),
         "progress_hooks": [_download_progress_hook],
     }
+    if shutil.which("node"):
+        opts["js_runtimes"] = {"node": {}}
+    else:
+        log.warn(
+            "Node.js not found on PATH. Install Node.js so yt-dlp can read YouTube pages reliably."
+        )
+    return opts
 
 
 def _download_progress_hook(status: dict) -> None:
@@ -269,13 +293,14 @@ def main() -> int:
     if not urls:
         urls = prompt_links()
 
-    # Dedupe again after combining sources
+    # Dedupe by video ID (same short listed as watch + shorts URL counts once)
     seen: set[str] = set()
     unique: list[str] = []
     for u in urls:
         if u not in seen:
             seen.add(u)
             unique.append(u)
+    unique = dedupe_urls_by_video_id(unique)
 
     return download(unique, links_file=args.file)
 

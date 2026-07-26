@@ -1,15 +1,27 @@
 # Paste one YouTube link per line.
+
 # Lines starting with # are ignored.
+
 #
-# Examples:
-# https://www.youtube.com/watch?v=XXXXXXXXXXX
-# https://youtu.be/XXXXXXXXXXX
-# https://www.youtube.com/shorts/XXXXXXXXXXX
+
+# Examples (do not paste these literally — use your own links):
+
+#   https://www.youtube.com/shorts/VIDEO_ID_HERE
+
+#   https://youtu.be/VIDEO_ID_HERE
 
 
 
-https://www.youtube.com/shorts/wq5e6zBvU5M
-https://www.youtube.com/shorts/UTe1vB9zX2k
-https://www.youtube.com/shorts/qKPXxWTltK4
-https://www.youtube.com/shorts/YbwmMV4TpWs
-https://www.youtube.com/shorts/rvwe6LJuWzI
+
+
+#https://www.youtube.com/shorts/wq5e6zBvU5M
+
+#https://www.youtube.com/shorts/UTe1vB9zX2k
+
+#https://www.youtube.com/shorts/qKPXxWTltK4
+
+#https://www.youtube.com/shorts/YbwmMV4TpWs
+
+#https://www.youtube.com/shorts/rvwe6LJuWzI
+
+https://www.youtube.com/shorts/qiUouNJW7Fo

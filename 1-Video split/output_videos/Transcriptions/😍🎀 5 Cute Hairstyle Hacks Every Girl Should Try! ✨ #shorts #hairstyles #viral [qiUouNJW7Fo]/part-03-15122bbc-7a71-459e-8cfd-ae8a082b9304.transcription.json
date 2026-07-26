@@ -1,0 +1,42 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-03-15122bbc-7a71-459e-8cfd-ae8a082b9304.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-26T15:33:24.148009+00:00",
+  "start_sec": 0.0,
+  "end_sec": 5.24,
+  "duration_sec": 5.24,
+  "text": "पर सबसे अलग दिखना है तो ये हार्ट बो स्टाइल जरूर ट्राइ करो। लोग तारीफ करते नहीं थके।",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 5.24,
+      "duration_sec": 5.24,
+      "text": "पर सबसे अलग दिखना है तो ये हार्ट बो स्टाइल जरूर ट्राइ करो। लोग तारीफ करते नहीं थके।"
+    }
+  ],
+  "categories": [
+    "clothes_hacks",
+    "hair_care"
+  ],
+  "display_label": "बालों की",
+  "category_names_en": [
+    "Clothes & Fabric Hacks",
+    "Hair Care Hacks"
+  ],
+  "category_names_hi": [
+    "कपड़े से जुड़े हैक",
+    "बालों की देखभाल"
+  ],
+  "categorized_at": "2026-07-26T15:33:57.151237+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
+}

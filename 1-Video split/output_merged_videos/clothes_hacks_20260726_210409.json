@@ -1,0 +1,377 @@
+{
+  "merge_id": "clothes_hacks_20260726_210409",
+  "category_slug": "clothes_hacks",
+  "category_name_en": "Clothes & Fabric Hacks",
+  "category_name_hi": "कपड़े से जुड़े हैक",
+  "merged_at": "2026-07-26T15:34:31.746300+00:00",
+  "clip_count": 5,
+  "raw_clip_duration_sec": 29.32,
+  "gap_added_sec": 4.0,
+  "gap_duration_sec": 1.0,
+  "total_duration_sec": 33.32,
+  "output_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_merged_videos\\clothes_hacks_20260726_210409.mp4",
+  "transition_config": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\configuration\\merge_transition_config.json",
+  "merge_mode": "frame_fade_bridge",
+  "fade_out_sec": 0.5,
+  "fade_in_sec": 0.5,
+  "exit_sec": 0.5,
+  "enter_sec": 0.5,
+  "transition_fps": 60,
+  "output_fps": 60,
+  "frame_trim_sec": 0.016666666666666666,
+  "clip_labels": [
+    {
+      "play_order": 1,
+      "line_number": 1,
+      "text_line": 5,
+      "label": "बालों की"
+    },
+    {
+      "play_order": 2,
+      "line_number": 2,
+      "text_line": 4,
+      "label": "कपड़े बालों"
+    },
+    {
+      "play_order": 3,
+      "line_number": 3,
+      "text_line": 3,
+      "label": "कपड़े पौधे"
+    },
+    {
+      "play_order": 4,
+      "line_number": 4,
+      "text_line": 2,
+      "label": "बालों की"
+    },
+    {
+      "play_order": 5,
+      "line_number": 5,
+      "text_line": 1,
+      "label": "बालों की"
+    }
+  ],
+  "clip_label_overlay": {
+    "method": "png_overlay",
+    "layout": "inline",
+    "display_mode": "synced",
+    "numbering": "reverse",
+    "font": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\assets\\fonts\\NotoSansDevanagari-Regular.ttf",
+    "font_size": 112,
+    "line_gap": 20,
+    "left_margin": 28,
+    "top_margin": 50,
+    "color": "RANDOM",
+    "random_color": true
+  },
+  "bridge_transitions": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "fade_out_label": {
+        "play_order": 1,
+        "text_line": 5,
+        "label": "बालों की"
+      },
+      "fade_in_label": {
+        "play_order": 2,
+        "text_line": 4,
+        "label": "कपड़े बालों"
+      },
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 2,
+      "before_clip_order": 3,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "fade_out_label": {
+        "play_order": 2,
+        "text_line": 4,
+        "label": "कपड़े बालों"
+      },
+      "fade_in_label": {
+        "play_order": 3,
+        "text_line": 3,
+        "label": "कपड़े पौधे"
+      },
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 3,
+      "before_clip_order": 4,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "fade_out_label": {
+        "play_order": 3,
+        "text_line": 3,
+        "label": "कपड़े पौधे"
+      },
+      "fade_in_label": {
+        "play_order": 4,
+        "text_line": 2,
+        "label": "बालों की"
+      },
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 4,
+      "before_clip_order": 5,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "fade_out_label": {
+        "play_order": 4,
+        "text_line": 2,
+        "label": "बालों की"
+      },
+      "fade_in_label": {
+        "play_order": 5,
+        "text_line": 1,
+        "label": "बालों की"
+      },
+      "mode": "frame_fade_bridge"
+    }
+  ],
+  "gap_effects": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "fade_out_label": {
+        "play_order": 1,
+        "text_line": 5,
+        "label": "बालों की"
+      },
+      "fade_in_label": {
+        "play_order": 2,
+        "text_line": 4,
+        "label": "कपड़े बालों"
+      },
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 2,
+      "before_clip_order": 3,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "fade_out_label": {
+        "play_order": 2,
+        "text_line": 4,
+        "label": "कपड़े बालों"
+      },
+      "fade_in_label": {
+        "play_order": 3,
+        "text_line": 3,
+        "label": "कपड़े पौधे"
+      },
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 3,
+      "before_clip_order": 4,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "fade_out_label": {
+        "play_order": 3,
+        "text_line": 3,
+        "label": "कपड़े पौधे"
+      },
+      "fade_in_label": {
+        "play_order": 4,
+        "text_line": 2,
+        "label": "बालों की"
+      },
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 4,
+      "before_clip_order": 5,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "fade_out_label": {
+        "play_order": 4,
+        "text_line": 2,
+        "label": "बालों की"
+      },
+      "fade_in_label": {
+        "play_order": 5,
+        "text_line": 1,
+        "label": "बालों की"
+      },
+      "mode": "frame_fade_bridge"
+    }
+  ],
+  "clips": [
+    {
+      "order": 1,
+      "clip_key": "😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]/part-03-15122bbc-7a71-459e-8cfd-ae8a082b9304.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-03-15122bbc-7a71-459e-8cfd-ae8a082b9304.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-03-15122bbc-7a71-459e-8cfd-ae8a082b9304.transcription.json",
+      "display_label": "बालों की",
+      "text": "पर सबसे अलग दिखना है तो ये हार्ट बो स्टाइल जरूर ट्राइ करो। लोग तारीफ करते नहीं थके।",
+      "duration_sec": 5.24,
+      "categories": [
+        "clothes_hacks",
+        "hair_care"
+      ]
+    },
+    {
+      "order": 2,
+      "clip_key": "😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]/part-02-2b5d189a-9f70-4ede-8089-564508401126.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-02-2b5d189a-9f70-4ede-8089-564508401126.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-02-2b5d189a-9f70-4ede-8089-564508401126.transcription.json",
+      "display_label": "कपड़े बालों",
+      "text": "इस स्टाइल को देखकर हर कोई पूछेगा ये हेर स्टाइल कहां से सीखी बस ट्विस्ट करो, क्रॉस करो और स्टार क्लिप लगा दो।",
+      "duration_sec": 6.58,
+      "categories": [
+        "clothes_hacks",
+        "hair_care"
+      ]
+    },
+    {
+      "order": 3,
+      "clip_key": "😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]/part-05-343772ee-f349-433f-b06f-555a5f1f19da.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-05-343772ee-f349-433f-b06f-555a5f1f19da.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-05-343772ee-f349-433f-b06f-555a5f1f19da.transcription.json",
+      "display_label": "कपड़े पौधे",
+      "text": "ये प्रिंसस हेरस्टाइल लगाते ही लोग पूछेंगे पालर से बनवाया है या खुद बनाया बस एक फ्लावर क्लिप और लुग तैयार",
+      "duration_sec": 6.64,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation"
+      ]
+    },
+    {
+      "order": 4,
+      "clip_key": "😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]/part-04-ae0bc8d7-f161-4bf0-9e82-81dee09f362b.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-04-ae0bc8d7-f161-4bf0-9e82-81dee09f362b.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-04-ae0bc8d7-f161-4bf0-9e82-81dee09f362b.transcription.json",
+      "display_label": "बालों की",
+      "text": "सिर्फ एक मिनट में ऐसा पोनी टेल बनाओ कि हर कोई दोबारा मुढ़कर देखने पर मजबूर हो जाए",
+      "duration_sec": 5.14,
+      "categories": [
+        "clothes_hacks",
+        "hair_care"
+      ]
+    },
+    {
+      "order": 5,
+      "clip_key": "😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]/part-01-a86e314e-279e-42ca-a687-b1bc0bd52107.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-01-a86e314e-279e-42ca-a687-b1bc0bd52107.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😍🎀 5 Cute Hairstyle Hacks Every Girl Should Try! ✨ #shorts #hairstyles #viral [qiUouNJW7Fo]\\part-01-a86e314e-279e-42ca-a687-b1bc0bd52107.transcription.json",
+      "display_label": "बालों की",
+      "text": "हेयर स्टाइल लगाते ही लोग मुड मुड कर देखेंगे बस पीछे बो क्लिप लगाईए दो सेकंड में क्यूट लुक तया",
+      "duration_sec": 5.72,
+      "categories": [
+        "hair_care",
+        "clothes_hacks"
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "order": 1,
+      "text": "पर सबसे अलग दिखना है तो ये हार्ट बो स्टाइल जरूर ट्राइ करो। लोग तारीफ करते नहीं थके।"
+    },
+    {
+      "order": 2,
+      "text": "इस स्टाइल को देखकर हर कोई पूछेगा ये हेर स्टाइल कहां से सीखी बस ट्विस्ट करो, क्रॉस करो और स्टार क्लिप लगा दो।"
+    },
+    {
+      "order": 3,
+      "text": "ये प्रिंसस हेरस्टाइल लगाते ही लोग पूछेंगे पालर से बनवाया है या खुद बनाया बस एक फ्लावर क्लिप और लुग तैयार"
+    },
+    {
+      "order": 4,
+      "text": "सिर्फ एक मिनट में ऐसा पोनी टेल बनाओ कि हर कोई दोबारा मुढ़कर देखने पर मजबूर हो जाए"
+    },
+    {
+      "order": 5,
+      "text": "हेयर स्टाइल लगाते ही लोग मुड मुड कर देखेंगे बस पीछे बो क्लिप लगाईए दो सेकंड में क्यूट लुक तया"
+    }
+  ],
+  "full_dialogue_hindi": "पर सबसे अलग दिखना है तो ये हार्ट बो स्टाइल जरूर ट्राइ करो। लोग तारीफ करते नहीं थके।\n\nइस स्टाइल को देखकर हर कोई पूछेगा ये हेर स्टाइल कहां से सीखी बस ट्विस्ट करो, क्रॉस करो और स्टार क्लिप लगा दो।\n\nये प्रिंसस हेरस्टाइल लगाते ही लोग पूछेंगे पालर से बनवाया है या खुद बनाया बस एक फ्लावर क्लिप और लुग तैयार\n\nसिर्फ एक मिनट में ऐसा पोनी टेल बनाओ कि हर कोई दोबारा मुढ़कर देखने पर मजबूर हो जाए\n\nहेयर स्टाइल लगाते ही लोग मुड मुड कर देखेंगे बस पीछे बो क्लिप लगाईए दो सेकंड में क्यूट लुक तया"
+}
