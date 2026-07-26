@@ -18,14 +18,16 @@ from pathlib import Path
 import yt_dlp
 
 import log_utils as log
+import project_paths as paths
 
 log.configure_stdio()
 
-ROOT = Path(__file__).resolve().parent
-OUTPUT_DIR = ROOT / "input_videos"
+ROOT = paths.ROOT
+OUTPUT_DIR = paths.INPUT_DIR
 LINKS_FILE = ROOT / "links.txt"
+DOWNLOAD_ARCHIVE_PATH = paths.DOWNLOAD_ARCHIVE
 
-# Prefer best MP4 video + best M4A audio, merge to MP4.
+# Prefer best MP4 video
 # Falls back to best single file if separate streams aren't available.
 FORMAT = (
     "bestvideo[ext=mp4]+bestaudio[ext=m4a]/"
@@ -42,7 +44,6 @@ VIDEO_ID_RE = re.compile(
     r"(?:youtube\.com/(?:watch\?v=|shorts/|live/)|youtu\.be/)([\w-]{6,})",
     re.IGNORECASE,
 )
-DOWNLOAD_ARCHIVE_PATH = OUTPUT_DIR / ".download_archive.txt"
 
 
 def extract_urls(text: str) -> list[str]:

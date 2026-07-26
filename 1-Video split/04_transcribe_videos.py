@@ -3,7 +3,7 @@
 
 Scans output_videos/ recursively for *.mp4, transcribes speech in Hindi,
 and writes a JSON file under output_videos/Transcriptions/ (mirrors clip folders).
-Tracks completed transcriptions in output_videos/.transcribe_processed.json
+Tracks completed transcriptions in trackers/transcribe_processed.json
 so reruns skip videos that were already transcribed.
 
 Uses the same faster-whisper settings as 2-HOLO_GRAM_VOICE_OVER (large-v3,
@@ -38,14 +38,15 @@ from pathlib import Path
 from faster_whisper import WhisperModel
 
 import log_utils as log
+import project_paths as paths
 
 log.configure_stdio()
 
-ROOT = Path(__file__).resolve().parent
-OUTPUT_DIR = ROOT / "output_videos"
-TRANSCRIPTIONS_DIR = OUTPUT_DIR / "Transcriptions"
-PROCESSED_TRACKER_PATH = OUTPUT_DIR / ".transcribe_processed.json"
-FAILED_TRACKER_PATH = OUTPUT_DIR / ".transcribe_failed.json"
+ROOT = paths.ROOT
+OUTPUT_DIR = paths.OUTPUT_DIR
+TRANSCRIPTIONS_DIR = paths.TRANSCRIPTIONS_DIR
+PROCESSED_TRACKER_PATH = paths.TRANSCRIBE_PROCESSED
+FAILED_TRACKER_PATH = paths.TRANSCRIBE_FAILED
 DEFAULT_MODEL = "large-v3"
 DEFAULT_LANGUAGE = "hi"
 DEFAULT_DEVICE = "cuda"

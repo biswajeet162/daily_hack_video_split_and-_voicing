@@ -2,7 +2,7 @@
 [3] Blur on-screen English text from split clip MP4s in output_videos/.
 
 For each frame: detect English text with EasyOCR (GPU), blur those areas, save clip.
-Tracks finished chunks in output_videos/.text_removed_processed.json (one-time per clip).
+Tracks finished chunks in trackers/text_removed_processed.json (one-time per clip).
 
 Preferred: run.bat -> 3
 """
@@ -29,15 +29,16 @@ import easyocr
 import numpy as np
 
 import log_utils as log
+import project_paths as paths
 
 log.configure_stdio()
 
-ROOT = Path(__file__).resolve().parent
-OUTPUT_DIR = ROOT / "output_videos"
-TRANSCRIPTIONS_DIR = OUTPUT_DIR / "Transcriptions"
-CONFIG_PATH = ROOT / "remove_text_config.json"
-PROCESSED_TRACKER_PATH = OUTPUT_DIR / ".text_removed_processed.json"
-FAILED_TRACKER_PATH = OUTPUT_DIR / ".text_removed_failed.json"
+ROOT = paths.ROOT
+OUTPUT_DIR = paths.OUTPUT_DIR
+TRANSCRIPTIONS_DIR = paths.TRANSCRIPTIONS_DIR
+CONFIG_PATH = paths.REMOVE_TEXT_CONFIG
+PROCESSED_TRACKER_PATH = paths.TEXT_REMOVED_PROCESSED
+FAILED_TRACKER_PATH = paths.TEXT_REMOVED_FAILED
 
 
 @dataclass

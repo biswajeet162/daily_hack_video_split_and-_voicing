@@ -6,7 +6,7 @@ Interactive (run.bat option 6):
   - Prompts for category number and clip count
   - Randomly picks clips, merges with ffmpeg, writes output to output_merged_videos/
 
-Tracks used clips in output_videos/.merge_used_clips.json so the same chunk
+Tracks used clips in trackers/merge_used_clips.json so the same chunk
 is not merged again unless --force is used.
 
 Merging uses ffmpeg/ffprobe (subprocess), not MoviePy or OpenCV.
@@ -33,16 +33,17 @@ from pathlib import Path
 from PIL import Image, ImageColor, ImageDraw, ImageFont
 
 import log_utils as log
+import project_paths as paths
 
 log.configure_stdio()
 
-ROOT = Path(__file__).resolve().parent
-OUTPUT_DIR = ROOT / "output_videos"
-TRANSCRIPTIONS_DIR = OUTPUT_DIR / "Transcriptions"
-MERGED_DIR = ROOT / "output_merged_videos"
-CATEGORIES_PATH = ROOT / "video_categories" / "categories.json"
-MERGE_TRACKER_PATH = OUTPUT_DIR / ".merge_used_clips.json"
-TRANSITION_CONFIG_PATH = ROOT / "merge_transition_config.json"
+ROOT = paths.ROOT
+OUTPUT_DIR = paths.OUTPUT_DIR
+TRANSCRIPTIONS_DIR = paths.TRANSCRIPTIONS_DIR
+MERGED_DIR = paths.MERGED_DIR
+CATEGORIES_PATH = paths.CATEGORIES_PATH
+MERGE_TRACKER_PATH = paths.MERGE_USED_CLIPS
+TRANSITION_CONFIG_PATH = paths.MERGE_TRANSITION_CONFIG
 LABEL_FONT_PATH = ROOT / "assets" / "fonts" / "NotoSansDevanagari-Regular.ttf"
 DEFAULT_CLIP_COUNT = 5
 DEFAULT_GAP_DURATION_SEC = 1.0

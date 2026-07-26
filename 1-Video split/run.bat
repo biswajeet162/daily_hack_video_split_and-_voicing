@@ -22,34 +22,36 @@ echo.
 echo   [1] Download YouTube videos
 echo       Input  : links.txt
 echo       Output : input_videos\
-echo       Tracker: input_videos\.download_archive.txt
+echo       Tracker: trackers\download_archive.txt
 echo.
 echo   [2] Split videos by number markers (1-5)
 echo       Input  : input_videos\*.mp4
 echo       Refs   : reference_numbers\1.png .. 5.png
+echo       Config : configuration\split_trim_config.json
 echo       Output : output_videos\^<video name^>\part-XX-*.mp4
-echo       Tracker: input_videos\.split_processed.json
+echo       Tracker: trackers\split_processed.json
 echo.
 echo   [3] Blur English text from clips (every frame, GPU OCR)
 echo       Input  : output_videos\ (all .mp4 clips)
-echo       Method : detect English text -> Gaussian blur
-echo       Tracker: output_videos\.text_removed_processed.json
+echo       Config : configuration\remove_text_config.json
+echo       Method : detect English text -^> Gaussian blur
+echo       Tracker: trackers\text_removed_processed.json
 echo.
 echo   [4] Transcribe split clips to Hindi (faster-whisper large-v3)
 echo       Input  : output_videos\ (all .mp4 clips)
 echo       Output : output_videos\Transcriptions\
-echo       Tracker: output_videos\.transcribe_processed.json
+echo       Tracker: trackers\transcribe_processed.json
 echo.
 echo   [5] Categorize transcriptions with Ollama (llama3.1:8b)
 echo       Input  : output_videos\Transcriptions\*.transcription.json
 echo       Output : same JSON file updated with categories
-echo       Tracker: output_videos\.categorize_processed.json
+echo       Tracker: trackers\categorize_processed.json
 echo.
 echo   [6] Merge clips by category (interactive menu)
 echo       Input  : output_videos\ clips + Transcriptions\ JSON
+echo       Config : configuration\merge_transition_config.json
 echo       Output : output_merged_videos\ (merged mp4 + dialogue json)
-echo       Effects: merge_transition_config.json (random gap blink, no overlap)
-echo       Tracker: output_videos\.merge_used_clips.json
+echo       Tracker: trackers\merge_used_clips.json
 echo.
 echo   [0] Exit
 echo.

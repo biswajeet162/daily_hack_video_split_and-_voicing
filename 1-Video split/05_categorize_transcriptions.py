@@ -5,7 +5,7 @@ Reads *.transcription.json under output_videos/Transcriptions/, sends the Hindi
 text to Ollama with the 100-category list from video_categories/categories.json,
 and writes 1-5 category slugs back into the same JSON file.
 
-Tracks completed categorizations in output_videos/.categorize_processed.json
+Tracks completed categorizations in trackers/categorize_processed.json
 so reruns skip files already categorized (use --force to redo).
 
 Default model: llama3.1:8b (best Hindi + JSON among locally installed models).
@@ -29,15 +29,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import log_utils as log
+import project_paths as paths
 
 log.configure_stdio()
 
-ROOT = Path(__file__).resolve().parent
-OUTPUT_DIR = ROOT / "output_videos"
-TRANSCRIPTIONS_DIR = OUTPUT_DIR / "Transcriptions"
-CATEGORIES_PATH = ROOT / "video_categories" / "categories.json"
-PROCESSED_TRACKER_PATH = OUTPUT_DIR / ".categorize_processed.json"
-FAILED_TRACKER_PATH = OUTPUT_DIR / ".categorize_failed.json"
+ROOT = paths.ROOT
+OUTPUT_DIR = paths.OUTPUT_DIR
+TRANSCRIPTIONS_DIR = paths.TRANSCRIPTIONS_DIR
+CATEGORIES_PATH = paths.CATEGORIES_PATH
+PROCESSED_TRACKER_PATH = paths.CATEGORIZE_PROCESSED
+FAILED_TRACKER_PATH = paths.CATEGORIZE_FAILED
 
 DEFAULT_OLLAMA_URL = "http://localhost:11434"
 DEFAULT_OLLAMA_MODEL = "llama3.1:8b"

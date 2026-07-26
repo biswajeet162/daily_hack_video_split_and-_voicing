@@ -3,7 +3,7 @@
 
 Reads videos from input_videos/, matches reference_numbers/1.png .. 5.png,
 then exports parts into output_videos/<video_name>/ as part-01-<uuid>.mp4, etc.
-Tracks completed splits in input_videos/.split_processed.json so reruns skip
+Tracks completed splits in trackers/split_processed.json so reruns skip
 videos that were already split. Existing output folders are synced into that
 tracker automatically.
 
@@ -32,16 +32,17 @@ import cv2
 import numpy as np
 
 import log_utils as log
+import project_paths as paths
 
 log.configure_stdio()
 
-ROOT = Path(__file__).resolve().parent
-INPUT_DIR = ROOT / "input_videos"
-OUTPUT_DIR = ROOT / "output_videos"
+ROOT = paths.ROOT
+INPUT_DIR = paths.INPUT_DIR
+OUTPUT_DIR = paths.OUTPUT_DIR
 REF_DIR = ROOT / "reference_numbers"
-TRIM_CONFIG_PATH = ROOT / "split_trim_config.json"
-PROCESSED_TRACKER_PATH = INPUT_DIR / ".split_processed.json"
-FAILED_TRACKER_PATH = INPUT_DIR / ".split_failed.json"
+TRIM_CONFIG_PATH = paths.SPLIT_TRIM_CONFIG
+PROCESSED_TRACKER_PATH = paths.SPLIT_PROCESSED
+FAILED_TRACKER_PATH = paths.SPLIT_FAILED
 
 NUMBERS = list(range(1, 6))
 SAMPLE_FPS = 4.0  # coarse scan: frames analyzed per second
