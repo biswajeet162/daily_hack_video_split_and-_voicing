@@ -30,10 +30,9 @@ echo       Refs   : reference_numbers\1.png .. 5.png
 echo       Output : output_videos\^<video name^>\part-XX-*.mp4
 echo       Tracker: input_videos\.split_processed.json
 echo.
-echo   [3] Remove on-screen text from clips (per-frame, GPU OCR)
+echo   [3] Blur English text from clips (every frame, GPU OCR)
 echo       Input  : output_videos\ (all .mp4 clips)
-echo       Langs  : English, Hindi, Chinese (EasyOCR)
-echo       Output : same clip files, text inpainted out
+echo       Method : detect English text -> Gaussian blur
 echo       Tracker: output_videos\.text_removed_processed.json
 echo.
 echo   [4] Transcribe split clips to Hindi (faster-whisper large-v3)
@@ -84,7 +83,7 @@ pause
 goto menu
 
 :run_03
-call :print_task_header 3 "Remove on-screen text from clips" "per-frame GPU OCR + inpainting"
+call :print_task_header 3 "Blur English text from clips" "every frame, detect and blur"
 call :run_python 03_remove_text_from_videos.py
 call :print_task_footer 3
 pause
