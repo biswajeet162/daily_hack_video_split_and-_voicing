@@ -52,12 +52,15 @@ OUTPUT_AUDIO_RATE = 48000
 FRAME_TRIM_SEC = 1.0 / OUTPUT_FPS
 DEFAULT_FADE_OUT_SEC = 0.5
 DEFAULT_FADE_IN_SEC = 0.5
+MIN_LABEL_FONT_SIZE = 16
 DEFAULT_LABEL_OVERLAY = {
     "font_size": 0,
     "line_gap": 10,
     "left_margin": 24,
     "top_margin": 36,
     "color": "yellow",
+    "display_mode": "synced",
+    "numbering": "reverse",
 }
 RANDOM_LABEL_COLORS = [
     (255, 255, 0, 255),
@@ -341,6 +344,12 @@ def load_label_overlay_config(data: dict) -> dict:
 
     if font_size < 0:
         raise ValueError("clip_label_overlay.font_size must be 0 (auto) or positive")
+    if 0 < font_size < MIN_LABEL_FONT_SIZE:
+        log.warn(
+            f"clip_label_overlay.font_size={font_size} is too small; "
+            f"using {MIN_LABEL_FONT_SIZE}px minimum for readable labels"
+        )
+        font_size = MIN_LABEL_FONT_SIZE
     if line_gap < 0:
         raise ValueError("clip_label_overlay.line_gap must be 0 or positive")
     if left_margin < 0 or top_margin < 0:
@@ -352,6 +361,17 @@ def load_label_overlay_config(data: dict) -> dict:
     if not random_color:
         parse_label_color(color)
 
+    display_mode = str(
+        overlay.get("display_mode", DEFAULT_LABEL_OVERLAY["display_mode"])
+    ).strip().lower()
+    numbering = str(
+        overlay.get("numbering", DEFAULT_LABEL_OVERLAY["numbering"])
+    ).strip().lower()
+    if display_mode not in {"synced", "all"}:
+        raise ValueError('clip_label_overlay.display_mode must be "synced" or "all"')
+    if numbering not in {"reverse", "normal"}:
+        raise ValueError('clip_label_overlay.numbering must be "reverse" or "normal"')
+
     return {
         "font_size": font_size,
         "line_gap": line_gap,
@@ -359,6 +379,8 @@ def load_label_overlay_config(data: dict) -> dict:
         "top_margin": top_margin,
         "color": color,
         "random_color": random_color,
+        "display_mode": display_mode,
+        "numbering": numbering,
     }
 
 
@@ -375,6 +397,35 @@ def parse_label_color(color: str) -> tuple[int, int, int, int]:
 
 def pick_random_label_color() -> tuple[int, int, int, int]:
     return random.choice(RANDOM_LABEL_COLORS)
+
+
+def pick_label_color_for_line(
+    line_num: int,
+    *,
+    random_color: bool,
+    fixed_color: tuple[int, int, int, int] | None,
+) -> tuple[int, int, int, int]:
+    if not random_color:
+        return fixed_color or (255, 255, 0, 255)
+    rng = random.Random(line_num * 9973 + 17)
+    return rng.choice(RANDOM_LABEL_COLORS)
+
+
+def play_order_for_line(line_num: int, total: int, numbering: str) -> int:
+    if numbering == "normal":
+        return line_num
+    return total - line_num + 1
+
+
+def line_should_show_text(
+    line_num: int,
+    active_play_order: int,
+    total: int,
+    numbering: str,
+) -> bool:
+    if numbering == "reverse":
+        return line_num >= active_text_line(active_play_order, total, numbering)
+    return line_num <= active_play_order
 
 
 def bridge_frame_count(duration_sec: float, fps: int) -> int:
@@ -468,15 +519,28 @@ def resolve_label_font() -> Path:
     )
 
 
+def active_text_line(play_order: int, total: int, numbering: str) -> int:
+    if numbering == "reverse":
+        return total - play_order + 1
+    return play_order
+
+
 def render_label_overlay_png(
-    label_rows: list[dict],
     *,
     width: int,
     height: int,
     font_path: Path,
     output_path: Path,
     label_config: dict | None = None,
+    label_rows: list[dict] | None = None,
+    active_play_order: int | None = None,
+    show_all_text: bool = False,
 ) -> None:
+    rows = label_rows or []
+    total = len(rows)
+    if total == 0:
+        raise ValueError("label_rows must not be empty")
+
     config = label_config or DEFAULT_LABEL_OVERLAY.copy()
     configured_size = int(config.get("font_size") or 0)
     fontsize = configured_size if configured_size > 0 else max(28, height // 32)
@@ -485,6 +549,8 @@ def render_label_overlay_png(
     top_margin = int(config.get("top_margin", DEFAULT_LABEL_OVERLAY["top_margin"]))
     random_color = bool(config.get("random_color"))
     fixed_color = None if random_color else parse_label_color(str(config.get("color", "yellow")))
+    numbering = str(config.get("numbering", DEFAULT_LABEL_OVERLAY["numbering"]))
+    number_color = (255, 255, 255, 255)
 
     line_height = fontsize + line_gap
     font = ImageFont.truetype(str(font_path), fontsize)
@@ -492,24 +558,126 @@ def render_label_overlay_png(
     image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
 
-    for index, row in enumerate(label_rows):
-        y = top_margin + index * line_height
-        line_text = f"{row['order']}. {row['label']}"
-        fill = pick_random_label_color() if random_color else fixed_color
+    for line_num in range(1, total + 1):
+        y = top_margin + (line_num - 1) * line_height
+        if show_all_text:
+            play_order = play_order_for_line(line_num, total, numbering)
+            label = rows[play_order - 1]["label"]
+            line_text = f"{line_num}. {label}"
+            fill = pick_label_color_for_line(
+                line_num,
+                random_color=random_color,
+                fixed_color=fixed_color,
+            )
+        elif active_play_order is not None:
+            if line_should_show_text(line_num, active_play_order, total, numbering):
+                play_order = play_order_for_line(line_num, total, numbering)
+                label = rows[play_order - 1]["label"]
+                line_text = f"{line_num}. {label}"
+                fill = pick_label_color_for_line(
+                    line_num,
+                    random_color=random_color,
+                    fixed_color=fixed_color,
+                )
+            else:
+                line_text = f"{line_num}."
+                fill = number_color
+        else:
+            line_text = f"{line_num}."
+            fill = number_color
+
         draw.text((left_margin, y), line_text, font=font, fill=fill)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     image.save(output_path, format="PNG")
 
 
-def build_merge_label_rows(selected: list[dict]) -> list[dict]:
+def build_merge_label_rows(
+    selected: list[dict],
+    *,
+    numbering: str = "reverse",
+) -> list[dict]:
+    total = len(selected)
     rows: list[dict] = []
-    for index, record in enumerate(selected, 1):
+    for play_order, record in enumerate(selected, 1):
         label = (record.get("display_label") or "").strip()
         if not label:
             label = fallback_display_label(record.get("text") or "")
-        rows.append({"order": index, "label": label})
+        rows.append(
+            {
+                "play_order": play_order,
+                "line_number": play_order,
+                "text_line": active_text_line(play_order, total, numbering),
+                "label": label,
+            }
+        )
     return rows
+
+
+def create_label_overlay_png(
+    *,
+    width: int,
+    height: int,
+    font_path: Path,
+    label_config: dict,
+    label_rows: list[dict],
+    active_play_order: int | None = None,
+    show_all_text: bool = False,
+) -> Path:
+    png_file = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
+    png_file.close()
+    png_path = Path(png_file.name)
+    render_label_overlay_png(
+        width=width,
+        height=height,
+        font_path=font_path,
+        output_path=png_path,
+        label_config=label_config,
+        label_rows=label_rows,
+        active_play_order=active_play_order,
+        show_all_text=show_all_text,
+    )
+    return png_path
+
+
+def build_label_overlay_assets(
+    *,
+    width: int,
+    height: int,
+    font_path: Path,
+    label_config: dict,
+    label_rows: list[dict],
+) -> tuple[list[Path], list[tuple[Path | None, Path | None]]]:
+    display_mode = label_config.get("display_mode", "synced")
+    if display_mode == "all":
+        shared_png = create_label_overlay_png(
+            width=width,
+            height=height,
+            font_path=font_path,
+            label_config=label_config,
+            label_rows=label_rows,
+            show_all_text=True,
+        )
+        clip_pngs = [shared_png] * len(label_rows)
+        bridge_pngs = [(shared_png, shared_png)] * max(0, len(label_rows) - 1)
+        return clip_pngs, bridge_pngs
+
+    clip_pngs = [
+        create_label_overlay_png(
+            width=width,
+            height=height,
+            font_path=font_path,
+            label_config=label_config,
+            label_rows=label_rows,
+            active_play_order=row["play_order"],
+        )
+        for row in label_rows
+    ]
+    bridge_pngs = [
+        (clip_pngs[index], clip_pngs[index + 1])
+        for index in range(len(clip_pngs) - 1)
+    ]
+    return clip_pngs, bridge_pngs
 
 
 
@@ -630,7 +798,8 @@ def generate_fade_bridge_clip(
     fade_out_sec: float,
     fade_in_sec: float,
     fps: int,
-    label_png: Path | None = None,
+    label_png_out: Path | None = None,
+    label_png_in: Path | None = None,
 ) -> None:
     last_frame = extract_video_frame(
         prev_video,
@@ -648,22 +817,32 @@ def generate_fade_bridge_clip(
     total_duration = fade_out_sec + fade_in_sec
     frame_vf = build_fade_frame_filter(width, height)
     canvas = f"color=c=black:s={width}x{height}:r={fps}"
-    label_input = ""
-    if label_png is not None:
-        label_input = ["-loop", "1", "-i", str(label_png)]
+    fade_out_label = label_png_out
+    fade_in_label = label_png_in if label_png_in is not None else label_png_out
+    label_input: list[str] = []
+    out_label_index = 5
+    in_label_index = 5
+
+    if fade_out_label is not None:
+        label_input.extend(["-loop", "1", "-i", str(fade_out_label)])
+        if fade_in_label is not None and fade_in_label != fade_out_label:
+            label_input.extend(["-loop", "1", "-i", str(fade_in_label)])
+            in_label_index = 6
+
+    if fade_out_label is not None:
         v0_chain = (
             f"[0:v]{frame_vf}[fg0];"
             f"[2:v][fg0]overlay=x=(W-w)/2:y=(H-h)/2:shortest=1,"
             f"fade=t=out:st=0:d={fade_out_sec:.6f},"
             f"fps={fps},format=yuv420p[v0base];"
-            f"[v0base][5:v]overlay=0:0:format=auto,format=yuv420p[v0];"
+            f"[v0base][{out_label_index}:v]overlay=0:0:format=auto,format=yuv420p[v0];"
         )
         v1_chain = (
             f"[1:v]{frame_vf}[fg1];"
             f"[3:v][fg1]overlay=x=(W-w)/2:y=(H-h)/2:shortest=1,"
             f"fade=t=in:st=0:d={fade_in_sec:.6f},"
             f"fps={fps},format=yuv420p[v1base];"
-            f"[v1base][5:v]overlay=0:0:format=auto,format=yuv420p[v1];"
+            f"[v1base][{in_label_index}:v]overlay=0:0:format=auto,format=yuv420p[v1];"
         )
     else:
         v0_chain = (
@@ -762,15 +941,21 @@ def normalize_clip_for_merge(
     cmd: list[str] = ["ffmpeg", "-y"]
     if trim_start > 0:
         cmd.extend(["-ss", f"{trim_start:.6f}"])
-    cmd.extend(["-i", str(source), "-t", f"{playable:.6f}"])
+    cmd.extend(["-i", str(source)])
 
     if label_png is not None:
         cmd.extend(["-loop", "1", "-i", str(label_png)])
         cmd.extend(
             [
                 "-filter_complex",
-                f"[0:v]{base_vf}[base];[base][1:v]overlay=0:0:format=auto,format=yuv420p",
+                f"[0:v]{base_vf}[base];[base][1:v]overlay=0:0:format=auto,format=yuv420p[vout]",
+                "-map",
+                "[vout]",
+                "-map",
+                "0:a?",
                 *ffmpeg_encode_args(fps),
+                "-t",
+                f"{playable:.6f}",
                 str(output_path),
             ]
         )
@@ -780,6 +965,8 @@ def normalize_clip_for_merge(
                 "-vf",
                 base_vf,
                 *ffmpeg_encode_args(fps),
+                "-t",
+                f"{playable:.6f}",
                 str(output_path),
             ]
         )
@@ -877,9 +1064,25 @@ def _run_ffmpeg(cmd: list[str]) -> None:
         raise RuntimeError(result.stderr[-1200:] or "ffmpeg command failed")
 
 
-def copy_single_clip(source: Path, output_path: Path) -> None:
-    width, height = merge_target_size([source])
-    normalize_clip_for_merge(source, output_path, width=width, height=height)
+def copy_single_clip(
+    source: Path,
+    output_path: Path,
+    *,
+    label_png: Path | None = None,
+    width: int | None = None,
+    height: int | None = None,
+    fps: int = OUTPUT_FPS,
+) -> None:
+    if width is None or height is None:
+        width, height = merge_target_size([source])
+    normalize_clip_for_merge(
+        source,
+        output_path,
+        width=width,
+        height=height,
+        fps=fps,
+        label_png=label_png,
+    )
 
 
 def merge_videos_with_ffmpeg(
@@ -892,7 +1095,32 @@ def merge_videos_with_ffmpeg(
         raise ValueError("No videos to merge")
 
     if len(video_paths) == 1:
-        copy_single_clip(video_paths[0], output_path)
+        width, height = merge_target_size(video_paths)
+        label_config = transition_config.get("clip_label_overlay") or DEFAULT_LABEL_OVERLAY
+        label_rows = build_merge_label_rows(
+            selected,
+            numbering=str(label_config.get("numbering", "reverse")),
+        )
+        label_font = resolve_label_font()
+        clip_pngs, _bridge_pngs = build_label_overlay_assets(
+            width=width,
+            height=height,
+            font_path=label_font,
+            label_config=label_config,
+            label_rows=label_rows,
+        )
+        try:
+            copy_single_clip(
+                video_paths[0],
+                output_path,
+                label_png=clip_pngs[0],
+                width=width,
+                height=height,
+                fps=int(transition_config["transition_fps"]),
+            )
+        finally:
+            for png_path in set(clip_pngs):
+                png_path.unlink(missing_ok=True)
         return []
 
     gap_duration = float(transition_config["gap_duration_sec"])
@@ -903,21 +1131,21 @@ def merge_videos_with_ffmpeg(
     fade_out_frames = bridge_frame_count(fade_out_sec, transition_fps)
     fade_in_frames = bridge_frame_count(fade_in_sec, transition_fps)
     width, height = merge_target_size(video_paths)
+    label_config = transition_config.get("clip_label_overlay") or DEFAULT_LABEL_OVERLAY
     label_font = resolve_label_font()
-    label_rows = build_merge_label_rows(selected)
-    label_png_file = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-    label_png_file.close()
-    label_png_path = Path(label_png_file.name)
-    render_label_overlay_png(
-        label_rows,
+    label_rows = build_merge_label_rows(
+        selected,
+        numbering=str(label_config.get("numbering", "reverse")),
+    )
+    clip_label_pngs, bridge_label_pngs = build_label_overlay_assets(
         width=width,
         height=height,
         font_path=label_font,
-        output_path=label_png_path,
-        label_config=transition_config.get("clip_label_overlay"),
+        label_config=label_config,
+        label_rows=label_rows,
     )
 
-    temp_cleanup: list[Path] = [label_png_path]
+    temp_cleanup: list[Path] = list(dict.fromkeys(clip_label_pngs))
     normalized_clips: list[Path] = []
     transition_log: list[dict] = []
 
@@ -939,7 +1167,7 @@ def merge_videos_with_ffmpeg(
             trim_start=trim_start,
             trim_end=trim_end,
             fps=transition_fps,
-            label_png=label_png_path,
+            label_png=clip_label_pngs[index],
         )
         normalized_clips.append(norm_path)
         temp_cleanup.append(norm_path)
@@ -962,6 +1190,7 @@ def merge_videos_with_ffmpeg(
             f"fade-in {fade_in_sec:.2f}s ({fade_in_frames} frames) @ {transition_fps}fps"
         )
 
+        bridge_out_label, bridge_in_label = bridge_label_pngs[index]
         generate_fade_bridge_clip(
             bridge_path,
             video_paths[index],
@@ -971,7 +1200,8 @@ def merge_videos_with_ffmpeg(
             fade_out_sec=fade_out_sec,
             fade_in_sec=fade_in_sec,
             fps=transition_fps,
-            label_png=label_png_path,
+            label_png_out=bridge_out_label,
+            label_png_in=bridge_in_label,
         )
         pieces.append(bridge_path)
         transition_log.append(
@@ -990,7 +1220,16 @@ def merge_videos_with_ffmpeg(
                 "transition_fps": transition_fps,
                 "frame_trim_sec": frame_trim_sec,
                 "bridge_duration_sec": gap_duration,
-                "clip_labels": label_rows,
+                "fade_out_label": {
+                    "play_order": label_rows[index]["play_order"],
+                    "text_line": label_rows[index]["text_line"],
+                    "label": label_rows[index]["label"],
+                },
+                "fade_in_label": {
+                    "play_order": label_rows[index + 1]["play_order"],
+                    "text_line": label_rows[index + 1]["text_line"],
+                    "label": label_rows[index + 1]["label"],
+                },
                 "mode": transition_config.get("mode", "frame_fade_bridge"),
             }
         )
@@ -1069,10 +1308,23 @@ def build_merge_json(
             if transition_config.get("transition_fps")
             else FRAME_TRIM_SEC
         ),
-        "clip_labels": build_merge_label_rows(selected),
+        "clip_labels": build_merge_label_rows(
+            selected,
+            numbering=str(
+                (transition_config.get("clip_label_overlay") or {}).get(
+                    "numbering", "reverse"
+                )
+            ),
+        ),
         "clip_label_overlay": {
             "method": "png_overlay",
             "layout": "inline",
+            "display_mode": (transition_config.get("clip_label_overlay") or {}).get(
+                "display_mode", "synced"
+            ),
+            "numbering": (transition_config.get("clip_label_overlay") or {}).get(
+                "numbering", "reverse"
+            ),
             "font": str(resolve_label_font()),
             **(transition_config.get("clip_label_overlay") or DEFAULT_LABEL_OVERLAY),
         },
@@ -1154,10 +1406,16 @@ def run_merge(
     output_video, output_json = output_paths(merge_id)
 
     log.section(f"Merging {len(selected)} clip(s) with fade-bridge transitions")
-    label_preview = ", ".join(
-        f"{row['order']}. {row['label']}" for row in build_merge_label_rows(selected)
+    label_config = transition_config.get("clip_label_overlay") or DEFAULT_LABEL_OVERLAY
+    label_rows = build_merge_label_rows(
+        selected,
+        numbering=str(label_config.get("numbering", "reverse")),
     )
-    log.info("Clip labels overlay", label_preview)
+    label_preview = " | ".join(
+        f"clip {row['play_order']} -> line {row['text_line']}: {row['label']}"
+        for row in label_rows
+    )
+    log.info("Clip labels overlay (cumulative numbered list)", label_preview)
     for i, record in enumerate(selected, 1):
         log.bullet(f"[{i}] {record['clip_key']}")
         preview = (record.get("text") or "")[:80]

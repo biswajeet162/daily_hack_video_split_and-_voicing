@@ -20,3 +20,9 @@ conda run -n utube_env python 03_transcribe_videos.py --force
 ```
 
 Use `--device cpu --compute int8` if you do not have a CUDA GPU.
+
+
+
+"font_size": 80,
+
+mulporl of 16

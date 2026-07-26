@@ -1,4 +1,21 @@
 {
+  "_comments": {
+    "note": "Standard JSON has no // comments. This _comments block is for you only; the script ignores it.",
+    "mode": "frame_fade_bridge = fade-out last frame, then fade-in first frame of next clip (no overlap).",
+    "gap_duration_sec": "Total gap between clips = fade_out_sec + fade_in_sec.",
+    "fade_out_sec": "Seconds to fade out the last frame of the current clip.",
+    "fade_in_sec": "Seconds to fade in the first frame of the next clip.",
+    "transition_fps": "FPS used for fade bridges and merged output (60 = smooth).",
+    "clip_label_overlay": {
+      "font_size": "0 = auto (~60px on 1080x1920). Fixed size in pixels: 48, 56, 64, 72 = bigger text. Minimum 16.",
+      "line_gap": "Extra pixels between each numbered line (increase if font_size is large).",
+      "left_margin": "Distance from the left edge of the video.",
+      "top_margin": "Distance from the top edge of the video.",
+      "color": "Label color: yellow, white, #00FFFF, etc. Use RANDOM for a different color per line.",
+      "display_mode": "synced = numbered list with text revealed per clip. all = show all labels on every clip.",
+      "numbering": "reverse = clip 1 text on last line (6.), clip 2 on line 5., etc. normal = clip 1 on line 1., clip 2 on line 2., etc. Revealed text stays visible for the rest of the video."
+    }
+  },
   "mode": "frame_fade_bridge",
   "gap_duration_sec": 1.0,
   "fade_out_sec": 0.5,
@@ -7,10 +24,12 @@
   "enter_sec": 0.5,
   "transition_fps": 60,
   "clip_label_overlay": {
-    "font_size": 0,
-    "line_gap": 10,
-    "left_margin": 24,
-    "top_margin": 36,
-    "color": "RANDOM"
+    "font_size": 112,
+    "line_gap": 20,
+    "left_margin": 28,
+    "top_margin": 50,
+    "color": "RANDOM",
+    "display_mode": "synced",
+    "numbering": "reverse"
   }
 }
