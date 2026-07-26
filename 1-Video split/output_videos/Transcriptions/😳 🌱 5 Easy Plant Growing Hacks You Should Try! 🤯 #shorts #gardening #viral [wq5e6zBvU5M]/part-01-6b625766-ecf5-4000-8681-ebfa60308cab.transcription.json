@@ -29,7 +29,7 @@
     "पौधे उगाना और propagation",
     "कपड़े से जुड़े हैक"
   ],
-  "categorized_at": "2026-07-25T18:41:26.206720+00:00",
+  "categorized_at": "2026-07-26T05:18:20.096327+00:00",
   "categorizer": {
     "provider": "ollama",
     "model": "llama3.1:8b",
@@ -37,5 +37,6 @@
     "min_categories": 1,
     "max_categories": 5,
     "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
-  }
+  },
+  "display_label": "पौधे उगाना"
 }

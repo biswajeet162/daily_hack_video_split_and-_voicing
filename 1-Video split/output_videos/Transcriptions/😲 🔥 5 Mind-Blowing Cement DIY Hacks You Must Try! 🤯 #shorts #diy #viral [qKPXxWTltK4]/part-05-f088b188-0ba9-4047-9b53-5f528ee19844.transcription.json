@@ -18,18 +18,18 @@
     }
   ],
   "categories": [
-    "cement_concrete_diy",
+    "clothes_hacks",
     "plant_propagation"
   ],
   "category_names_en": [
-    "Cement & Concrete DIY",
+    "Clothes & Fabric Hacks",
     "Plant Propagation"
   ],
   "category_names_hi": [
-    "सीमेंट और कंक्रीट DIY",
+    "कपड़े से जुड़े हैक",
     "पौधे उगाना और propagation"
   ],
-  "categorized_at": "2026-07-25T18:41:22.227866+00:00",
+  "categorized_at": "2026-07-26T05:18:15.665026+00:00",
   "categorizer": {
     "provider": "ollama",
     "model": "llama3.1:8b",
@@ -37,5 +37,6 @@
     "min_categories": 1,
     "max_categories": 5,
     "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
-  }
+  },
+  "display_label": "कपड़े पौधे"
 }

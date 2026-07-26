@@ -24,18 +24,18 @@
     }
   ],
   "categories": [
-    "tea_coffee",
+    "clothes_hacks",
     "drinks_cooling"
   ],
   "category_names_en": [
-    "Tea & Coffee Hacks",
+    "Clothes & Fabric Hacks",
     "Drinks & Cooling Tips"
   ],
   "category_names_hi": [
-    "चाय और कॉफी हैक",
+    "कपड़े से जुड़े हैक",
     "पेय और ठंडक के टिप्स"
   ],
-  "categorized_at": "2026-07-25T18:41:18.037172+00:00",
+  "categorized_at": "2026-07-26T05:18:11.285704+00:00",
   "categorizer": {
     "provider": "ollama",
     "model": "llama3.1:8b",
@@ -43,5 +43,6 @@
     "min_categories": 1,
     "max_categories": 5,
     "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
-  }
+  },
+  "display_label": "चाय कॉफी"
 }

@@ -19,26 +19,17 @@
   ],
   "categories": [
     "drinks_cooling",
-    "fridge_storage",
-    "leftover_reuse",
-    "cleaning_kitchen",
-    "utensils_tools"
+    "kitchen_hacks"
   ],
   "category_names_en": [
     "Drinks & Cooling Tips",
-    "Fridge & Food Storage",
-    "Leftover Reuse",
-    "Kitchen Cleaning",
-    "Utensils & Tool Hacks"
+    "Kitchen Hacks"
   ],
   "category_names_hi": [
     "पेय और ठंडक के टिप्स",
-    "फ्रिज और भोजन स्टोरेज",
-    "बचे खाने का उपयोग",
-    "रसोई की सफाई",
-    "बर्तन और टूल हैक"
+    "रसोई के हैक"
   ],
-  "categorized_at": "2026-07-25T18:42:08.261339+00:00",
+  "categorized_at": "2026-07-26T05:19:08.852464+00:00",
   "categorizer": {
     "provider": "ollama",
     "model": "llama3.1:8b",
@@ -46,5 +37,6 @@
     "min_categories": 1,
     "max_categories": 5,
     "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
-  }
+  },
+  "display_label": "पेय ठंडक"
 }

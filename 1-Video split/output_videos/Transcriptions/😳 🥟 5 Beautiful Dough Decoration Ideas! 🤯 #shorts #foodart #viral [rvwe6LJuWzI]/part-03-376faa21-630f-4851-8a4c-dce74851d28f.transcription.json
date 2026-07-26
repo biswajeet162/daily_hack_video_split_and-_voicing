@@ -24,21 +24,18 @@
     }
   ],
   "categories": [
-    "clothes_hacks",
-    "plant_propagation",
-    "drill_tool_hacks"
+    "baking_dough",
+    "clothes_hacks"
   ],
   "category_names_en": [
-    "Clothes & Fabric Hacks",
-    "Plant Propagation",
-    "Drill & Tool Hacks"
+    "Baking & Dough Crafts",
+    "Clothes & Fabric Hacks"
   ],
   "category_names_hi": [
-    "कपड़े से जुड़े हैक",
-    "पौधे उगाना और propagation",
-    "ड्रिल और टूल हैक"
+    "बेकिंग और आटा क्राफ्ट",
+    "कपड़े से जुड़े हैक"
   ],
-  "categorized_at": "2026-07-25T18:42:34.092558+00:00",
+  "categorized_at": "2026-07-26T05:19:35.277781+00:00",
   "categorizer": {
     "provider": "ollama",
     "model": "llama3.1:8b",
@@ -46,5 +43,6 @@
     "min_categories": 1,
     "max_categories": 5,
     "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
-  }
+  },
+  "display_label": "पेस्ट्री बनाना"
 }

@@ -49,6 +49,11 @@ OUTPUT_AUDIO_RATE = 48000
 FRAME_TRIM_SEC = 1.0 / OUTPUT_FPS
 DEFAULT_FADE_OUT_SEC = 0.5
 DEFAULT_FADE_IN_SEC = 0.5
+LABEL_FONT_COLOR = "yellow"
+LABEL_NUMBER_X = 24
+LABEL_RIGHT_MARGIN = 24
+LABEL_TOP_MARGIN = 36
+LABEL_LINE_GAP = 10
 
 
 def ffmpeg_encode_args(fps: int) -> list[str]:
@@ -196,6 +201,7 @@ def iter_clip_records(*, force: bool) -> list[dict]:
                 "categories": [str(c) for c in categories],
                 "category_names_en": payload.get("category_names_en") or [],
                 "category_names_hi": payload.get("category_names_hi") or [],
+                "display_label": (payload.get("display_label") or "").strip(),
                 "text": text,
                 "duration_sec": payload.get("duration_sec"),
             }
@@ -333,6 +339,104 @@ def scale_pad_vf(width: int, height: int) -> str:
     )
 
 
+def fallback_display_label(text: str) -> str:
+    words = re.findall(r"[\u0900-\u097F]+", text or "")
+    if not words:
+        words = (text or "").split()
+    cleaned = [word.strip() for word in words if word.strip()]
+    if not cleaned:
+        return "हैक"
+    return " ".join(cleaned[:2])
+
+
+def resolve_label_font() -> Path:
+    candidates = [
+        Path(r"C:\Windows\Fonts\NirmalaB.ttf"),
+        Path(r"C:\Windows\Fonts\Nirmala.ttf"),
+        Path(r"C:\Windows\Fonts\Mangal.ttf"),
+        Path(r"C:\Windows\Fonts\arial.ttf"),
+    ]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    raise RuntimeError(
+        "No font found for Hindi clip labels. Install Nirmala UI or Mangal on Windows."
+    )
+
+
+def ffmpeg_font_path(path: Path) -> str:
+    return str(path.resolve()).replace("\\", "/").replace(":", "\\:")
+
+
+def escape_drawtext(text: str) -> str:
+    return (
+        text.replace("\\", "\\\\")
+        .replace(":", "\\:")
+        .replace("'", "\\'")
+        .replace("%", "\\%")
+    )
+
+
+def build_merge_label_rows(selected: list[dict]) -> list[dict]:
+    rows: list[dict] = []
+    for index, record in enumerate(selected, 1):
+        label = (record.get("display_label") or "").strip()
+        if not label:
+            label = fallback_display_label(record.get("text") or "")
+        rows.append({"order": index, "label": label})
+    return rows
+
+
+def build_clip_label_overlay_vf(
+    label_rows: list[dict],
+    *,
+    width: int,
+    height: int,
+    font_path: Path,
+) -> str:
+    fontsize = max(28, height // 32)
+    line_height = fontsize + LABEL_LINE_GAP
+    fontfile = ffmpeg_font_path(font_path)
+    filters: list[str] = []
+
+    for index, row in enumerate(label_rows):
+        y = LABEL_TOP_MARGIN + index * line_height
+        number_text = escape_drawtext(f"{row['order']}.")
+        label_text = escape_drawtext(row["label"])
+        filters.append(
+            "drawtext="
+            f"fontfile='{fontfile}':"
+            f"text='{number_text}':"
+            f"x={LABEL_NUMBER_X}:y={y}:"
+            f"fontsize={fontsize}:"
+            f"fontcolor=white"
+        )
+        filters.append(
+            "drawtext="
+            f"fontfile='{fontfile}':"
+            f"text='{label_text}':"
+            f"x=w-tw-{LABEL_RIGHT_MARGIN}:y={y}:"
+            f"fontsize={fontsize}:"
+            f"fontcolor={LABEL_FONT_COLOR}"
+        )
+
+    return ",".join(filters)
+
+
+def compose_video_filter(
+    width: int,
+    height: int,
+    fps: int,
+    *,
+    label_overlay_vf: str | None = None,
+) -> str:
+    parts = [scale_fill_vf(width, height)]
+    if label_overlay_vf:
+        parts.append(label_overlay_vf)
+    parts.extend([f"fps={fps}", "format=yuv420p"])
+    return ",".join(parts)
+
+
 def extract_video_frame(
     video_path: Path,
     position: str,
@@ -446,6 +550,7 @@ def generate_fade_bridge_clip(
     fade_out_sec: float,
     fade_in_sec: float,
     fps: int,
+    label_overlay_vf: str | None = None,
 ) -> None:
     """Bridge: last frame fades out fully, then first frame fades in."""
     last_frame = extract_video_frame(
@@ -464,6 +569,9 @@ def generate_fade_bridge_clip(
     total_duration = fade_out_sec + fade_in_sec
     frame_vf = build_fade_frame_filter(width, height)
     canvas = f"color=c=black:s={width}x{height}:r={fps}"
+    overlay_chain = ""
+    if label_overlay_vf:
+        overlay_chain = f",{label_overlay_vf}"
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if output_path.exists():
@@ -507,11 +615,11 @@ def generate_fade_bridge_clip(
                     f"[0:v]{frame_vf}[fg0];"
                     f"[2:v][fg0]overlay=x=(W-w)/2:y=(H-h)/2:shortest=1,"
                     f"fade=t=out:st=0:d={fade_out_sec:.6f},"
-                    f"fps={fps},format=yuv420p[v0];"
+                    f"fps={fps},format=yuv420p{overlay_chain}[v0];"
                     f"[1:v]{frame_vf}[fg1];"
                     f"[3:v][fg1]overlay=x=(W-w)/2:y=(H-h)/2:shortest=1,"
                     f"fade=t=in:st=0:d={fade_in_sec:.6f},"
-                    f"fps={fps},format=yuv420p[v1];"
+                    f"fps={fps},format=yuv420p{overlay_chain}[v1];"
                     f"[v0][v1]concat=n=2:v=1:a=0,fps={fps},format=yuv420p[v]"
                 ),
                 "-map",
@@ -539,6 +647,7 @@ def normalize_clip_for_merge(
     trim_start: float = 0.0,
     trim_end: float = 0.0,
     fps: int = OUTPUT_FPS,
+    label_overlay_vf: str | None = None,
 ) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     if output_path.exists():
@@ -552,7 +661,12 @@ def normalize_clip_for_merge(
             f"({trim_start:.3f}s start, {trim_end:.3f}s end)."
         )
 
-    vf = f"{scale_fill_vf(width, height)},fps={fps},format=yuv420p"
+    vf = compose_video_filter(
+        width,
+        height,
+        fps,
+        label_overlay_vf=label_overlay_vf,
+    )
     cmd = [
         "ffmpeg",
         "-y",
@@ -674,6 +788,7 @@ def merge_videos_with_ffmpeg(
     video_paths: list[Path],
     output_path: Path,
     transition_config: dict,
+    selected: list[dict],
 ) -> list[dict]:
     if not video_paths:
         raise ValueError("No videos to merge")
@@ -690,6 +805,14 @@ def merge_videos_with_ffmpeg(
     fade_out_frames = bridge_frame_count(fade_out_sec, transition_fps)
     fade_in_frames = bridge_frame_count(fade_in_sec, transition_fps)
     width, height = merge_target_size(video_paths)
+    label_font = resolve_label_font()
+    label_rows = build_merge_label_rows(selected)
+    label_overlay_vf = build_clip_label_overlay_vf(
+        label_rows,
+        width=width,
+        height=height,
+        font_path=label_font,
+    )
 
     temp_cleanup: list[Path] = []
     normalized_clips: list[Path] = []
@@ -713,6 +836,7 @@ def merge_videos_with_ffmpeg(
             trim_start=trim_start,
             trim_end=trim_end,
             fps=transition_fps,
+            label_overlay_vf=label_overlay_vf,
         )
         normalized_clips.append(norm_path)
         temp_cleanup.append(norm_path)
@@ -744,6 +868,7 @@ def merge_videos_with_ffmpeg(
             fade_out_sec=fade_out_sec,
             fade_in_sec=fade_in_sec,
             fps=transition_fps,
+            label_overlay_vf=label_overlay_vf,
         )
         pieces.append(bridge_path)
         transition_log.append(
@@ -762,6 +887,7 @@ def merge_videos_with_ffmpeg(
                 "transition_fps": transition_fps,
                 "frame_trim_sec": frame_trim_sec,
                 "bridge_duration_sec": gap_duration,
+                "clip_labels": label_rows,
                 "mode": transition_config.get("mode", "frame_fade_bridge"),
             }
         )
@@ -800,6 +926,8 @@ def build_merge_json(
                 "clip_key": record["clip_key"],
                 "video": str(record["video_path"]),
                 "transcription_json": str(record["transcript_path"]),
+                "display_label": record.get("display_label")
+                or fallback_display_label(record.get("text") or ""),
                 "text": text,
                 "duration_sec": duration,
                 "categories": record.get("categories") or [],
@@ -838,6 +966,12 @@ def build_merge_json(
             if transition_config.get("transition_fps")
             else FRAME_TRIM_SEC
         ),
+        "clip_labels": build_merge_label_rows(selected),
+        "clip_label_overlay": {
+            "numbers_position": "top-left",
+            "labels_position": "top-right",
+            "label_color": LABEL_FONT_COLOR,
+        },
         "bridge_transitions": transition_log,
         "gap_effects": transition_log,
         "clips": clip_rows,
@@ -916,6 +1050,10 @@ def run_merge(
     output_video, output_json = output_paths(merge_id)
 
     log.section(f"Merging {len(selected)} clip(s) with fade-bridge transitions")
+    label_preview = ", ".join(
+        f"{row['order']}. {row['label']}" for row in build_merge_label_rows(selected)
+    )
+    log.info("Clip labels overlay", label_preview)
     for i, record in enumerate(selected, 1):
         log.bullet(f"[{i}] {record['clip_key']}")
         preview = (record.get("text") or "")[:80]
@@ -926,6 +1064,7 @@ def run_merge(
         video_paths,
         output_video,
         transition_config,
+        selected,
     )
 
     payload = build_merge_json(

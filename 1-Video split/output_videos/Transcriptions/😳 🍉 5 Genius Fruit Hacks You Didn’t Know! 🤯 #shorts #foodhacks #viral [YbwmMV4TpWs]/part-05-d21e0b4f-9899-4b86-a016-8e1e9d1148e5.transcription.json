@@ -18,18 +18,18 @@
     }
   ],
   "categories": [
-    "household_hacks",
-    "kitchen_hacks"
+    "fruit_hacks",
+    "utensils_tools"
   ],
   "category_names_en": [
-    "Household Hacks",
-    "Kitchen Hacks"
+    "Fruit Hacks",
+    "Utensils & Tool Hacks"
   ],
   "category_names_hi": [
-    "घरेलू हैक",
-    "रसोई के हैक"
+    "फल से जुड़े हैक",
+    "बर्तन और टूल हैक"
   ],
-  "categorized_at": "2026-07-25T18:39:14.507331+00:00",
+  "categorized_at": "2026-07-26T05:19:00.014209+00:00",
   "categorizer": {
     "provider": "ollama",
     "model": "llama3.1:8b",
@@ -37,5 +37,6 @@
     "min_categories": 1,
     "max_categories": 5,
     "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
-  }
+  },
+  "display_label": "फल छीलने"
 }

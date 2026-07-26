@@ -18,27 +18,18 @@
     }
   ],
   "categories": [
-    "clothes_hacks",
-    "household_hacks",
-    "drill_tool_hacks",
-    "plastic_reuse",
-    "plant_propagation"
+    "drinks_cooling",
+    "household_hacks"
   ],
   "category_names_en": [
-    "Clothes & Fabric Hacks",
-    "Household Hacks",
-    "Drill & Tool Hacks",
-    "Plastic Reuse",
-    "Plant Propagation"
+    "Drinks & Cooling Tips",
+    "Household Hacks"
   ],
   "category_names_hi": [
-    "कपड़े से जुड़े हैक",
-    "घरेलू हैक",
-    "ड्रिल और टूल हैक",
-    "प्लास्टिक का पुन: उपयोग",
-    "पौधे उगाना और propagation"
+    "पेय और ठंडक के टिप्स",
+    "घरेलू हैक"
   ],
-  "categorized_at": "2026-07-25T18:42:12.625015+00:00",
+  "categorized_at": "2026-07-26T05:19:13.225127+00:00",
   "categorizer": {
     "provider": "ollama",
     "model": "llama3.1:8b",
@@ -46,5 +37,6 @@
     "min_categories": 1,
     "max_categories": 5,
     "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
-  }
+  },
+  "display_label": "पेय ठंडक"
 }

@@ -43,6 +43,7 @@ DEFAULT_OLLAMA_URL = "http://localhost:11434"
 DEFAULT_OLLAMA_MODEL = "llama3.1:8b"
 MIN_CATEGORIES = 1
 MAX_CATEGORIES = 5
+MAX_DISPLAY_LABEL_WORDS = 2
 FALLBACK_CATEGORY = "life_hacks_general"
 
 
@@ -96,7 +97,12 @@ def list_transcription_files() -> list[Path]:
 
 def is_already_categorized(payload: dict) -> bool:
     categories = payload.get("categories")
-    return isinstance(categories, list) and len(categories) > 0
+    label = (payload.get("display_label") or "").strip()
+    return (
+        isinstance(categories, list)
+        and len(categories) > 0
+        and bool(label)
+    )
 
 
 def load_transcription_payload(path: Path) -> dict | None:
@@ -108,9 +114,6 @@ def load_transcription_payload(path: Path) -> dict | None:
 
 
 def is_file_processed(path: Path, tracker: dict) -> bool:
-    key = transcript_key(path)
-    if key in tracker.get("files", {}):
-        return True
     payload = load_transcription_payload(path)
     return payload is not None and is_already_categorized(payload)
 
@@ -133,6 +136,7 @@ def sync_tracker_from_transcriptions(tracker: dict, files: list[Path]) -> dict:
             "processed_at": payload.get("categorized_at", "synced_from_output"),
             "file": str(path),
             "categories": payload.get("categories") or [],
+            "display_label": payload.get("display_label") or "",
             "synced_from_output": True,
         }
         changed = True
@@ -205,11 +209,13 @@ def call_ollama(
     system_prompt = (
         "You classify short Hindi life-hack / DIY video transcripts into categories. "
         "Return ONLY valid JSON with this exact shape:\n"
-        '{"categories": ["slug_one", "slug_two"]}\n'
+        '{"categories": ["slug_one", "slug_two"], "display_label": "short label"}\n'
         f"Pick between {MIN_CATEGORIES} and {MAX_CATEGORIES} category slugs from the allowed list. "
         "Use only slugs from the list. Prefer the most specific matches "
         "(example: fruit_hacks for fruit peeling, cement_concrete_diy for cement, "
-        "plant_propagation for growing plants, clothes_hacks for fabric/clothing)."
+        "plant_propagation for growing plants, clothes_hacks for fabric/clothing).\n"
+        f"display_label must be 1-{MAX_DISPLAY_LABEL_WORDS} Hindi words that describe what "
+        "happens in this clip (example: 'लहसुन', 'मूंग अंकुर', 'सीमेंट'). No punctuation."
     )
     user_prompt = (
         "Hindi transcript:\n"
@@ -269,6 +275,25 @@ def normalize_categories(
     return picked[:MAX_CATEGORIES]
 
 
+def fallback_display_label(hindi_text: str) -> str:
+    words = re.findall(r"[\u0900-\u097F]+", hindi_text or "")
+    if not words:
+        words = (hindi_text or "").split()
+    cleaned = [word.strip() for word in words if word.strip()]
+    if not cleaned:
+        return "हैक"
+    return " ".join(cleaned[:MAX_DISPLAY_LABEL_WORDS])
+
+
+def normalize_display_label(raw_label: object, hindi_text: str) -> str:
+    label = re.sub(r"\s+", " ", str(raw_label or "").strip())
+    label = label.strip(" .,:;!?\"'")
+    words = label.split()
+    if words:
+        return " ".join(words[:MAX_DISPLAY_LABEL_WORDS])
+    return fallback_display_label(hindi_text)
+
+
 def categorize_text(
     hindi_text: str,
     categories_by_slug: dict[str, dict],
@@ -277,7 +302,7 @@ def categorize_text(
     ollama_url: str,
     model: str,
     timeout_sec: int,
-) -> list[str]:
+) -> tuple[list[str], str]:
     if not hindi_text.strip():
         raise ValueError("Transcription text is empty")
 
@@ -289,7 +314,9 @@ def categorize_text(
         category_lines=category_lines,
         timeout_sec=timeout_sec,
     )
-    return normalize_categories(result.get("categories"), categories_by_slug)
+    slugs = normalize_categories(result.get("categories"), categories_by_slug)
+    display_label = normalize_display_label(result.get("display_label"), hindi_text)
+    return slugs, display_label
 
 
 def apply_categories_to_payload(
@@ -299,8 +326,10 @@ def apply_categories_to_payload(
     *,
     model: str,
     ollama_url: str,
+    display_label: str,
 ) -> dict:
     payload["categories"] = slugs
+    payload["display_label"] = display_label
     payload["category_names_en"] = [
         categories_by_slug[slug]["name_en"] for slug in slugs
     ]
@@ -319,11 +348,18 @@ def apply_categories_to_payload(
     return payload
 
 
-def mark_processed(tracker: dict, key: str, path: Path, slugs: list[str]) -> None:
+def mark_processed(
+    tracker: dict,
+    key: str,
+    path: Path,
+    slugs: list[str],
+    display_label: str,
+) -> None:
     tracker.setdefault("files", {})[key] = {
         "processed_at": datetime.now(timezone.utc).isoformat(),
         "file": str(path),
         "categories": slugs,
+        "display_label": display_label,
     }
     save_tracker(PROCESSED_TRACKER_PATH, tracker)
 
@@ -409,7 +445,8 @@ def print_status(
 
         if is_file_processed(path, processed_tracker):
             cats = ", ".join(payload.get("categories") or [])
-            log.bullet(f"{key}  ->  PROCESSED (skip)  [{cats}]")
+            label = payload.get("display_label") or "-"
+            log.bullet(f"{key}  ->  PROCESSED (skip)  [{cats}]  label={label}")
         elif key in failed_tracker.get("files", {}):
             err = failed_tracker["files"][key].get("error", "unknown error")
             log.bullet(f"{key}  ->  PENDING (last attempt failed: {err[:80]})")
@@ -540,7 +577,7 @@ def main() -> int:
                 ).strip()
 
             log.info("Hindi text", hindi_text[:120] + ("..." if len(hindi_text) > 120 else ""))
-            slugs = categorize_text(
+            slugs, display_label = categorize_text(
                 hindi_text,
                 categories_by_slug,
                 category_list,
@@ -554,16 +591,17 @@ def main() -> int:
                 categories_by_slug,
                 model=args.model,
                 ollama_url=args.ollama_url,
+                display_label=display_label,
             )
             path.write_text(
                 json.dumps(payload, indent=2, ensure_ascii=False),
                 encoding="utf-8",
             )
-            mark_processed(processed_tracker, key, path, slugs)
+            mark_processed(processed_tracker, key, path, slugs, display_label)
             clear_failed(failed_tracker, key)
 
             names = ", ".join(payload.get("category_names_en") or slugs)
-            log.ok(f"Categories: {names}")
+            log.ok(f"Categories: {names} | Label: {display_label}")
             log.info("Updated file", path)
             processed_count += 1
         except Exception as exc:

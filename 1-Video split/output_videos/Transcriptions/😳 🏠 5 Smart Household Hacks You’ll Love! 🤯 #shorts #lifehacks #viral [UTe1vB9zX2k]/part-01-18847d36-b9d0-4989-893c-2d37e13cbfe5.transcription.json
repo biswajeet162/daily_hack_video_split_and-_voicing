@@ -19,26 +19,17 @@
   ],
   "categories": [
     "clothes_hacks",
-    "shoe_hacks",
-    "plastic_reuse",
-    "cardboard_paper_craft",
-    "household_hacks"
+    "shoe_hacks"
   ],
   "category_names_en": [
     "Clothes & Fabric Hacks",
-    "Shoe & Footwear Hacks",
-    "Plastic Reuse",
-    "Cardboard & Paper Craft",
-    "Household Hacks"
+    "Shoe & Footwear Hacks"
   ],
   "category_names_hi": [
     "कपड़े से जुड़े हैक",
-    "जूते और फुटवियर हैक",
-    "प्लास्टिक का पुन: उपयोग",
-    "कार्डबोर्ड और कागज क्राफ्ट",
-    "घरेलू हैक"
+    "जूते और फुटवियर हैक"
   ],
-  "categorized_at": "2026-07-25T18:42:03.502542+00:00",
+  "categorized_at": "2026-07-26T05:19:04.490312+00:00",
   "categorizer": {
     "provider": "ollama",
     "model": "llama3.1:8b",
@@ -46,5 +37,6 @@
     "min_categories": 1,
     "max_categories": 5,
     "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
-  }
+  },
+  "display_label": "कपड़े और"
 }
