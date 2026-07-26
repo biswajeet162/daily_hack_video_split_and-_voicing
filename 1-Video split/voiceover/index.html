@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Split - Voice Over</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="container">
+        <section class="controls">
+            <h1 class="title">Voice Over Studio</h1>
+            <label class="mic-wrap">
+                Microphone
+                <select id="micSelect" title="Select recording microphone">
+                    <option value="">Loading microphones...</option>
+                </select>
+            </label>
+            <span id="selectedMicLabel" class="mic-label"></span>
+            <button id="refreshMicBtn" class="btn btn-secondary" type="button">Refresh Mics</button>
+            <span id="progressSummary" class="progress-summary">0 / 0 done</span>
+            <span id="statusText" class="status">Loading clips...</span>
+        </section>
+
+        <section class="workspace">
+            <aside class="left-panel">
+                <h2>Chunk Clips</h2>
+                <div id="chunkList" class="chunk-list"></div>
+            </aside>
+
+            <section class="right-panel">
+                <div class="video-panel">
+                    <video id="storyVideo" controls preload="metadata"></video>
+                </div>
+
+                <section id="activeChunkPanel" class="active-chunk hidden" aria-live="polite">
+                    <div class="active-meta">
+                        <span id="activeChunkId">Clip -</span>
+                        <span id="activeChunkTime">0s</span>
+                        <span id="activeCategory">Category -</span>
+                        <span id="activeRemaining">Remaining: 0.0s</span>
+                    </div>
+                    <div class="progress-track">
+                        <div id="activeProgress" class="progress-fill"></div>
+                    </div>
+                    <p id="activeDisplayLabel" class="display-label"></p>
+                    <p id="activeChunkText" class="active-text"></p>
+                    <div class="active-actions">
+                        <button id="startRecordingBtn" class="btn btn-primary" disabled>Record</button>
+                        <button id="stopRecordingBtn" class="btn btn-danger" disabled>Stop</button>
+                        <button id="reRecordBtn" class="btn btn-secondary" disabled>Re-record</button>
+                        <button id="playRecordingBtn" class="btn btn-secondary" disabled>Play</button>
+                        <button id="stopPlaybackBtn" class="btn btn-secondary" disabled>Stop Play</button>
+                        <button id="doneBtn" class="btn btn-primary" disabled>Done</button>
+                        <a id="downloadOutputLink" class="btn btn-secondary disabled-link" download>Download</a>
+                    </div>
+                </section>
+            </section>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

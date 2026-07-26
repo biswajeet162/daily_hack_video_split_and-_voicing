@@ -47,14 +47,20 @@ echo       Input  : output_videos\Transcriptions\*.transcription.json
 echo       Output : same JSON file updated with categories
 echo       Tracker: trackers\categorize_processed.json
 echo.
-echo   [6] Merge clips by category (interactive menu)
+echo   [6] Voice-over split clips (browser @ localhost:8001)
+echo       Input  : output_videos\ clips + Transcriptions\ JSON
+echo       Output : output_voiceover_videos\ (clip + your voice)
+echo       Tracker: trackers\voiceover_processed.json
+echo.
+echo   [7] Merge clips by category (interactive menu)
 echo       Input  : output_videos\ clips + Transcriptions\ JSON
 echo       Config : configuration\merge_transition_config.json
 echo       Output : output_merged_videos\ (merged mp4 + dialogue json)
 echo       Tracker: trackers\merge_used_clips.json
 echo.
-echo   [A] Run ALL steps in order (1 -^> 2 -^> 3 -^> 4 -^> 5 -^> 6 auto)
-echo       Stops if any step fails. Step 6 merges 5 random clips automatically.
+echo   [A] Run ALL steps in order (1 -^> 5, then 7 auto merge)
+echo       Steps 1-5 automated. Step 6 voice-over is manual in browser.
+echo       Step 7 auto-merges 5 random clips after step 5.
 echo.
 echo   [0] Exit
 echo.
@@ -69,6 +75,7 @@ if "%choice%"=="3" goto run_03
 if "%choice%"=="4" goto run_04
 if "%choice%"=="5" goto run_05
 if "%choice%"=="6" goto run_06
+if "%choice%"=="7" goto run_07
 if "%choice%"=="0" goto end
 echo.
 echo   [XX] Invalid choice. Try again.
@@ -111,16 +118,26 @@ pause
 goto menu
 
 :run_06
-call :print_task_header 6 "Merge clips by category" "pick category and clip count interactively"
-call :run_python 06_merge_by_category.py --interactive
+call :print_task_header 6 "Voice-over split clips" "browser UI at localhost:8001"
+echo   [..] Opening browser at http://localhost:8001
+start "" "http://localhost:8001"
+call :run_python 06_voiceover_server.py
 call :print_task_footer 6
+pause
+goto menu
+
+:run_07
+call :print_task_header 7 "Merge clips by category" "pick category and clip count interactively"
+call :run_python 06_merge_by_category.py --interactive
+call :print_task_footer 7
 pause
 goto menu
 
 :run_all
 echo.
 echo ============================================================
-echo   FULL PIPELINE: steps 1 -^> 6
+echo   FULL PIPELINE: steps 1 -^> 5, then 7 (auto merge)
+echo   Step 6 voice-over is manual - run it separately when ready.
 echo   Started: %date%  %time%
 echo   Folder : %cd%
 echo ============================================================
@@ -151,15 +168,15 @@ call :run_python 05_categorize_transcriptions.py
 if errorlevel 1 goto pipeline_fail
 call :print_task_footer 5
 
-call :print_task_header 6 "Merge clips by category (auto)" "random category, 5 clips (or best available)"
+call :print_task_header 7 "Merge clips by category (auto)" "random category, 5 clips (or best available)"
 call :run_python 06_merge_by_category.py --auto --count 5
 if errorlevel 1 goto pipeline_fail
-call :print_task_footer 6
+call :print_task_footer 7
 
 echo.
 echo ============================================================
 echo   FULL PIPELINE COMPLETED at %date%  %time%
-echo   All 6 steps finished successfully.
+echo   Steps 1-5 and 7 finished. Run step 6 for voice-over when ready.
 echo ============================================================
 echo.
 pause

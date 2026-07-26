@@ -13,6 +13,10 @@ INPUT_DIR = ROOT / "input_videos"
 OUTPUT_DIR = ROOT / "output_videos"
 TRANSCRIPTIONS_DIR = OUTPUT_DIR / "Transcriptions"
 MERGED_DIR = ROOT / "output_merged_videos"
+VOICEOVER_DIR = ROOT / "voiceover"
+VOICEOVER_OUTPUT_DIR = ROOT / "output_voiceover_videos"
+VOICEOVER_RECORDINGS_DIR = VOICEOVER_DIR / "recordings"
+VOICEOVER_FIXED_DIR = VOICEOVER_DIR / "recordings_fixed"
 CATEGORIES_PATH = ROOT / "video_categories" / "categories.json"
 
 SPLIT_TRIM_CONFIG = CONFIG_DIR / "split_trim_config.json"
@@ -29,6 +33,7 @@ TRANSCRIBE_FAILED = TRACKERS_DIR / "transcribe_failed.json"
 CATEGORIZE_PROCESSED = TRACKERS_DIR / "categorize_processed.json"
 CATEGORIZE_FAILED = TRACKERS_DIR / "categorize_failed.json"
 MERGE_USED_CLIPS = TRACKERS_DIR / "merge_used_clips.json"
+VOICEOVER_PROCESSED = TRACKERS_DIR / "voiceover_processed.json"
 
 _LEGACY_MOVES: list[tuple[Path, Path]] = [
     (ROOT / "split_trim_config.json", SPLIT_TRIM_CONFIG),
