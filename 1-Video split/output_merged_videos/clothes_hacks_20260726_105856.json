@@ -1,0 +1,227 @@
+{
+  "merge_id": "clothes_hacks_20260726_105856",
+  "category_slug": "clothes_hacks",
+  "category_name_en": "Clothes & Fabric Hacks",
+  "category_name_hi": "कपड़े से जुड़े हैक",
+  "merged_at": "2026-07-26T05:29:16.594008+00:00",
+  "clip_count": 3,
+  "raw_clip_duration_sec": 12.84,
+  "gap_added_sec": 2.0,
+  "gap_duration_sec": 1.0,
+  "total_duration_sec": 14.84,
+  "output_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_merged_videos\\clothes_hacks_20260726_105856.mp4",
+  "transition_config": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\merge_transition_config.json",
+  "merge_mode": "frame_fade_bridge",
+  "fade_out_sec": 0.5,
+  "fade_in_sec": 0.5,
+  "exit_sec": 0.5,
+  "enter_sec": 0.5,
+  "transition_fps": 60,
+  "output_fps": 60,
+  "frame_trim_sec": 0.016666666666666666,
+  "clip_labels": [
+    {
+      "order": 1,
+      "label": "कपड़े पौधे"
+    },
+    {
+      "order": 2,
+      "label": "पेस्ट्री बनाना"
+    },
+    {
+      "order": 3,
+      "label": "कपड़े पौधे"
+    }
+  ],
+  "clip_label_overlay": {
+    "method": "png_overlay",
+    "font": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\assets\\fonts\\NotoSansDevanagari-Regular.ttf",
+    "numbers_position": "top-left",
+    "labels_position": "top-right",
+    "label_color": "yellow"
+  },
+  "bridge_transitions": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े पौधे"
+        },
+        {
+          "order": 2,
+          "label": "पेस्ट्री बनाना"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 2,
+      "before_clip_order": 3,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े पौधे"
+        },
+        {
+          "order": 2,
+          "label": "पेस्ट्री बनाना"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    }
+  ],
+  "gap_effects": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े पौधे"
+        },
+        {
+          "order": 2,
+          "label": "पेस्ट्री बनाना"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 2,
+      "before_clip_order": 3,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "कपड़े पौधे"
+        },
+        {
+          "order": 2,
+          "label": "पेस्ट्री बनाना"
+        },
+        {
+          "order": 3,
+          "label": "कपड़े पौधे"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    }
+  ],
+  "clips": [
+    {
+      "order": 1,
+      "clip_key": "😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]/part-01-e30b4335-7cfa-4ded-893f-a0006ad3626f.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-01-e30b4335-7cfa-4ded-893f-a0006ad3626f.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-01-e30b4335-7cfa-4ded-893f-a0006ad3626f.transcription.json",
+      "display_label": "कपड़े पौधे",
+      "text": "डो से ऐसा मक्का बनाओ, महमान पूछेंगे ये खाने का है या सजाने का?",
+      "duration_sec": 4.22,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation"
+      ]
+    },
+    {
+      "order": 2,
+      "clip_key": "😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]/part-03-376faa21-630f-4851-8a4c-dce74851d28f.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-03-376faa21-630f-4851-8a4c-dce74851d28f.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-03-376faa21-630f-4851-8a4c-dce74851d28f.transcription.json",
+      "display_label": "पेस्ट्री बनाना",
+      "text": "कंगी से ये शेल डिजाइन बनाओ। महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।",
+      "duration_sec": 4.36,
+      "categories": [
+        "baking_dough",
+        "clothes_hacks"
+      ]
+    },
+    {
+      "order": 3,
+      "clip_key": "😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]/part-02-90893741-e186-4529-931a-cdbdcccab9b5.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-02-90893741-e186-4529-931a-cdbdcccab9b5.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🥟 5 Beautiful Dough Decoration Ideas! 🤯 #shorts #foodart #viral [rvwe6LJuWzI]\\part-02-90893741-e186-4529-931a-cdbdcccab9b5.transcription.json",
+      "display_label": "कपड़े पौधे",
+      "text": "ऐसा कद्दू डिजाइन बनाओ। मेहमान मिठाई खाने से पहले उसे घुमा कर देखेंगे।",
+      "duration_sec": 4.26,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation"
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "order": 1,
+      "text": "डो से ऐसा मक्का बनाओ, महमान पूछेंगे ये खाने का है या सजाने का?"
+    },
+    {
+      "order": 2,
+      "text": "कंगी से ये शेल डिजाइन बनाओ। महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।"
+    },
+    {
+      "order": 3,
+      "text": "ऐसा कद्दू डिजाइन बनाओ। मेहमान मिठाई खाने से पहले उसे घुमा कर देखेंगे।"
+    }
+  ],
+  "full_dialogue_hindi": "डो से ऐसा मक्का बनाओ, महमान पूछेंगे ये खाने का है या सजाने का?\n\nकंगी से ये शेल डिजाइन बनाओ। महमान कहेंगे इतनी सुन्दर पेस्ट्री किसने बनाओ।\n\nऐसा कद्दू डिजाइन बनाओ। मेहमान मिठाई खाने से पहले उसे घुमा कर देखेंगे।"
+}
