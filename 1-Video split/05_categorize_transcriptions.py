@@ -1,5 +1,5 @@
 """
-[4] Categorize Hindi transcriptions using local Ollama.
+[5] Categorize Hindi transcriptions using local Ollama.
 
 Reads *.transcription.json under output_videos/Transcriptions/, sends the Hindi
 text to Ollama with the 100-category list from video_categories/categories.json,
@@ -11,10 +11,10 @@ so reruns skip files already categorized (use --force to redo).
 Default model: llama3.1:8b (best Hindi + JSON among locally installed models).
 
 Manual:
-  conda run -n utube_env python 04_categorize_transcriptions.py
-  conda run -n utube_env python 04_categorize_transcriptions.py --force
-  conda run -n utube_env python 04_categorize_transcriptions.py --file "output_videos/Transcriptions/...json"
-  conda run -n utube_env python 04_categorize_transcriptions.py --model deepseek-r1:14b
+  conda run -n utube_env python 05_categorize_transcriptions.py
+  conda run -n utube_env python 05_categorize_transcriptions.py --force
+  conda run -n utube_env python 05_categorize_transcriptions.py --file "output_videos/Transcriptions/...json"
+  conda run -n utube_env python 05_categorize_transcriptions.py --model deepseek-r1:14b
 """
 
 from __future__ import annotations
@@ -487,7 +487,7 @@ def main() -> int:
     args = parser.parse_args()
 
     log.banner(
-        "[4] CATEGORIZE TRANSCRIPTIONS WITH OLLAMA",
+        "[5] CATEGORIZE TRANSCRIPTIONS WITH OLLAMA",
         f"Model: {args.model}  |  Hindi text -> 1-{MAX_CATEGORIES} categories",
     )
 

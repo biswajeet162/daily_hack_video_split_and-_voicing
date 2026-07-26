@@ -1,7 +1,7 @@
 """
-[5] Merge split clips by category into one video + combined Hindi dialogue JSON.
+[6] Merge split clips by category into one video + combined Hindi dialogue JSON.
 
-Interactive (run.bat option 5):
+Interactive (run.bat option 6):
   - Shows categories with available (not yet merged) clips
   - Prompts for category number and clip count
   - Randomly picks clips, merges with ffmpeg, writes output to output_merged_videos/
@@ -12,9 +12,9 @@ is not merged again unless --force is used.
 Merging uses ffmpeg/ffprobe (subprocess), not MoviePy or OpenCV.
 
 Manual:
-  conda run -n utube_env python 05_merge_by_category.py --interactive
-  conda run -n utube_env python 05_merge_by_category.py --category clothes_hacks --count 5
-  conda run -n utube_env python 05_merge_by_category.py --category kitchen_hacks --count 6 --force
+  conda run -n utube_env python 06_merge_by_category.py --interactive
+  conda run -n utube_env python 06_merge_by_category.py --category clothes_hacks --count 5
+  conda run -n utube_env python 06_merge_by_category.py --category kitchen_hacks --count 6 --force
 """
 
 from __future__ import annotations
@@ -1586,7 +1586,7 @@ def main() -> int:
     args = parser.parse_args()
 
     log.banner(
-        "[5] MERGE CLIPS BY CATEGORY",
+        "[6] MERGE CLIPS BY CATEGORY",
         "Random clips -> one merged video + combined Hindi dialogue JSON",
     )
 

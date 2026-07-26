@@ -1,5 +1,5 @@
 """
-[3] Transcribe split videos in output_videos/ to Hindi using faster-whisper.
+[4] Transcribe split videos in output_videos/ to Hindi using faster-whisper.
 
 Scans output_videos/ recursively for *.mp4, transcribes speech in Hindi,
 and writes a JSON file under output_videos/Transcriptions/ (mirrors clip folders).
@@ -9,15 +9,15 @@ so reruns skip videos that were already transcribed.
 Uses the same faster-whisper settings as 2-HOLO_GRAM_VOICE_OVER (large-v3,
 VAD filter, beam search) for much better Hindi accuracy than openai-whisper base.
 
-Preferred: double-click run.bat and choose 3 (transcribes every unprocessed
+Preferred: double-click run.bat and choose 4 (transcribes every unprocessed
 .mp4 in output_videos/, one by one).
 
 Manual:
-  conda run -n utube_env python 03_transcribe_videos.py
-  conda run -n utube_env python 03_transcribe_videos.py --latest-only
-  conda run -n utube_env python 03_transcribe_videos.py --video "output_videos/.../part-01-....mp4"
-  conda run -n utube_env python 03_transcribe_videos.py --force
-  conda run -n utube_env python 03_transcribe_videos.py --model large-v3 --device cpu --compute int8
+  conda run -n utube_env python 04_transcribe_videos.py
+  conda run -n utube_env python 04_transcribe_videos.py --latest-only
+  conda run -n utube_env python 04_transcribe_videos.py --video "output_videos/.../part-01-....mp4"
+  conda run -n utube_env python 04_transcribe_videos.py --force
+  conda run -n utube_env python 04_transcribe_videos.py --model large-v3 --device cpu --compute int8
 """
 
 from __future__ import annotations
@@ -489,7 +489,7 @@ def main() -> int:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     log.banner(
-        "[3] TRANSCRIBE SPLIT CLIPS TO HINDI",
+        "[4] TRANSCRIBE SPLIT CLIPS TO HINDI",
         "faster-whisper large-v3 with VAD filter and beam search",
     )
 

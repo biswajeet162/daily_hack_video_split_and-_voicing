@@ -1,7 +1,7 @@
 {
-  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\input_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs].mp4",
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\input_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs].mp4",
   "duration_sec": 30.333333333333332,
-  "trim_config": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\split_trim_config.json",
+  "trim_config": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\split_trim_config.json",
   "markers": [
     {
       "number": 1,
@@ -37,7 +37,7 @@
   "parts": [
     {
       "part": 1,
-      "filename": "part-01-aa49d785-5cab-4f43-8577-7de86ba67a5d.mp4",
+      "filename": "part-01-d3b92623-e591-4d16-967c-d0e350c74b31.mp4",
       "marker_number": 1,
       "raw_start_sec": 0.7,
       "raw_end_sec": 6.66666666666666,
@@ -47,11 +47,11 @@
       "start_trim_from": "marker_end",
       "start_sec": 1.2,
       "end_sec": 5.86666666666666,
-      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\output_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-01-aa49d785-5cab-4f43-8577-7de86ba67a5d.mp4"
+      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-01-d3b92623-e591-4d16-967c-d0e350c74b31.mp4"
     },
     {
       "part": 2,
-      "filename": "part-02-6250ff79-5404-4477-aa97-5ae2160b97bf.mp4",
+      "filename": "part-02-ddeda45f-2ee5-455d-886f-ec8750763381.mp4",
       "marker_number": 2,
       "raw_start_sec": 6.66666666666666,
       "raw_end_sec": 11.733333333333325,
@@ -61,11 +61,11 @@
       "start_trim_from": "marker_end",
       "start_sec": 7.166666666666658,
       "end_sec": 10.983333333333325,
-      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\output_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-02-6250ff79-5404-4477-aa97-5ae2160b97bf.mp4"
+      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-02-ddeda45f-2ee5-455d-886f-ec8750763381.mp4"
     },
     {
       "part": 3,
-      "filename": "part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.mp4",
+      "filename": "part-03-05e9b500-7747-4672-adc3-46790742a252.mp4",
       "marker_number": 3,
       "raw_start_sec": 11.733333333333325,
       "raw_end_sec": 17.76666666666669,
@@ -75,11 +75,11 @@
       "start_trim_from": "marker_end",
       "start_sec": 12.333333333333323,
       "end_sec": 16.96666666666669,
-      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\output_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.mp4"
+      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-03-05e9b500-7747-4672-adc3-46790742a252.mp4"
     },
     {
       "part": 4,
-      "filename": "part-04-eb15c50e-1ed4-48a2-be72-f56d18a551d5.mp4",
+      "filename": "part-04-9c673538-91e1-45a9-86b8-a84991ce770c.mp4",
       "marker_number": 4,
       "raw_start_sec": 17.76666666666669,
       "raw_end_sec": 24.166666666666693,
@@ -89,11 +89,11 @@
       "start_trim_from": "marker_end",
       "start_sec": 18.3666666666667,
       "end_sec": 23.366666666666692,
-      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\output_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-04-eb15c50e-1ed4-48a2-be72-f56d18a551d5.mp4"
+      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-04-9c673538-91e1-45a9-86b8-a84991ce770c.mp4"
     },
     {
       "part": 5,
-      "filename": "part-05-d21e0b4f-9899-4b86-a016-8e1e9d1148e5.mp4",
+      "filename": "part-05-45108a1f-38e6-46e5-a9e2-02ad95adc1d3.mp4",
       "marker_number": 5,
       "raw_start_sec": 24.166666666666693,
       "raw_end_sec": 30.333333333333332,
@@ -103,7 +103,7 @@
       "start_trim_from": "marker_end",
       "start_sec": 24.5666666666667,
       "end_sec": 30.333333333333332,
-      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\output_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-05-d21e0b4f-9899-4b86-a016-8e1e9d1148e5.mp4"
+      "file": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\\ud83d\ude33 \ud83c\udf49 5 Genius Fruit Hacks You Didn\u2019t Know! \ud83e\udd2f #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-05-45108a1f-38e6-46e5-a9e2-02ad95adc1d3.mp4"
     }
   ]
 }

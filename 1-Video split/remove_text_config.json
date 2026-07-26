@@ -1,0 +1,10 @@
+{
+  "languages": ["en", "hi"],
+  "detect_interval_sec": 0.5,
+  "box_padding_px": 14,
+  "min_confidence": 0.25,
+  "inpaint_radius": 5,
+  "ocr_gpu": true,
+  "video_crf": 18,
+  "video_preset": "fast"
+}
