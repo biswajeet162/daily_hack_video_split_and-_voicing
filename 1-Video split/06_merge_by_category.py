@@ -13,6 +13,7 @@ Merging uses ffmpeg/ffprobe (subprocess), not MoviePy or OpenCV.
 
 Manual:
   conda run -n utube_env python 06_merge_by_category.py --interactive
+  conda run -n utube_env python 06_merge_by_category.py --auto
   conda run -n utube_env python 06_merge_by_category.py --category clothes_hacks --count 5
   conda run -n utube_env python 06_merge_by_category.py --category kitchen_hacks --count 6 --force
 """
@@ -1554,6 +1555,54 @@ def interactive_merge(*, force: bool = False) -> int:
         return 1
 
 
+def auto_merge(*, force: bool = False, target_count: int = DEFAULT_CLIP_COUNT) -> int:
+    """Pick a random category and merge without prompts (for run.bat option A)."""
+    categories_by_slug = load_categories()
+    records = iter_clip_records(force=force)
+    options = build_category_availability(records, categories_by_slug)
+
+    if not options:
+        log.fail("No categorized clips are available to merge.")
+        log.info("Tip", "Run steps 4 and 5 first, or use --force to reuse clips.")
+        return 1
+
+    eligible = [row for row in options if row["available_clips"] >= target_count]
+    if eligible:
+        selected = random.choice(eligible)
+        clip_count = target_count
+        pick_note = f"random category with >={target_count} clips"
+    else:
+        selected = options[0]
+        clip_count = selected["available_clips"]
+        pick_note = "most available clips (none had enough for default count)"
+
+    log.section("Auto merge selection (no prompts)")
+    log.info("Pick rule", pick_note)
+    log.summary(
+        "Merge selection",
+        [
+            ("Category", selected["name_en"]),
+            ("Slug", selected["slug"]),
+            ("Clips to merge", str(clip_count)),
+            ("Available clips", str(selected["available_clips"])),
+            ("Output folder", MERGED_DIR),
+            ("Transition config", TRANSITION_CONFIG_PATH),
+            ("Used-clips tracker", MERGE_TRACKER_PATH),
+        ],
+    )
+
+    try:
+        return run_merge(
+            selected["slug"],
+            clip_count,
+            force=force,
+            transition_config_path=TRANSITION_CONFIG_PATH,
+        )
+    except Exception as exc:
+        log.fail(str(exc))
+        return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Merge split clips by category into one video + dialogue JSON"
@@ -1561,7 +1610,15 @@ def main() -> int:
     parser.add_argument(
         "--interactive",
         action="store_true",
-        help="Show category menu and prompt for clip count (default when no args)",
+        help="Show category menu and prompt for clip count",
+    )
+    parser.add_argument(
+        "--auto",
+        action="store_true",
+        help=(
+            "No prompts: pick a random category with enough clips (default 5), "
+            "or the largest category if none qualify"
+        ),
     )
     parser.add_argument(
         "--category",
@@ -1610,6 +1667,9 @@ def main() -> int:
             ("Category list", CATEGORIES_PATH),
         ],
     )
+
+    if args.auto:
+        return auto_merge(force=args.force, target_count=args.count)
 
     if args.interactive or not args.category:
         return interactive_merge(force=args.force)

@@ -4,6 +4,8 @@ Download YouTube shorts, split them by on-screen number markers (1–5), blur on
 
 Double-click **`run.bat`** in this folder (or the root **`run.bat`**) to open the task menu.
 
+Choose **`A`** (or type `all`) to run the full pipeline in order: **1 → 2 → 3 → 4 → 5 → 6**. It stops if any step fails. Step 6 auto-picks a random category with ≥5 clips (or the largest category) and merges 5 clips without prompts. Use step **6** alone for the interactive merge menu.
+
 ## Project layout
 
 ```

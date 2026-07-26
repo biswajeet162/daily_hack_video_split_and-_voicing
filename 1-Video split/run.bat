@@ -53,11 +53,16 @@ echo       Config : configuration\merge_transition_config.json
 echo       Output : output_merged_videos\ (merged mp4 + dialogue json)
 echo       Tracker: trackers\merge_used_clips.json
 echo.
+echo   [A] Run ALL steps in order (1 -^> 2 -^> 3 -^> 4 -^> 5 -^> 6 auto)
+echo       Stops if any step fails. Step 6 merges 5 random clips automatically.
+echo.
 echo   [0] Exit
 echo.
 echo ============================================================
 set /p choice="Enter task number to run: "
 
+if /i "%choice%"=="A" goto run_all
+if /i "%choice%"=="all" goto run_all
 if "%choice%"=="1" goto run_01
 if "%choice%"=="2" goto run_02
 if "%choice%"=="3" goto run_03
@@ -109,6 +114,64 @@ goto menu
 call :print_task_header 6 "Merge clips by category" "pick category and clip count interactively"
 call :run_python 06_merge_by_category.py --interactive
 call :print_task_footer 6
+pause
+goto menu
+
+:run_all
+echo.
+echo ============================================================
+echo   FULL PIPELINE: steps 1 -^> 6
+echo   Started: %date%  %time%
+echo   Folder : %cd%
+echo ============================================================
+echo.
+
+call :print_task_header 1 "Download YouTube videos" "links.txt to input_videos"
+call :run_python 01_download_youtube.py --file links.txt
+if errorlevel 1 goto pipeline_fail
+call :print_task_footer 1
+
+call :print_task_header 2 "Split videos by number markers" "input_videos to output_videos"
+call :run_python 02_split_video.py
+if errorlevel 1 goto pipeline_fail
+call :print_task_footer 2
+
+call :print_task_header 3 "Blur English text from clips" "every frame, detect and blur"
+call :run_python 03_remove_text_from_videos.py
+if errorlevel 1 goto pipeline_fail
+call :print_task_footer 3
+
+call :print_task_header 4 "Transcribe split clips to Hindi" "output_videos mp4 to transcription json"
+call :run_python 04_transcribe_videos.py
+if errorlevel 1 goto pipeline_fail
+call :print_task_footer 4
+
+call :print_task_header 5 "Categorize transcriptions with Ollama" "Hindi text to categories in same JSON"
+call :run_python 05_categorize_transcriptions.py
+if errorlevel 1 goto pipeline_fail
+call :print_task_footer 5
+
+call :print_task_header 6 "Merge clips by category (auto)" "random category, 5 clips (or best available)"
+call :run_python 06_merge_by_category.py --auto --count 5
+if errorlevel 1 goto pipeline_fail
+call :print_task_footer 6
+
+echo.
+echo ============================================================
+echo   FULL PIPELINE COMPLETED at %date%  %time%
+echo   All 6 steps finished successfully.
+echo ============================================================
+echo.
+pause
+goto menu
+
+:pipeline_fail
+echo.
+echo ============================================================
+echo   FULL PIPELINE STOPPED - a step failed (see log above)
+echo   Fix the issue, then run again or pick a single step.
+echo ============================================================
+echo.
 pause
 goto menu
 
