@@ -30,7 +30,7 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageColor, ImageDraw, ImageFont
 
 import log_utils as log
 
@@ -52,11 +52,23 @@ OUTPUT_AUDIO_RATE = 48000
 FRAME_TRIM_SEC = 1.0 / OUTPUT_FPS
 DEFAULT_FADE_OUT_SEC = 0.5
 DEFAULT_FADE_IN_SEC = 0.5
-LABEL_FONT_COLOR = "yellow"
-LABEL_NUMBER_X = 24
-LABEL_RIGHT_MARGIN = 24
-LABEL_TOP_MARGIN = 36
-LABEL_LINE_GAP = 10
+DEFAULT_LABEL_OVERLAY = {
+    "font_size": 0,
+    "line_gap": 10,
+    "left_margin": 24,
+    "top_margin": 36,
+    "color": "yellow",
+}
+RANDOM_LABEL_COLORS = [
+    (255, 255, 0, 255),
+    (0, 255, 255, 255),
+    (255, 128, 0, 255),
+    (255, 105, 180, 255),
+    (50, 205, 50, 255),
+    (255, 64, 64, 255),
+    (173, 216, 230, 255),
+    (255, 215, 0, 255),
+]
 
 
 def ffmpeg_encode_args(fps: int) -> list[str]:
@@ -276,6 +288,7 @@ def load_transition_config(config_path: Path = TRANSITION_CONFIG_PATH) -> dict:
             "exit_sec": DEFAULT_FADE_OUT_SEC,
             "enter_sec": DEFAULT_FADE_IN_SEC,
             "transition_fps": DEFAULT_TRANSITION_FPS,
+            "clip_label_overlay": load_label_overlay_config({}),
         }
 
     data = json.loads(config_path.read_text(encoding="utf-8"))
@@ -311,7 +324,57 @@ def load_transition_config(config_path: Path = TRANSITION_CONFIG_PATH) -> dict:
         raise ValueError("transition_fps must be at least 30")
     data["transition_fps"] = transition_fps
     data["output_fps"] = transition_fps
+    data["clip_label_overlay"] = load_label_overlay_config(data)
     return data
+
+
+def load_label_overlay_config(data: dict) -> dict:
+    overlay = data.get("clip_label_overlay") or {}
+    if not isinstance(overlay, dict):
+        overlay = {}
+
+    font_size = int(overlay.get("font_size", DEFAULT_LABEL_OVERLAY["font_size"]))
+    line_gap = int(overlay.get("line_gap", DEFAULT_LABEL_OVERLAY["line_gap"]))
+    left_margin = int(overlay.get("left_margin", DEFAULT_LABEL_OVERLAY["left_margin"]))
+    top_margin = int(overlay.get("top_margin", DEFAULT_LABEL_OVERLAY["top_margin"]))
+    color = str(overlay.get("color", DEFAULT_LABEL_OVERLAY["color"])).strip()
+
+    if font_size < 0:
+        raise ValueError("clip_label_overlay.font_size must be 0 (auto) or positive")
+    if line_gap < 0:
+        raise ValueError("clip_label_overlay.line_gap must be 0 or positive")
+    if left_margin < 0 or top_margin < 0:
+        raise ValueError("clip_label_overlay margins must be 0 or positive")
+    if not color:
+        raise ValueError("clip_label_overlay.color must not be empty")
+
+    random_color = color.upper() == "RANDOM"
+    if not random_color:
+        parse_label_color(color)
+
+    return {
+        "font_size": font_size,
+        "line_gap": line_gap,
+        "left_margin": left_margin,
+        "top_margin": top_margin,
+        "color": color,
+        "random_color": random_color,
+    }
+
+
+def parse_label_color(color: str) -> tuple[int, int, int, int]:
+    try:
+        red, green, blue = ImageColor.getrgb(color)
+    except ValueError as exc:
+        raise ValueError(
+            f"Invalid clip_label_overlay.color {color!r}. "
+            "Use a color name, #RRGGBB, or RANDOM."
+        ) from exc
+    return (red, green, blue, 255)
+
+
+def pick_random_label_color() -> tuple[int, int, int, int]:
+    return random.choice(RANDOM_LABEL_COLORS)
 
 
 def bridge_frame_count(duration_sec: float, fps: int) -> int:
@@ -412,29 +475,28 @@ def render_label_overlay_png(
     height: int,
     font_path: Path,
     output_path: Path,
+    label_config: dict | None = None,
 ) -> None:
-    fontsize = max(28, height // 32)
-    line_height = fontsize + LABEL_LINE_GAP
+    config = label_config or DEFAULT_LABEL_OVERLAY.copy()
+    configured_size = int(config.get("font_size") or 0)
+    fontsize = configured_size if configured_size > 0 else max(28, height // 32)
+    line_gap = int(config.get("line_gap", DEFAULT_LABEL_OVERLAY["line_gap"]))
+    left_margin = int(config.get("left_margin", DEFAULT_LABEL_OVERLAY["left_margin"]))
+    top_margin = int(config.get("top_margin", DEFAULT_LABEL_OVERLAY["top_margin"]))
+    random_color = bool(config.get("random_color"))
+    fixed_color = None if random_color else parse_label_color(str(config.get("color", "yellow")))
+
+    line_height = fontsize + line_gap
     font = ImageFont.truetype(str(font_path), fontsize)
 
     image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
 
     for index, row in enumerate(label_rows):
-        y = LABEL_TOP_MARGIN + index * line_height
-        number_text = f"{row['order']}."
-        draw.text((LABEL_NUMBER_X, y), number_text, font=font, fill=(255, 255, 255, 255))
-
-        label_text = row["label"]
-        bbox = draw.textbbox((0, 0), label_text, font=font)
-        text_width = bbox[2] - bbox[0]
-        label_x = max(LABEL_NUMBER_X + fontsize * 2, width - LABEL_RIGHT_MARGIN - text_width)
-        draw.text(
-            (label_x, y),
-            label_text,
-            font=font,
-            fill=(255, 255, 0, 255),
-        )
+        y = top_margin + index * line_height
+        line_text = f"{row['order']}. {row['label']}"
+        fill = pick_random_label_color() if random_color else fixed_color
+        draw.text((left_margin, y), line_text, font=font, fill=fill)
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     image.save(output_path, format="PNG")
@@ -852,6 +914,7 @@ def merge_videos_with_ffmpeg(
         height=height,
         font_path=label_font,
         output_path=label_png_path,
+        label_config=transition_config.get("clip_label_overlay"),
     )
 
     temp_cleanup: list[Path] = [label_png_path]
@@ -1009,10 +1072,9 @@ def build_merge_json(
         "clip_labels": build_merge_label_rows(selected),
         "clip_label_overlay": {
             "method": "png_overlay",
+            "layout": "inline",
             "font": str(resolve_label_font()),
-            "numbers_position": "top-left",
-            "labels_position": "top-right",
-            "label_color": LABEL_FONT_COLOR,
+            **(transition_config.get("clip_label_overlay") or DEFAULT_LABEL_OVERLAY),
         },
         "bridge_transitions": transition_log,
         "gap_effects": transition_log,

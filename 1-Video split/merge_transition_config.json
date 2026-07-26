@@ -5,5 +5,12 @@
   "fade_in_sec": 0.5,
   "exit_sec": 0.5,
   "enter_sec": 0.5,
-  "transition_fps": 60
+  "transition_fps": 60,
+  "clip_label_overlay": {
+    "font_size": 0,
+    "line_gap": 10,
+    "left_margin": 24,
+    "top_margin": 36,
+    "color": "RANDOM"
+  }
 }

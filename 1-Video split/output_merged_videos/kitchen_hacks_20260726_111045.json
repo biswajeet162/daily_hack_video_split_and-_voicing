@@ -1,0 +1,461 @@
+{
+  "merge_id": "kitchen_hacks_20260726_111045",
+  "category_slug": "kitchen_hacks",
+  "category_name_en": "Kitchen Hacks",
+  "category_name_hi": "रसोई के हैक",
+  "merged_at": "2026-07-26T05:41:22.221822+00:00",
+  "clip_count": 5,
+  "raw_clip_duration_sec": 21.92,
+  "gap_added_sec": 4.0,
+  "gap_duration_sec": 1.0,
+  "total_duration_sec": 25.92,
+  "output_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_merged_videos\\kitchen_hacks_20260726_111045.mp4",
+  "transition_config": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\merge_transition_config.json",
+  "merge_mode": "frame_fade_bridge",
+  "fade_out_sec": 0.5,
+  "fade_in_sec": 0.5,
+  "exit_sec": 0.5,
+  "enter_sec": 0.5,
+  "transition_fps": 60,
+  "output_fps": 60,
+  "frame_trim_sec": 0.016666666666666666,
+  "clip_labels": [
+    {
+      "order": 1,
+      "label": "आम खाने"
+    },
+    {
+      "order": 2,
+      "label": "दस्त पैन"
+    },
+    {
+      "order": 3,
+      "label": "संत्रा छीलने"
+    },
+    {
+      "order": 4,
+      "label": "पेय और"
+    },
+    {
+      "order": 5,
+      "label": "पेय ठंडक"
+    }
+  ],
+  "clip_label_overlay": {
+    "method": "png_overlay",
+    "layout": "inline",
+    "font": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\assets\\fonts\\NotoSansDevanagari-Regular.ttf",
+    "font_size": 0,
+    "line_gap": 10,
+    "left_margin": 24,
+    "top_margin": 36,
+    "color": "yellow",
+    "random_color": false
+  },
+  "bridge_transitions": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "आम खाने"
+        },
+        {
+          "order": 2,
+          "label": "दस्त पैन"
+        },
+        {
+          "order": 3,
+          "label": "संत्रा छीलने"
+        },
+        {
+          "order": 4,
+          "label": "पेय और"
+        },
+        {
+          "order": 5,
+          "label": "पेय ठंडक"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 2,
+      "before_clip_order": 3,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "आम खाने"
+        },
+        {
+          "order": 2,
+          "label": "दस्त पैन"
+        },
+        {
+          "order": 3,
+          "label": "संत्रा छीलने"
+        },
+        {
+          "order": 4,
+          "label": "पेय और"
+        },
+        {
+          "order": 5,
+          "label": "पेय ठंडक"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 3,
+      "before_clip_order": 4,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "आम खाने"
+        },
+        {
+          "order": 2,
+          "label": "दस्त पैन"
+        },
+        {
+          "order": 3,
+          "label": "संत्रा छीलने"
+        },
+        {
+          "order": 4,
+          "label": "पेय और"
+        },
+        {
+          "order": 5,
+          "label": "पेय ठंडक"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 4,
+      "before_clip_order": 5,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "आम खाने"
+        },
+        {
+          "order": 2,
+          "label": "दस्त पैन"
+        },
+        {
+          "order": 3,
+          "label": "संत्रा छीलने"
+        },
+        {
+          "order": 4,
+          "label": "पेय और"
+        },
+        {
+          "order": 5,
+          "label": "पेय ठंडक"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    }
+  ],
+  "gap_effects": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "आम खाने"
+        },
+        {
+          "order": 2,
+          "label": "दस्त पैन"
+        },
+        {
+          "order": 3,
+          "label": "संत्रा छीलने"
+        },
+        {
+          "order": 4,
+          "label": "पेय और"
+        },
+        {
+          "order": 5,
+          "label": "पेय ठंडक"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 2,
+      "before_clip_order": 3,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "आम खाने"
+        },
+        {
+          "order": 2,
+          "label": "दस्त पैन"
+        },
+        {
+          "order": 3,
+          "label": "संत्रा छीलने"
+        },
+        {
+          "order": 4,
+          "label": "पेय और"
+        },
+        {
+          "order": 5,
+          "label": "पेय ठंडक"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 3,
+      "before_clip_order": 4,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "आम खाने"
+        },
+        {
+          "order": 2,
+          "label": "दस्त पैन"
+        },
+        {
+          "order": 3,
+          "label": "संत्रा छीलने"
+        },
+        {
+          "order": 4,
+          "label": "पेय और"
+        },
+        {
+          "order": 5,
+          "label": "पेय ठंडक"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    },
+    {
+      "after_clip_order": 4,
+      "before_clip_order": 5,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "clip_labels": [
+        {
+          "order": 1,
+          "label": "आम खाने"
+        },
+        {
+          "order": 2,
+          "label": "दस्त पैन"
+        },
+        {
+          "order": 3,
+          "label": "संत्रा छीलने"
+        },
+        {
+          "order": 4,
+          "label": "पेय और"
+        },
+        {
+          "order": 5,
+          "label": "पेय ठंडक"
+        }
+      ],
+      "mode": "frame_fade_bridge"
+    }
+  ],
+  "clips": [
+    {
+      "order": 1,
+      "clip_key": "😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]/part-04-eb15c50e-1ed4-48a2-be72-f56d18a551d5.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-04-eb15c50e-1ed4-48a2-be72-f56d18a551d5.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-04-eb15c50e-1ed4-48a2-be72-f56d18a551d5.transcription.json",
+      "display_label": "आम खाने",
+      "text": "आम खाने का निंजा तरीका, छिलके पर कट्स लगाएं और परफेक्ट स्लाइस तुरंत बाहर आ जाएंगे।",
+      "duration_sec": 5.0,
+      "categories": [
+        "fruit_hacks",
+        "kitchen_hacks"
+      ]
+    },
+    {
+      "order": 2,
+      "clip_key": "😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]/part-05-db5a28a1-e371-4b0b-b165-ca90517b96c6.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-05-db5a28a1-e371-4b0b-b165-ca90517b96c6.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-05-db5a28a1-e371-4b0b-b165-ca90517b96c6.transcription.json",
+      "display_label": "दस्त पैन",
+      "text": "दस्ट पैन पर कंगा लगा दो, जाडू के सारे बाल एक जटके में निकल जाएंगे।",
+      "duration_sec": 4.14,
+      "categories": [
+        "kitchen_hacks",
+        "utensils_tools"
+      ]
+    },
+    {
+      "order": 3,
+      "clip_key": "😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]/part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-03-6b1359b3-f648-4c2a-b5b1-3d831e0ba3df.transcription.json",
+      "display_label": "संत्रा छीलने",
+      "text": "संत्रा छीलने का सबसे तेज तरीका अंगूठों से बीच में दबाएं और संत्रा तुरंत खुल जाएं",
+      "duration_sec": 4.62,
+      "categories": [
+        "fruit_hacks",
+        "kitchen_hacks"
+      ]
+    },
+    {
+      "order": 4,
+      "clip_key": "😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]/part-02-6250ff79-5404-4477-aa97-5ae2160b97bf.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-02-6250ff79-5404-4477-aa97-5ae2160b97bf.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🍉 5 Genius Fruit Hacks You Didn’t Know! 🤯 #shorts #foodhacks #viral [YbwmMV4TpWs]\\part-02-6250ff79-5404-4477-aa97-5ae2160b97bf.transcription.json",
+      "display_label": "पेय और",
+      "text": "जूसर नहीं है, किचन के चिम्टे से नीमू दबाएं और पल भर में सारा रस बाहर.",
+      "duration_sec": 3.82,
+      "categories": [
+        "kitchen_hacks",
+        "drinks_cooling"
+      ]
+    },
+    {
+      "order": 5,
+      "clip_key": "😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]/part-02-4af9d913-b17c-488e-b935-99eca56c7f63.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-02-4af9d913-b17c-488e-b935-99eca56c7f63.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\output_videos\\Transcriptions\\😳 🏠 5 Smart Household Hacks You’ll Love! 🤯 #shorts #lifehacks #viral [UTe1vB9zX2k]\\part-02-4af9d913-b17c-488e-b935-99eca56c7f63.transcription.json",
+      "display_label": "पेय ठंडक",
+      "text": "अंडे की खाली ट्रे में पानी भरो, जमा दो, बड़े गोल आईस क्यूब्स तैयार.",
+      "duration_sec": 4.34,
+      "categories": [
+        "drinks_cooling",
+        "kitchen_hacks"
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "order": 1,
+      "text": "आम खाने का निंजा तरीका, छिलके पर कट्स लगाएं और परफेक्ट स्लाइस तुरंत बाहर आ जाएंगे।"
+    },
+    {
+      "order": 2,
+      "text": "दस्ट पैन पर कंगा लगा दो, जाडू के सारे बाल एक जटके में निकल जाएंगे।"
+    },
+    {
+      "order": 3,
+      "text": "संत्रा छीलने का सबसे तेज तरीका अंगूठों से बीच में दबाएं और संत्रा तुरंत खुल जाएं"
+    },
+    {
+      "order": 4,
+      "text": "जूसर नहीं है, किचन के चिम्टे से नीमू दबाएं और पल भर में सारा रस बाहर."
+    },
+    {
+      "order": 5,
+      "text": "अंडे की खाली ट्रे में पानी भरो, जमा दो, बड़े गोल आईस क्यूब्स तैयार."
+    }
+  ],
+  "full_dialogue_hindi": "आम खाने का निंजा तरीका, छिलके पर कट्स लगाएं और परफेक्ट स्लाइस तुरंत बाहर आ जाएंगे।\n\nदस्ट पैन पर कंगा लगा दो, जाडू के सारे बाल एक जटके में निकल जाएंगे।\n\nसंत्रा छीलने का सबसे तेज तरीका अंगूठों से बीच में दबाएं और संत्रा तुरंत खुल जाएं\n\nजूसर नहीं है, किचन के चिम्टे से नीमू दबाएं और पल भर में सारा रस बाहर.\n\nअंडे की खाली ट्रे में पानी भरो, जमा दो, बड़े गोल आईस क्यूब्स तैयार."
+}
