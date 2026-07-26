@@ -42,6 +42,7 @@ ROOT = paths.ROOT
 OUTPUT_DIR = paths.OUTPUT_DIR
 TRANSCRIPTIONS_DIR = paths.TRANSCRIPTIONS_DIR
 MERGED_DIR = paths.MERGED_DIR
+VOICEOVER_OUTPUT_DIR = paths.VOICEOVER_OUTPUT_DIR
 CATEGORIES_PATH = paths.CATEGORIES_PATH
 MERGE_TRACKER_PATH = paths.MERGE_USED_CLIPS
 TRANSITION_CONFIG_PATH = paths.MERGE_TRANSITION_CONFIG
@@ -151,7 +152,13 @@ def transcript_key(path: Path) -> str:
 
 
 def clip_key(video_path: Path) -> str:
-    return video_path.relative_to(OUTPUT_DIR).as_posix()
+    resolved = video_path.resolve()
+    for base in (OUTPUT_DIR, VOICEOVER_OUTPUT_DIR):
+        try:
+            return resolved.relative_to(base.resolve()).as_posix()
+        except ValueError:
+            continue
+    raise ValueError(f"Clip is outside known video folders: {video_path}")
 
 
 def load_transcription_payload(path: Path) -> dict | None:
@@ -163,24 +170,42 @@ def load_transcription_payload(path: Path) -> dict | None:
 
 
 def video_path_from_transcription(transcript_path: Path, payload: dict) -> Path | None:
+    rel = transcript_path.relative_to(TRANSCRIPTIONS_DIR)
+    video_name = rel.name.replace(".transcription.json", ".mp4")
+    rel_video = rel.parent / video_name
+
+    voiced = VOICEOVER_OUTPUT_DIR / rel_video
+    if voiced.exists():
+        return voiced.resolve()
+
     source = payload.get("source")
     if source:
-        candidate = Path(str(source))
+        candidate = paths.normalize_stored_path(source)
         if candidate.exists():
             return candidate.resolve()
 
-    rel = transcript_path.relative_to(TRANSCRIPTIONS_DIR)
-    video_name = rel.name.replace(".transcription.json", ".mp4")
-    candidate = OUTPUT_DIR / rel.parent / video_name
+    candidate = OUTPUT_DIR / rel_video
     if candidate.exists():
         return candidate.resolve()
     return None
 
 
-def is_clip_merged(key: str, tracker: dict, *, force: bool) -> bool:
+def is_clip_merged(key: str, tracker: dict, *, force: bool, video_path: Path) -> bool:
     if force:
         return False
-    return key in tracker.get("clips", {})
+    entry = tracker.get("clips", {}).get(key)
+    if not entry:
+        return False
+    tracked_video = (entry.get("video") or "").strip()
+    if not tracked_video:
+        return True
+    try:
+        tracked_path = paths.normalize_stored_path(tracked_video)
+        if tracked_path.resolve() != video_path.resolve():
+            return False
+    except OSError:
+        return False
+    return True
 
 
 def iter_clip_records(*, force: bool) -> list[dict]:
@@ -201,7 +226,7 @@ def iter_clip_records(*, force: bool) -> list[dict]:
             continue
 
         key = clip_key(video_path)
-        if is_clip_merged(key, tracker, force=force):
+        if is_clip_merged(key, tracker, force=force, video_path=video_path):
             continue
 
         text = (payload.get("text") or "").strip()
@@ -216,6 +241,7 @@ def iter_clip_records(*, force: bool) -> list[dict]:
             {
                 "clip_key": key,
                 "video_path": video_path,
+                "uses_voiceover": str(video_path.resolve()).startswith(str(VOICEOVER_OUTPUT_DIR.resolve())),
                 "transcript_path": transcript_path,
                 "transcript_key": transcript_key(transcript_path),
                 "categories": [str(c) for c in categories],
@@ -1483,14 +1509,36 @@ def run_merge(
     return 0
 
 
+def report_no_merge_options(*, force: bool) -> None:
+    all_records = iter_clip_records(force=True)
+    if all_records and not force:
+        voiced = sum(1 for record in all_records if record.get("uses_voiceover"))
+        log.fail("No new clips are available to merge.")
+        if voiced:
+            log.info(
+                "Tip",
+                f"{voiced} voice-over clip(s) are ready. If they were merged before voice-over, "
+                "rerun with: python 06_merge_by_category.py --interactive --force",
+            )
+        else:
+            log.info(
+                "Tip",
+                "All categorized clips were already merged. Run step 6 voice-over first, "
+                "or merge with --force to reuse clips.",
+            )
+        return
+
+    log.fail("No categorized clips are available to merge.")
+    log.info("Tip", "Run steps 4 and 5 first (transcribe + categorize).")
+
+
 def interactive_merge(*, force: bool = False) -> int:
     categories_by_slug = load_categories()
     records = iter_clip_records(force=force)
     options = build_category_availability(records, categories_by_slug)
 
     if not options:
-        log.fail("No categorized clips are available to merge.")
-        log.info("Tip", "Run steps 3 and 4 first, or use --force to reuse clips.")
+        report_no_merge_options(force=force)
         return 1
 
     log.section("Pick a category (only categories with available clips)")
@@ -1562,8 +1610,7 @@ def auto_merge(*, force: bool = False, target_count: int = DEFAULT_CLIP_COUNT) -
     options = build_category_availability(records, categories_by_slug)
 
     if not options:
-        log.fail("No categorized clips are available to merge.")
-        log.info("Tip", "Run steps 4 and 5 first, or use --force to reuse clips.")
+        report_no_merge_options(force=force)
         return 1
 
     eligible = [row for row in options if row["available_clips"] >= target_count]
@@ -1660,6 +1707,7 @@ def main() -> int:
         [
             ("Project root", ROOT),
             ("Source clips", OUTPUT_DIR),
+            ("Voice-over clips", VOICEOVER_OUTPUT_DIR),
             ("Transcriptions", TRANSCRIPTIONS_DIR),
             ("Merged output", MERGED_DIR),
             ("Transition config", args.transition_config),

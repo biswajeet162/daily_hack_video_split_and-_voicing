@@ -509,7 +509,7 @@ async function finishCurrentClip() {
     markChunkCard(currentClipIndex);
     updateProgressSummary(clips.filter((item) => item.done).length, clips.length);
     updateActionButtons();
-    setStatus(`Saved voice-over clip to output_voiceover_videos/${data.output_video}`);
+    setStatus(`Saved voice-over clip to 3-output_voiceover_videos/${data.output_video}`);
 }
 
 refreshMicBtn.addEventListener("click", () => ensureMicrophones(true));

@@ -21,42 +21,44 @@ echo ============================================================
 echo.
 echo   [1] Download YouTube videos
 echo       Input  : links.txt
-echo       Output : input_videos\
+echo       Output : 1-input_videos\
 echo       Tracker: trackers\download_archive.txt
 echo.
 echo   [2] Split videos by number markers (1-5)
-echo       Input  : input_videos\*.mp4
+echo       Input  : 1-input_videos\*.mp4
 echo       Refs   : reference_numbers\1.png .. 5.png
 echo       Config : configuration\split_trim_config.json
-echo       Output : output_videos\^<video name^>\part-XX-*.mp4
+echo       Output : 2-output_videos\^<video name^>\part-XX-*.mp4
 echo       Tracker: trackers\split_processed.json
 echo.
 echo   [3] Blur English text from clips (every frame, GPU OCR)
-echo       Input  : output_videos\ (all .mp4 clips)
+echo       Input  : 2-output_videos\ (all .mp4 clips)
 echo       Config : configuration\remove_text_config.json
 echo       Method : detect English text -^> Gaussian blur
 echo       Tracker: trackers\text_removed_processed.json
 echo.
 echo   [4] Transcribe split clips to Hindi (faster-whisper large-v3)
-echo       Input  : output_videos\ (all .mp4 clips)
-echo       Output : output_videos\Transcriptions\
+echo       Input  : 2-output_videos\ (all .mp4 clips)
+echo       Output : 2-output_videos\Transcriptions\
 echo       Tracker: trackers\transcribe_processed.json
 echo.
 echo   [5] Categorize transcriptions with Ollama (llama3.1:8b)
-echo       Input  : output_videos\Transcriptions\*.transcription.json
+echo       Input  : 2-output_videos\Transcriptions\*.transcription.json
 echo       Output : same JSON file updated with categories
 echo       Tracker: trackers\categorize_processed.json
 echo.
 echo   [6] Voice-over split clips (browser @ localhost:8001)
-echo       Input  : output_videos\ clips + Transcriptions\ JSON
-echo       Output : output_voiceover_videos\ (clip + your voice)
+echo       Input  : 2-output_videos\ clips + Transcriptions\ JSON
+echo       Output : 3-output_voiceover_videos\ (clip + your voice)
 echo       Tracker: trackers\voiceover_processed.json
 echo.
 echo   [7] Merge clips by category (interactive menu)
-echo       Input  : output_videos\ clips + Transcriptions\ JSON
+echo       Input  : 2-output_videos\ clips + Transcriptions\ JSON
 echo       Config : configuration\merge_transition_config.json
-echo       Output : output_merged_videos\ (merged mp4 + dialogue json)
+echo       Output : 4-output_merged_videos\ (merged mp4 + dialogue json)
 echo       Tracker: trackers\merge_used_clips.json
+echo       Prefers : 3-output_voiceover_videos\ when step 6 is done
+echo       Note     : use --force if clips were merged before voice-over
 echo.
 echo   [A] Run ALL steps in order (1 -^> 5, then 7 auto merge)
 echo       Steps 1-5 automated. Step 6 voice-over is manual in browser.
@@ -83,14 +85,14 @@ timeout /t 2 >nul
 goto menu
 
 :run_01
-call :print_task_header 1 "Download YouTube videos" "links.txt to input_videos"
+call :print_task_header 1 "Download YouTube videos" "links.txt to 1-input_videos"
 call :run_python 01_download_youtube.py --file links.txt
 call :print_task_footer 1
 pause
 goto menu
 
 :run_02
-call :print_task_header 2 "Split videos by number markers" "input_videos to output_videos"
+call :print_task_header 2 "Split videos by number markers" "1-input_videos to 2-output_videos"
 call :run_python 02_split_video.py
 call :print_task_footer 2
 pause
@@ -104,7 +106,7 @@ pause
 goto menu
 
 :run_04
-call :print_task_header 4 "Transcribe split clips to Hindi" "output_videos mp4 to transcription json"
+call :print_task_header 4 "Transcribe split clips to Hindi" "2-output_videos mp4 to transcription json"
 call :run_python 04_transcribe_videos.py
 call :print_task_footer 4
 pause
@@ -143,12 +145,12 @@ echo   Folder : %cd%
 echo ============================================================
 echo.
 
-call :print_task_header 1 "Download YouTube videos" "links.txt to input_videos"
+call :print_task_header 1 "Download YouTube videos" "links.txt to 1-input_videos"
 call :run_python 01_download_youtube.py --file links.txt
 if errorlevel 1 goto pipeline_fail
 call :print_task_footer 1
 
-call :print_task_header 2 "Split videos by number markers" "input_videos to output_videos"
+call :print_task_header 2 "Split videos by number markers" "1-input_videos to 2-output_videos"
 call :run_python 02_split_video.py
 if errorlevel 1 goto pipeline_fail
 call :print_task_footer 2
@@ -158,7 +160,7 @@ call :run_python 03_remove_text_from_videos.py
 if errorlevel 1 goto pipeline_fail
 call :print_task_footer 3
 
-call :print_task_header 4 "Transcribe split clips to Hindi" "output_videos mp4 to transcription json"
+call :print_task_header 4 "Transcribe split clips to Hindi" "2-output_videos mp4 to transcription json"
 call :run_python 04_transcribe_videos.py
 if errorlevel 1 goto pipeline_fail
 call :print_task_footer 4

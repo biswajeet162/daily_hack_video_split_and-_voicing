@@ -24,7 +24,7 @@
   "enter_sec": 0.5,
   "transition_fps": 60,
   "clip_label_overlay": {
-    "font_size": 112,
+    "font_size": 96,
     "line_gap": 20,
     "left_margin": 28,
     "top_margin": 50,
