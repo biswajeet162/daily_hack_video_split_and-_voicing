@@ -26,6 +26,9 @@ RECORDINGS_FIXED_DIR = Path("recordings_fixed")
 TRANSCRIPTIONS_DIR = Path("transcription_folder")
 MERGED_PARTS_DIR = Path("merged_parts")
 FINAL_OUTPUT = Path("final_output.mp4")
+FINAL_WITH_BG = Path("final_output_bg.mp4")
+BG_MUSIC_FILE = UPLOADS_DIR / "bg_music_track"
+BG_MUSIC_VOLUME = 0.22
 MIN_CHUNK_SECONDS = 2.0
 
 # Record extra audio and then trim to exact chunk duration on server.
@@ -660,12 +663,62 @@ def _merge_final_video_chunks():
     ])
 
 
+def _apply_background_music(
+    video_path: Path,
+    music_path: Path,
+    output_path: Path,
+    volume: float = BG_MUSIC_VOLUME,
+) -> None:
+    """Mix looping background music under the video's existing audio."""
+    if not video_path.exists():
+        raise FileNotFoundError(f"Missing merged video: {video_path}")
+    if not music_path.exists():
+        raise FileNotFoundError(f"Missing background music: {music_path}")
+
+    bg_volume = max(0.01, min(1.0, float(volume)))
+    video_dur = _probe_duration_seconds(video_path)
+    # Loop music to cover full video length, keep voice dominant, trim to video duration.
+    _run_ffmpeg([
+        "ffmpeg",
+        "-y",
+        "-i",
+        str(video_path),
+        "-stream_loop",
+        "-1",
+        "-i",
+        str(music_path),
+        "-filter_complex",
+        (
+            f"[0:a]volume=1.0[voice];"
+            f"[1:a]volume={bg_volume:.4f}[bg];"
+            f"[voice][bg]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[aout]"
+        ),
+        "-map",
+        "0:v:0",
+        "-map",
+        "[aout]",
+        "-c:v",
+        "copy",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "192k",
+        "-t",
+        f"{video_dur:.4f}",
+        "-movflags",
+        "+faststart",
+        str(output_path),
+    ], capture_stderr=True)
+
+
 def _merge_final_video():
     mode = _get_session_mode()
     if mode == "chunks":
         _merge_final_video_chunks()
     else:
         _merge_final_video_split()
+    if FINAL_WITH_BG.exists():
+        FINAL_WITH_BG.unlink()
 
 
 def _reorder_chunks(order: list[int]) -> list:
@@ -1002,6 +1055,81 @@ class AppHandler(SimpleHTTPRequestHandler):
             try:
                 _merge_final_video()
                 _json_response(self, {"ok": True, "output_url": f"/{FINAL_OUTPUT.name}"})
+            except Exception as exc:  # noqa: BLE001
+                _json_response(self, {"ok": False, "error": str(exc)}, status=HTTPStatus.BAD_REQUEST)
+            return
+
+        if parsed.path == "/api/upload-bg-music":
+            try:
+                query = parse_qs(parsed.query)
+                name_values = query.get("name", [])
+                file_name = name_values[0] if name_values else "bg_music.mp3"
+                ext = Path(file_name).suffix.lower() or ".mp3"
+                if ext not in {".mp3", ".wav", ".m4a", ".aac", ".ogg", ".flac", ".wma"}:
+                    raise ValueError("Unsupported audio extension")
+
+                content_len = int(self.headers.get("Content-Length", "0"))
+                if content_len <= 0:
+                    raise ValueError("Empty audio body")
+
+                UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+                # Clear previous bg track variants
+                for old in UPLOADS_DIR.glob("bg_music_track*"):
+                    old.unlink(missing_ok=True)
+
+                target = Path(f"{BG_MUSIC_FILE}{ext}")
+                target.write_bytes(self.rfile.read(content_len))
+                _json_response(self, {
+                    "ok": True,
+                    "music_file": str(target),
+                    "name": Path(file_name).name,
+                })
+            except Exception as exc:  # noqa: BLE001
+                _json_response(self, {"ok": False, "error": str(exc)}, status=HTTPStatus.BAD_REQUEST)
+            return
+
+        if parsed.path == "/api/prepare-final-download":
+            try:
+                query = parse_qs(parsed.query)
+                use_bg = (query.get("bg", ["0"])[0] == "1")
+                if not FINAL_OUTPUT.exists():
+                    raise FileNotFoundError("No merged video yet. Click Merge first.")
+
+                if not use_bg:
+                    _json_response(self, {
+                        "ok": True,
+                        "output_url": f"/{FINAL_OUTPUT.name}?t={int(FINAL_OUTPUT.stat().st_mtime)}",
+                        "filename": "final_output.mp4",
+                        "bg": False,
+                    })
+                    return
+
+                music_candidates = sorted(UPLOADS_DIR.glob("bg_music_track.*"))
+                if not music_candidates:
+                    raise FileNotFoundError("BG Music is on, but no music file was selected.")
+
+                level_values = query.get("level", [])
+                try:
+                    level_pct = float(level_values[0]) if level_values else (BG_MUSIC_VOLUME * 100.0)
+                except ValueError as exc:
+                    raise ValueError("BG music level must be a number") from exc
+                if level_pct < 1 or level_pct > 100:
+                    raise ValueError("BG music level must be between 1 and 100")
+
+                music_path = music_candidates[0]
+                _apply_background_music(
+                    FINAL_OUTPUT,
+                    music_path,
+                    FINAL_WITH_BG,
+                    volume=level_pct / 100.0,
+                )
+                _json_response(self, {
+                    "ok": True,
+                    "output_url": f"/{FINAL_WITH_BG.name}?t={int(FINAL_WITH_BG.stat().st_mtime)}",
+                    "filename": "final_output_bg.mp4",
+                    "bg": True,
+                    "level": level_pct,
+                })
             except Exception as exc:  # noqa: BLE001
                 _json_response(self, {"ok": False, "error": str(exc)}, status=HTTPStatus.BAD_REQUEST)
             return

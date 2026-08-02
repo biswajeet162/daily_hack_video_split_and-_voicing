@@ -17,7 +17,13 @@ const startRecordingBtn = document.getElementById("startRecordingBtn");
 const stopRecordingBtn = document.getElementById("stopRecordingBtn");
 const playRecordingBtn = document.getElementById("playRecordingBtn");
 const downloadRecordingLink = document.getElementById("downloadRecordingLink");
-const downloadFinalLink = document.getElementById("downloadFinalLink");
+const downloadFinalBtn = document.getElementById("downloadFinalBtn");
+const bgMusicCheckbox = document.getElementById("bgMusicCheckbox");
+const bgMusicPickLabel = document.getElementById("bgMusicPickLabel");
+const bgMusicFileInput = document.getElementById("bgMusicFileInput");
+const bgMusicName = document.getElementById("bgMusicName");
+const bgMusicLevelWrap = document.getElementById("bgMusicLevelWrap");
+const bgMusicLevelInput = document.getElementById("bgMusicLevelInput");
 const storyVideo = document.getElementById("storyVideo");
 
 const statusText = document.getElementById("statusText");
@@ -45,7 +51,9 @@ let selectedVideoFile = null;
 let selectedChunkFiles = [];
 let appMode = "split"; // "split" | "chunks"
 let transcribingChunkId = null;
-let reorderBusy = false;
+let selectedBgMusicFile = null;
+let bgMusicUploaded = false;
+let finalReady = false;
 
 const MIC_STORAGE_KEY = "selectedMicId";
 const PREFERRED_MIC_PATTERNS = [/pd200xs/i, /pd200x/i, /pd200/i, /maono/i];
@@ -414,6 +422,41 @@ function updateMergeState() {
     mergeBtn.disabled = !transcript.length;
 }
 
+function updateDownloadFinalState() {
+    if (!downloadFinalBtn) {
+        return;
+    }
+    downloadFinalBtn.disabled = !finalReady;
+}
+
+function resetFinalDownloadUi() {
+    finalReady = false;
+    updateDownloadFinalState();
+}
+
+function updateBgMusicUi() {
+    const enabled = Boolean(bgMusicCheckbox?.checked);
+    bgMusicPickLabel?.classList.toggle("hidden", !enabled);
+    bgMusicLevelWrap?.classList.toggle("hidden", !enabled);
+    if (!enabled) {
+        if (bgMusicName) {
+            bgMusicName.textContent = "";
+        }
+        return;
+    }
+    if (bgMusicName) {
+        bgMusicName.textContent = selectedBgMusicFile ? selectedBgMusicFile.name : "Select a music file";
+    }
+}
+
+function getBgMusicLevelPercent() {
+    const raw = Number.parseFloat(bgMusicLevelInput?.value || "20");
+    if (!Number.isFinite(raw)) {
+        return 20;
+    }
+    return Math.max(1, Math.min(100, Math.round(raw)));
+}
+
 function updateActiveCardUI() {
     const cards = chunkList.querySelectorAll(".chunk-card");
     cards.forEach((card, idx) => {
@@ -428,9 +471,7 @@ function resetSessionUi() {
     activeChunkPanel.classList.add("hidden");
     currentChunkIndex = -1;
     transcript = [];
-    downloadFinalLink.classList.add("disabled-link");
-    downloadFinalLink.removeAttribute("href");
-    downloadFinalLink.removeAttribute("download");
+    resetFinalDownloadUi();
     updateMergeState();
 }
 
@@ -1097,9 +1138,7 @@ async function mergeFinalVideo() {
     const keepOriginal = transcript.length - doneCount;
 
     mergeBtn.disabled = true;
-    downloadFinalLink.classList.add("disabled-link");
-    downloadFinalLink.removeAttribute("href");
-    downloadFinalLink.removeAttribute("download");
+    resetFinalDownloadUi();
     setStatus(
         `Merging... (${doneCount} with your voice, ${keepOriginal} keeping original audio)`,
     );
@@ -1111,16 +1150,98 @@ async function mergeFinalVideo() {
             throw new Error(data.error || "merge failed");
         }
 
-        downloadFinalLink.href = data.output_url;
-        downloadFinalLink.download = "final_output.mp4";
-        downloadFinalLink.classList.remove("disabled-link");
+        finalReady = true;
+        updateDownloadFinalState();
         setStatus(
-            `Merged successfully (${doneCount} VO / ${keepOriginal} original). Use Download Final.`,
+            `Merged successfully (${doneCount} VO / ${keepOriginal} original). Click Download Final.`,
         );
     } catch (error) {
         setStatus(`Merge failed: ${error.message}`);
     } finally {
         updateMergeState();
+    }
+}
+
+async function uploadBgMusicIfNeeded() {
+    if (!selectedBgMusicFile) {
+        throw new Error("Select a background music file first.");
+    }
+    if (bgMusicUploaded) {
+        return;
+    }
+    setStatus(`Uploading BG music: ${selectedBgMusicFile.name}...`);
+    const response = await fetch(
+        `/api/upload-bg-music?name=${encodeURIComponent(selectedBgMusicFile.name)}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": selectedBgMusicFile.type || "application/octet-stream",
+            },
+            body: selectedBgMusicFile,
+        },
+    );
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !data.ok) {
+        throw new Error(data.error || "BG music upload failed");
+    }
+    bgMusicUploaded = true;
+}
+
+function triggerBrowserDownload(url, filename) {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename || "final_output.mp4";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+}
+
+async function downloadFinalVideo() {
+    if (!finalReady) {
+        setStatus("Click Merge first.");
+        return;
+    }
+
+    const useBg = Boolean(bgMusicCheckbox?.checked);
+    downloadFinalBtn.disabled = true;
+
+    try {
+        if (useBg) {
+            if (!selectedBgMusicFile) {
+                setStatus("BG Music is on — choose a music file first.");
+                bgMusicFileInput?.click();
+                return;
+            }
+            await uploadBgMusicIfNeeded();
+            const level = getBgMusicLevelPercent();
+            if (bgMusicLevelInput) {
+                bgMusicLevelInput.value = String(level);
+            }
+            setStatus(`Mixing BG music at ${level}% level (looping to video length)...`);
+        } else {
+            setStatus("Preparing final download...");
+        }
+
+        const level = getBgMusicLevelPercent();
+        const response = await fetch(
+            `/api/prepare-final-download?bg=${useBg ? "1" : "0"}&level=${level}`,
+            { method: "POST" },
+        );
+        const data = await response.json();
+        if (!response.ok || !data.ok) {
+            throw new Error(data.error || "prepare download failed");
+        }
+
+        triggerBrowserDownload(data.output_url, data.filename || "final_output.mp4");
+        setStatus(
+            useBg
+                ? `Downloaded final video with BG music at ${data.level || level}%.`
+                : "Downloaded final video.",
+        );
+    } catch (error) {
+        setStatus(`Download failed: ${error.message}`);
+    } finally {
+        updateDownloadFinalState();
     }
 }
 
@@ -1162,6 +1283,30 @@ chunkFilesInput.addEventListener("change", async (event) => {
 processBtn.addEventListener("click", processFromBeginning);
 loadChunksBtn.addEventListener("click", loadSelectedChunks);
 mergeBtn.addEventListener("click", mergeFinalVideo);
+downloadFinalBtn?.addEventListener("click", downloadFinalVideo);
+
+bgMusicCheckbox?.addEventListener("change", () => {
+    updateBgMusicUi();
+    if (bgMusicCheckbox.checked) {
+        if (!selectedBgMusicFile) {
+            bgMusicFileInput?.click();
+        }
+        setStatus("BG Music on — choose a track, then Download Final to mix it.");
+    } else {
+        setStatus("BG Music off — Download Final will use the merged video only.");
+    }
+});
+
+bgMusicFileInput?.addEventListener("change", (event) => {
+    const file = event.target.files && event.target.files[0];
+    selectedBgMusicFile = file || null;
+    bgMusicUploaded = false;
+    updateBgMusicUi();
+    if (selectedBgMusicFile) {
+        setStatus(`BG music selected: ${selectedBgMusicFile.name}`);
+    }
+});
+
 startRecordingBtn.addEventListener("click", startSelectedChunkRecording);
 stopRecordingBtn.addEventListener("click", stopCurrentRecording);
 playRecordingBtn.addEventListener("click", playCurrentRecording);
@@ -1189,6 +1334,8 @@ function setupMicAutoInit() {
 }
 
 setAppMode(new URLSearchParams(window.location.search).get("mode") === "chunks" ? "chunks" : "split");
+updateBgMusicUi();
+updateDownloadFinalState();
 
 if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
     navigator.mediaDevices.addEventListener("devicechange", () => ensureMicrophones(true));

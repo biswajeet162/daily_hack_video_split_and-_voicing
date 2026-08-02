@@ -145,6 +145,44 @@ body[data-mode="split"] #chunksModeControls {
     margin-left: auto;
 }
 
+.bg-music-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #cbd5e1;
+    user-select: none;
+    cursor: pointer;
+}
+
+.bg-music-wrap input {
+    width: 14px;
+    height: 14px;
+    accent-color: #22c55e;
+}
+
+.bg-music-level-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+.bg-music-level-wrap.hidden {
+    display: none !important;
+}
+
+.bg-music-level-wrap input {
+    width: 52px;
+    border: 1px solid #334155;
+    background: #0b1220;
+    color: #e2e8f0;
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 12px;
+}
+
 .btn {
     border: none;
     border-radius: 8px;

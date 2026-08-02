@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice Over Recorder</title>
-    <link rel="stylesheet" href="styles.css?v=6">
+    <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
     <main class="container">
@@ -47,7 +47,20 @@
             </label>
             <span id="statusText" class="status">Waiting...</span>
             <button id="mergeBtn" class="btn btn-primary controls-right" disabled>Merge</button>
-            <a id="downloadFinalLink" class="btn btn-secondary disabled-link" download>Download Final</a>
+            <label class="bg-music-wrap" title="Add looping background music on download">
+                <input id="bgMusicCheckbox" type="checkbox">
+                BG Music
+            </label>
+            <label id="bgMusicLevelWrap" class="bg-music-level-wrap hidden" title="Background music level vs voice">
+                Level %
+                <input id="bgMusicLevelInput" type="number" min="1" max="100" step="1" value="20">
+            </label>
+            <label id="bgMusicPickLabel" class="btn btn-secondary file-label hidden">
+                Choose Music
+                <input id="bgMusicFileInput" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac" hidden>
+            </label>
+            <span id="bgMusicName" class="bg-music-name"></span>
+            <button id="downloadFinalBtn" class="btn btn-secondary" type="button" disabled>Download Final</button>
         </section>
 
         <section class="workspace">
@@ -82,6 +95,6 @@
         </section>
     </main>
 
-    <script src="app.js?v=6"></script>
+    <script src="app.js?v=8"></script>
 </body>
 </html>
