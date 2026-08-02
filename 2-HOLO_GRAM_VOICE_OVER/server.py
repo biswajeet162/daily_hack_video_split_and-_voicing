@@ -52,9 +52,11 @@ process_state = {
     "total": 0,
     "done": False,
     "error": None,
+    "job_id": 0,
 }
 active_video_file = VIDEO_FILE
 session_mode = "split"  # "split" | "chunks"
+_process_job_counter = 0
 
 
 def _set_state(**kwargs):
@@ -75,6 +77,27 @@ def _set_process_state(**kwargs):
 def _get_process_state():
     with progress_lock:
         return dict(process_state)
+
+
+def _begin_process_job(*, stage: str, message: str, total: int = 0) -> int:
+    """Mark a new job as running BEFORE the worker thread starts (avoids stale done=True races)."""
+    global _process_job_counter
+    with progress_lock:
+        _process_job_counter += 1
+        job_id = _process_job_counter
+        process_state.update(
+            {
+                "running": True,
+                "done": False,
+                "error": None,
+                "stage": stage,
+                "message": message,
+                "current": 0,
+                "total": total,
+                "job_id": job_id,
+            }
+        )
+        return job_id
 
 
 def _set_session_mode(mode: str) -> None:
@@ -137,7 +160,7 @@ def _clear_work_dirs(*, keep_uploads: bool = False) -> None:
 
 
 def _chunk_video_path(chunk_id: int) -> Path:
-    return OUTPUT_DIR / f"chunk_{chunk_id:03d}.mp4"
+    return (OUTPUT_DIR / f"chunk_{chunk_id:03d}.mp4").resolve()
 
 
 def _recording_paths(chunk_id: int) -> tuple[Path, Path]:
@@ -802,11 +825,19 @@ def _handle_transcribe_chunk(handler: SimpleHTTPRequestHandler, query: dict) -> 
         transcript = _read_transcript()
         match = next((x for x in transcript if int(x["chunk_id"]) == chunk_id), None)
         if not match:
-            raise ValueError(f"chunk_id {chunk_id} not found")
+            raise ValueError(
+                f"chunk_id {chunk_id} not found in transcript. "
+                "Reload your videos, then click the part again."
+            )
 
         video_path = _chunk_video_path(chunk_id)
         if not video_path.exists():
-            raise FileNotFoundError(f"Missing chunk video: {video_path}")
+            available = sorted(p.name for p in OUTPUT_DIR.glob("chunk_*.mp4")) if OUTPUT_DIR.exists() else []
+            raise FileNotFoundError(
+                f"Missing video for part {chunk_id}: {video_path.name}. "
+                f"Available: {available or 'none'}. "
+                "Please Load Selected Videos again."
+            )
 
         force = (query.get("force", ["0"])[0] == "1")
         if match.get("text") and not force:
@@ -894,17 +925,25 @@ class AppHandler(SimpleHTTPRequestHandler):
                     raise ValueError("chunk_size must be positive")
 
                 if _get_process_state().get("running"):
-                    payload = {"ok": True, "started": False, "message": "Pipeline already running"}
-                else:
-                    worker = threading.Thread(
-                        target=_run_process_job,
-                        args=(active_video_file, chunk_size),
-                        daemon=True,
-                    )
-                    worker.start()
-                    payload = {"ok": True, "started": True}
+                    payload = {
+                        "ok": False,
+                        "started": False,
+                        "error": "Pipeline already running. Wait for it to finish.",
+                    }
+                    _json_response(self, payload, status=HTTPStatus.CONFLICT)
+                    return
 
-                _json_response(self, payload)
+                job_id = _begin_process_job(
+                    stage="queued",
+                    message="Starting video split pipeline...",
+                )
+                worker = threading.Thread(
+                    target=_run_process_job,
+                    args=(active_video_file, chunk_size),
+                    daemon=True,
+                )
+                worker.start()
+                _json_response(self, {"ok": True, "started": True, "job_id": job_id})
             except Exception as exc:  # noqa: BLE001
                 _json_response(self, {"ok": False, "error": str(exc)}, status=HTTPStatus.BAD_REQUEST)
             return
@@ -912,7 +951,15 @@ class AppHandler(SimpleHTTPRequestHandler):
         if parsed.path == "/api/load-chunks":
             try:
                 if _get_process_state().get("running"):
-                    _json_response(self, {"ok": True, "started": False, "message": "Pipeline already running"})
+                    _json_response(
+                        self,
+                        {
+                            "ok": False,
+                            "started": False,
+                            "error": "Pipeline already running. Wait for it to finish.",
+                        },
+                        status=HTTPStatus.CONFLICT,
+                    )
                     return
 
                 data = _read_json_body(self)
@@ -932,14 +979,19 @@ class AppHandler(SimpleHTTPRequestHandler):
                     staged_name = meta.get("staged") if isinstance(meta, dict) else None
                     if not name or not staged_name:
                         raise ValueError("Each file needs name and staged fields")
-                    staged_path = staging / staged_name
+                    staged_path = (staging / staged_name).resolve()
                     if not staged_path.exists():
                         raise FileNotFoundError(f"Missing staged file: {staged_name}")
                     files.append((name, staged_path))
 
+                job_id = _begin_process_job(
+                    stage="queued",
+                    message=f"Starting load of {len(files)} video chunks...",
+                    total=len(files),
+                )
                 worker = threading.Thread(target=_run_load_chunks_job, args=(files,), daemon=True)
                 worker.start()
-                _json_response(self, {"ok": True, "started": True, "count": len(files)})
+                _json_response(self, {"ok": True, "started": True, "count": len(files), "job_id": job_id})
             except Exception as exc:  # noqa: BLE001
                 _json_response(self, {"ok": False, "error": str(exc)}, status=HTTPStatus.BAD_REQUEST)
             return

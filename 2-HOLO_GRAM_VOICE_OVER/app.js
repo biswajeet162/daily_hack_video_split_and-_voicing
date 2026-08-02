@@ -707,7 +707,7 @@ async function reorderToIndex(fromIndex, toIndex) {
 
 async function loadTranscriptFromFile() {
     setStatus("Loading transcript.json...");
-    const response = await fetch("./transcript.json");
+    const response = await fetch(`./transcript.json?t=${Date.now()}`);
     if (!response.ok) {
         throw new Error("Unable to read transcript.json");
     }
@@ -720,10 +720,17 @@ async function loadTranscriptFromFile() {
     updateMergeState();
 }
 
-async function waitForProcessDone() {
+async function waitForProcessDone(expectedJobId = null) {
     while (true) {
         const progressResp = await fetch("/api/process-progress");
         const progress = await progressResp.json();
+
+        if (expectedJobId != null && Number(progress.job_id) !== Number(expectedJobId)) {
+            // Still seeing a previous job's status; wait for our job to appear.
+            await new Promise((resolve) => setTimeout(resolve, 150));
+            continue;
+        }
+
         if (progress.error) {
             throw new Error(progress.error);
         }
@@ -775,12 +782,12 @@ async function processFromBeginning() {
 
         setStatus(`Starting pipeline with ${chunkSize}s chunks...`);
         const processResp = await fetch(`/api/process-video?chunk_size=${chunkSize}`, { method: "POST" });
-        if (!processResp.ok) {
-            const errData = await processResp.json().catch(() => ({}));
-            throw new Error(errData.error || "pipeline start failed");
+        const processData = await processResp.json().catch(() => ({}));
+        if (!processResp.ok || !processData.ok) {
+            throw new Error(processData.error || "pipeline start failed");
         }
 
-        await waitForProcessDone();
+        await waitForProcessDone(processData.job_id);
         appMode = "split";
         await loadTranscriptFromFile();
         setStatus(`Loaded ${transcript.length} chunks and prepared split videos.`);
@@ -791,7 +798,15 @@ async function processFromBeginning() {
     }
 }
 
+let loadChunksInFlight = false;
+
 async function loadSelectedChunks() {
+    if (loadChunksInFlight) {
+        setStatus("Already loading videos. Please wait...");
+        return;
+    }
+    loadChunksInFlight = true;
+
     try {
         if (!selectedChunkFiles.length) {
             setStatus("Select one or more video chunks first.");
@@ -840,7 +855,7 @@ async function loadSelectedChunks() {
             throw new Error(loadData.error || "load chunks failed");
         }
 
-        await waitForProcessDone();
+        await waitForProcessDone(loadData.job_id);
         appMode = "chunks";
         document.body.dataset.mode = "chunks";
         await loadTranscriptFromFile();
@@ -849,6 +864,7 @@ async function loadSelectedChunks() {
         setStatus(`Error: ${error.message}`);
     } finally {
         loadChunksBtn.disabled = false;
+        loadChunksInFlight = false;
     }
 }
 
