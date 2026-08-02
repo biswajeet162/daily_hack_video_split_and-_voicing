@@ -19,16 +19,48 @@ echo   Project   : %~dp02-HOLO_GRAM_VOICE_OVER
 echo   URL       : http://localhost:8000
 echo ============================================================
 echo.
-echo   1. Select a video in the browser
-echo   2. Set chunk size and click Process Video
-echo   3. Record voice-over for each chunk
-echo   4. Click Merge and download final_output.mp4
+echo   Which option do you want?
 echo.
+echo   [1] Split One Video
+echo       Select one video, set chunk size, process, record, merge
+echo.
+echo   [2] Load Video Chunks
+echo       Select pre-split videos, click each to transcribe/record,
+echo       reorder with up/down, then merge
+echo.
+echo ============================================================
+echo.
+
+:ask_option
+set "CHOICE="
+set /p "CHOICE=Enter 1 or 2: "
+
+if "%CHOICE%"=="1" goto option_one
+if "%CHOICE%"=="2" goto option_two
+
+echo.
+echo   Invalid choice. Please type 1 or 2.
+echo.
+goto ask_option
+
+:option_one
+set "APP_URL=http://localhost:8000/?mode=split"
+echo.
+echo   Starting Option 1: Split One Video
+goto start_app
+
+:option_two
+set "APP_URL=http://localhost:8000/?mode=chunks"
+echo.
+echo   Starting Option 2: Load Video Chunks
+goto start_app
+
+:start_app
 echo   Press Ctrl+C to stop the server.
 echo ============================================================
 echo.
 
-start "" "http://localhost:8000"
+start "" "%APP_URL%"
 
 echo   [..] Starting server with conda env: whisperx
 echo.
