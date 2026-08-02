@@ -1,0 +1,42 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-05-a8b37169-1ebd-450a-a5d0-ee8cb4b98793.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-26T17:57:23.532231+00:00",
+  "start_sec": 0.0,
+  "end_sec": 5.78,
+  "duration_sec": 5.78,
+  "text": "ऐसुन का पेस्ट ऐसे क्यूब्स में जमालो, खाना बनाते समय बस एक क्यूब निकालो और सीधे इस्तिमाल करो।",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 5.78,
+      "duration_sec": 5.78,
+      "text": "ऐसुन का पेस्ट ऐसे क्यूब्स में जमालो, खाना बनाते समय बस एक क्यूब निकालो और सीधे इस्तिमाल करो।"
+    }
+  ],
+  "categories": [
+    "kitchen_hacks",
+    "food_prep"
+  ],
+  "display_label": "खाना तैयार",
+  "category_names_en": [
+    "Kitchen Hacks",
+    "Food Prep & Chopping"
+  ],
+  "category_names_hi": [
+    "रसोई के हैक",
+    "खाना तैयार करना"
+  ],
+  "categorized_at": "2026-07-26T17:57:56.624570+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
+}

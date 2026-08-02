@@ -1,0 +1,54 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-04-e25af372-3b99-435a-a738-cdee99fe81fc.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-26T17:57:21.682687+00:00",
+  "start_sec": 0.0,
+  "end_sec": 5.06,
+  "duration_sec": 5.06,
+  "text": "बंद को भी जल्दी काली पड़ती है डंठल पर थोड़ा आटा लगा कर रैप कर दो ज्यादा दिन तक ताजी रहेगी",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 1.46,
+      "duration_sec": 1.46,
+      "text": "बंद को भी जल्दी काली पड़ती है"
+    },
+    {
+      "start_sec": 1.46,
+      "end_sec": 3.62,
+      "duration_sec": 2.16,
+      "text": "डंठल पर थोड़ा आटा लगा कर रैप कर दो"
+    },
+    {
+      "start_sec": 3.62,
+      "end_sec": 5.06,
+      "duration_sec": 1.44,
+      "text": "ज्यादा दिन तक ताजी रहेगी"
+    }
+  ],
+  "categories": [
+    "clothes_hacks",
+    "plant_propagation"
+  ],
+  "display_label": "कपड़े पौधे",
+  "category_names_en": [
+    "Clothes & Fabric Hacks",
+    "Plant Propagation"
+  ],
+  "category_names_hi": [
+    "कपड़े से जुड़े हैक",
+    "पौधे उगाना और propagation"
+  ],
+  "categorized_at": "2026-07-26T17:57:52.227884+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
+}

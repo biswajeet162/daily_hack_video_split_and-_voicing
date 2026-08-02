@@ -1,0 +1,35 @@
+{
+  "clips": {
+    "😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]/part-02-89062763-56c6-47e2-b985-e213a60a665e.mp4": {
+      "merged_at": "2026-07-26T17:58:14.146033+00:00",
+      "merge_id": "clothes_hacks_20260726_232758",
+      "category_slug": "clothes_hacks",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-02-89062763-56c6-47e2-b985-e213a60a665e.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\Transcriptions\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-02-89062763-56c6-47e2-b985-e213a60a665e.transcription.json",
+      "merged_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\4-output_merged_videos\\clothes_hacks_20260726_232758.mp4",
+      "merged_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\4-output_merged_videos\\clothes_hacks_20260726_232758.json"
+    },
+    "😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]/part-04-e25af372-3b99-435a-a738-cdee99fe81fc.mp4": {
+      "merged_at": "2026-07-26T17:58:14.146033+00:00",
+      "merge_id": "clothes_hacks_20260726_232758",
+      "category_slug": "clothes_hacks",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-04-e25af372-3b99-435a-a738-cdee99fe81fc.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\Transcriptions\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-04-e25af372-3b99-435a-a738-cdee99fe81fc.transcription.json",
+      "merged_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\4-output_merged_videos\\clothes_hacks_20260726_232758.mp4",
+      "merged_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\4-output_merged_videos\\clothes_hacks_20260726_232758.json"
+    }
+  },
+  "merges": {
+    "clothes_hacks_20260726_232758": {
+      "merged_at": "2026-07-26T17:58:14.146033+00:00",
+      "category_slug": "clothes_hacks",
+      "clip_count": 2,
+      "clip_keys": [
+        "😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]/part-02-89062763-56c6-47e2-b985-e213a60a665e.mp4",
+        "😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]/part-04-e25af372-3b99-435a-a738-cdee99fe81fc.mp4"
+      ],
+      "output_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\4-output_merged_videos\\clothes_hacks_20260726_232758.mp4",
+      "output_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\4-output_merged_videos\\clothes_hacks_20260726_232758.json"
+    }
+  }
+}

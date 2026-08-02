@@ -1,0 +1,42 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-01-b8971d26-65f8-466d-90e6-173db56bdb60.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-26T17:57:16.284766+00:00",
+  "start_sec": 0.0,
+  "end_sec": 5.36,
+  "duration_sec": 5.36,
+  "text": "बच्चा दीवारों पर ड्राइंग बनाता है, उसे इस बड़े कार्टबोर्ड बॉक्स में बैठा दो, जितनी मरजी ड्राइंग करें.",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 5.36,
+      "duration_sec": 5.36,
+      "text": "बच्चा दीवारों पर ड्राइंग बनाता है, उसे इस बड़े कार्टबोर्ड बॉक्स में बैठा दो, जितनी मरजी ड्राइंग करें."
+    }
+  ],
+  "categories": [
+    "cardboard_paper_craft",
+    "household_hacks"
+  ],
+  "display_label": "कार्डबोर्ड क्राफ्ट",
+  "category_names_en": [
+    "Cardboard & Paper Craft",
+    "Household Hacks"
+  ],
+  "category_names_hi": [
+    "कार्डबोर्ड और कागज क्राफ्ट",
+    "घरेलू हैक"
+  ],
+  "categorized_at": "2026-07-26T17:57:38.868049+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
+}

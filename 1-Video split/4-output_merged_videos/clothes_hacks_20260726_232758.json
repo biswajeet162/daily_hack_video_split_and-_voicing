@@ -1,0 +1,146 @@
+{
+  "merge_id": "clothes_hacks_20260726_232758",
+  "category_slug": "clothes_hacks",
+  "category_name_en": "Clothes & Fabric Hacks",
+  "category_name_hi": "कपड़े से जुड़े हैक",
+  "merged_at": "2026-07-26T17:58:14.144033+00:00",
+  "clip_count": 2,
+  "raw_clip_duration_sec": 9.36,
+  "gap_added_sec": 1.0,
+  "gap_duration_sec": 1.0,
+  "total_duration_sec": 10.36,
+  "output_video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\4-output_merged_videos\\clothes_hacks_20260726_232758.mp4",
+  "transition_config": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\configuration\\merge_transition_config.json",
+  "merge_mode": "frame_fade_bridge",
+  "fade_out_sec": 0.5,
+  "fade_in_sec": 0.5,
+  "exit_sec": 0.5,
+  "enter_sec": 0.5,
+  "transition_fps": 60,
+  "output_fps": 60,
+  "frame_trim_sec": 0.016666666666666666,
+  "clip_labels": [
+    {
+      "play_order": 1,
+      "line_number": 1,
+      "text_line": 2,
+      "label": "कपड़े और"
+    },
+    {
+      "play_order": 2,
+      "line_number": 2,
+      "text_line": 1,
+      "label": "कपड़े पौधे"
+    }
+  ],
+  "clip_label_overlay": {
+    "method": "png_overlay",
+    "layout": "inline",
+    "display_mode": "synced",
+    "numbering": "reverse",
+    "font": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\assets\\fonts\\NotoSansDevanagari-Regular.ttf",
+    "font_size": 96,
+    "line_gap": 20,
+    "left_margin": 28,
+    "top_margin": 50,
+    "color": "RANDOM",
+    "random_color": true
+  },
+  "bridge_transitions": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "fade_out_label": {
+        "play_order": 1,
+        "text_line": 2,
+        "label": "कपड़े और"
+      },
+      "fade_in_label": {
+        "play_order": 2,
+        "text_line": 1,
+        "label": "कपड़े पौधे"
+      },
+      "mode": "frame_fade_bridge"
+    }
+  ],
+  "gap_effects": [
+    {
+      "after_clip_order": 1,
+      "before_clip_order": 2,
+      "effect_type": "frame_fade_bridge",
+      "effect_name_en": "Frame Fade Bridge",
+      "effect_name_hi": "फ्रेम फेड ब्रिज",
+      "fade_out_sec": 0.5,
+      "fade_in_sec": 0.5,
+      "exit_sec": 0.5,
+      "enter_sec": 0.5,
+      "fade_out_frames": 30,
+      "fade_in_frames": 30,
+      "transition_fps": 60,
+      "frame_trim_sec": 0.016666666666666666,
+      "bridge_duration_sec": 1.0,
+      "fade_out_label": {
+        "play_order": 1,
+        "text_line": 2,
+        "label": "कपड़े और"
+      },
+      "fade_in_label": {
+        "play_order": 2,
+        "text_line": 1,
+        "label": "कपड़े पौधे"
+      },
+      "mode": "frame_fade_bridge"
+    }
+  ],
+  "clips": [
+    {
+      "order": 1,
+      "clip_key": "😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]/part-02-89062763-56c6-47e2-b985-e213a60a665e.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-02-89062763-56c6-47e2-b985-e213a60a665e.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\Transcriptions\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-02-89062763-56c6-47e2-b985-e213a60a665e.transcription.json",
+      "display_label": "कपड़े और",
+      "text": "बच्चा बार-बार स्विच में उंगली डालता है, वाइप्स के धक्कन से ये सेफ्टी कवर बना दो.",
+      "duration_sec": 4.3,
+      "categories": [
+        "clothes_hacks",
+        "household_hacks"
+      ]
+    },
+    {
+      "order": 2,
+      "clip_key": "😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]/part-04-e25af372-3b99-435a-a738-cdee99fe81fc.mp4",
+      "video": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-04-e25af372-3b99-435a-a738-cdee99fe81fc.mp4",
+      "transcription_json": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\Transcriptions\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-04-e25af372-3b99-435a-a738-cdee99fe81fc.transcription.json",
+      "display_label": "कपड़े पौधे",
+      "text": "बंद को भी जल्दी काली पड़ती है डंठल पर थोड़ा आटा लगा कर रैप कर दो ज्यादा दिन तक ताजी रहेगी",
+      "duration_sec": 5.06,
+      "categories": [
+        "clothes_hacks",
+        "plant_propagation"
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "order": 1,
+      "text": "बच्चा बार-बार स्विच में उंगली डालता है, वाइप्स के धक्कन से ये सेफ्टी कवर बना दो."
+    },
+    {
+      "order": 2,
+      "text": "बंद को भी जल्दी काली पड़ती है डंठल पर थोड़ा आटा लगा कर रैप कर दो ज्यादा दिन तक ताजी रहेगी"
+    }
+  ],
+  "full_dialogue_hindi": "बच्चा बार-बार स्विच में उंगली डालता है, वाइप्स के धक्कन से ये सेफ्टी कवर बना दो.\n\nबंद को भी जल्दी काली पड़ती है डंठल पर थोड़ा आटा लगा कर रैप कर दो ज्यादा दिन तक ताजी रहेगी"
+}

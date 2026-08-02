@@ -1,0 +1,42 @@
+{
+  "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\😳 🏡 5 Smart Home & Parenting Hacks! 🤯 #shorts #lifehacks #viral [vqMJMAwTk48]\\part-02-89062763-56c6-47e2-b985-e213a60a665e.mp4",
+  "language": "hi",
+  "model": "large-v3",
+  "device": "cuda",
+  "compute_type": "float16",
+  "processed_at": "2026-07-26T17:57:17.972638+00:00",
+  "start_sec": 0.0,
+  "end_sec": 4.3,
+  "duration_sec": 4.3,
+  "text": "बच्चा बार-बार स्विच में उंगली डालता है, वाइप्स के धक्कन से ये सेफ्टी कवर बना दो.",
+  "segments": [
+    {
+      "start_sec": 0.0,
+      "end_sec": 4.3,
+      "duration_sec": 4.3,
+      "text": "बच्चा बार-बार स्विच में उंगली डालता है, वाइप्स के धक्कन से ये सेफ्टी कवर बना दो."
+    }
+  ],
+  "categories": [
+    "clothes_hacks",
+    "household_hacks"
+  ],
+  "display_label": "कपड़े और",
+  "category_names_en": [
+    "Clothes & Fabric Hacks",
+    "Household Hacks"
+  ],
+  "category_names_hi": [
+    "कपड़े से जुड़े हैक",
+    "घरेलू हैक"
+  ],
+  "categorized_at": "2026-07-26T17:57:43.461969+00:00",
+  "categorizer": {
+    "provider": "ollama",
+    "model": "llama3.1:8b",
+    "ollama_url": "http://localhost:11434",
+    "min_categories": 1,
+    "max_categories": 5,
+    "category_list": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\video_categories\\categories.json"
+  }
+}

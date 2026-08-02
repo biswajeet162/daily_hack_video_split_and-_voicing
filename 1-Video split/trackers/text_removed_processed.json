@@ -1,0 +1,79 @@
+{
+  "videos": {
+    "\ud83d\ude33 \ud83c\udfe1 5 Smart Home & Parenting Hacks! \ud83e\udd2f #shorts #lifehacks #viral [vqMJMAwTk48]/part-01-b8971d26-65f8-466d-90e6-173db56bdb60.mp4": {
+      "processed_at": "2026-07-26T17:54:13.786319+00:00",
+      "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\\ud83d\ude33 \ud83c\udfe1 5 Smart Home & Parenting Hacks! \ud83e\udd2f #shorts #lifehacks #viral [vqMJMAwTk48]\\part-01-b8971d26-65f8-466d-90e6-173db56bdb60.mp4",
+      "frame_count": 162,
+      "frames_with_text": 36,
+      "text_regions": 84,
+      "languages": [
+        "en"
+      ],
+      "blur_kernel": 71,
+      "blur_sigma": 15.0,
+      "blur_passes": 3,
+      "processing_sec": 32.5,
+      "changed": true
+    },
+    "\ud83d\ude33 \ud83c\udfe1 5 Smart Home & Parenting Hacks! \ud83e\udd2f #shorts #lifehacks #viral [vqMJMAwTk48]/part-02-89062763-56c6-47e2-b985-e213a60a665e.mp4": {
+      "processed_at": "2026-07-26T17:54:46.337680+00:00",
+      "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\\ud83d\ude33 \ud83c\udfe1 5 Smart Home & Parenting Hacks! \ud83e\udd2f #shorts #lifehacks #viral [vqMJMAwTk48]\\part-02-89062763-56c6-47e2-b985-e213a60a665e.mp4",
+      "frame_count": 130,
+      "frames_with_text": 90,
+      "text_regions": 168,
+      "languages": [
+        "en"
+      ],
+      "blur_kernel": 71,
+      "blur_sigma": 15.0,
+      "blur_passes": 3,
+      "processing_sec": 32.5,
+      "changed": true
+    },
+    "\ud83d\ude33 \ud83c\udfe1 5 Smart Home & Parenting Hacks! \ud83e\udd2f #shorts #lifehacks #viral [vqMJMAwTk48]/part-03-ac4fc64c-fd8c-4428-9a58-7b217640d5e6.mp4": {
+      "processed_at": "2026-07-26T17:55:31.566961+00:00",
+      "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\\ud83d\ude33 \ud83c\udfe1 5 Smart Home & Parenting Hacks! \ud83e\udd2f #shorts #lifehacks #viral [vqMJMAwTk48]\\part-03-ac4fc64c-fd8c-4428-9a58-7b217640d5e6.mp4",
+      "frame_count": 160,
+      "frames_with_text": 160,
+      "text_regions": 381,
+      "languages": [
+        "en"
+      ],
+      "blur_kernel": 71,
+      "blur_sigma": 15.0,
+      "blur_passes": 3,
+      "processing_sec": 45.1,
+      "changed": true
+    },
+    "\ud83d\ude33 \ud83c\udfe1 5 Smart Home & Parenting Hacks! \ud83e\udd2f #shorts #lifehacks #viral [vqMJMAwTk48]/part-04-e25af372-3b99-435a-a738-cdee99fe81fc.mp4": {
+      "processed_at": "2026-07-26T17:56:14.478566+00:00",
+      "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\\ud83d\ude33 \ud83c\udfe1 5 Smart Home & Parenting Hacks! \ud83e\udd2f #shorts #lifehacks #viral [vqMJMAwTk48]\\part-04-e25af372-3b99-435a-a738-cdee99fe81fc.mp4",
+      "frame_count": 153,
+      "frames_with_text": 153,
+      "text_regions": 311,
+      "languages": [
+        "en"
+      ],
+      "blur_kernel": 71,
+      "blur_sigma": 15.0,
+      "blur_passes": 3,
+      "processing_sec": 42.8,
+      "changed": true
+    },
+    "\ud83d\ude33 \ud83c\udfe1 5 Smart Home & Parenting Hacks! \ud83e\udd2f #shorts #lifehacks #viral [vqMJMAwTk48]/part-05-a8b37169-1ebd-450a-a5d0-ee8cb4b98793.mp4": {
+      "processed_at": "2026-07-26T17:57:01.926049+00:00",
+      "source": "D:\\YOUTUBES\\DAILY_HACKS_VIDEOS\\1-Video split\\2-output_videos\\\ud83d\ude33 \ud83c\udfe1 5 Smart Home & Parenting Hacks! \ud83e\udd2f #shorts #lifehacks #viral [vqMJMAwTk48]\\part-05-a8b37169-1ebd-450a-a5d0-ee8cb4b98793.mp4",
+      "frame_count": 174,
+      "frames_with_text": 174,
+      "text_regions": 365,
+      "languages": [
+        "en"
+      ],
+      "blur_kernel": 71,
+      "blur_sigma": 15.0,
+      "blur_passes": 3,
+      "processing_sec": 47.4,
+      "changed": true
+    }
+  }
+}
