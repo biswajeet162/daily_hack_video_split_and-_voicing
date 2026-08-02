@@ -1,0 +1,22 @@
+# Generated split video clips
+split_videos/
+chunks/
+
+# Common video/audio files
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.mp3
+*.wav
+*.m4a
+*.aac
+*.ogg
+*.json
+*.txt
+
+uploads/
+recordings_fixed/
+merged_parts/
+transcription_folder/

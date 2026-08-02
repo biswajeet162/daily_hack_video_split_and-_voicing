@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Over Recorder</title>
+    <link rel="stylesheet" href="styles.css?v=6">
+</head>
+<body>
+    <main class="container">
+        <section class="mode-bar">
+            <button id="modeSplitBtn" class="mode-btn active" type="button" data-mode="split">
+                Option 1: Split One Video
+            </button>
+            <button id="modeChunksBtn" class="mode-btn" type="button" data-mode="chunks">
+                Option 2: Load Video Chunks
+            </button>
+        </section>
+
+        <section class="controls">
+            <div id="splitModeControls" class="mode-controls">
+                <label class="btn btn-secondary file-label">
+                    Select Video
+                    <input id="videoFileInput" type="file" accept="video/*" hidden>
+                </label>
+                <label class="chunk-size-wrap">
+                    Chunk Size (sec)
+                    <input id="chunkSizeInput" type="number" min="1" step="1" value="6">
+                </label>
+                <button id="processBtn" class="btn btn-secondary">Process Video</button>
+            </div>
+
+            <div id="chunksModeControls" class="mode-controls hidden">
+                <label class="btn btn-secondary file-label">
+                    Select Multiple Videos
+                    <input id="chunkFilesInput" type="file" accept="video/*,.mp4,.mov,.mkv,.webm,.avi" multiple hidden>
+                </label>
+                <span id="selectedChunksLabel" class="chunks-label">Use Ctrl+Click to pick many</span>
+                <button id="loadChunksBtn" class="btn btn-secondary" type="button">Load Selected Videos</button>
+            </div>
+
+            <label class="mic-wrap">
+                Mic
+                <select id="micSelect" title="Select recording microphone">
+                    <option value="">Loading...</option>
+                </select>
+            </label>
+            <span id="statusText" class="status">Waiting...</span>
+            <button id="mergeBtn" class="btn btn-primary controls-right" disabled>Merge</button>
+            <a id="downloadFinalLink" class="btn btn-secondary disabled-link" download>Download Final</a>
+        </section>
+
+        <section class="workspace">
+            <aside class="left-panel">
+                <h2 id="chunkListTitle">Chunk Tabs</h2>
+                <div id="chunkList" class="chunk-list"></div>
+            </aside>
+
+            <section class="right-panel">
+                <div class="video-panel">
+                    <video id="storyVideo" controls preload="metadata"></video>
+                </div>
+
+                <section id="activeChunkPanel" class="active-chunk hidden" aria-live="polite">
+                    <div class="active-meta">
+                        <span id="activeChunkId">Chunk -</span>
+                        <span id="activeChunkTime">0s - 0s</span>
+                        <span id="activeRemaining">Remaining: 0.0s</span>
+                    </div>
+                    <div class="progress-track">
+                        <div id="activeProgress" class="progress-fill"></div>
+                    </div>
+                    <p id="activeChunkText" class="active-text"></p>
+                    <div class="active-actions">
+                        <button id="startRecordingBtn" class="btn btn-primary" disabled>Start Recording</button>
+                        <button id="stopRecordingBtn" class="btn btn-danger" disabled>Stop</button>
+                        <button id="playRecordingBtn" class="btn btn-secondary hidden" disabled>Play</button>
+                        <a id="downloadRecordingLink" class="btn btn-secondary disabled-link" download>Download</a>
+                    </div>
+                </section>
+            </section>
+        </section>
+    </main>
+
+    <script src="app.js?v=6"></script>
+</body>
+</html>
