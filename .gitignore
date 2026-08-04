@@ -1,6 +1,7 @@
 # Python
 __pycache__/
 *.pyc
+*.zip
 
 # ---------------------------------------------------------------------------
 # Video / audio — never commit large media files

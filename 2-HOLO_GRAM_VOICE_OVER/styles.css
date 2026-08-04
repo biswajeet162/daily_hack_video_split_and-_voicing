@@ -73,11 +73,24 @@ body {
     display: none !important;
 }
 
-body[data-mode="chunks"] #splitModeControls {
+body[data-mode="chunks"] #splitModeControls,
+body[data-mode="export"] #splitModeControls {
     display: none !important;
 }
 
 body[data-mode="split"] #chunksModeControls {
+    display: none !important;
+}
+
+.merge-flow-controls {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.merge-flow-controls.hidden,
+#downloadZipBtn.hidden {
     display: none !important;
 }
 

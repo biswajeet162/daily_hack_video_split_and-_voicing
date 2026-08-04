@@ -1,7 +1,9 @@
 import json
+import re
 import shutil
 import threading
 import subprocess
+import zipfile
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -27,6 +29,7 @@ TRANSCRIPTIONS_DIR = Path("transcription_folder")
 MERGED_PARTS_DIR = Path("merged_parts")
 FINAL_OUTPUT = Path("final_output.mp4")
 FINAL_WITH_BG = Path("final_output_bg.mp4")
+EXPORT_PARTS_ZIP = Path("voiceover_parts.zip")
 BG_MUSIC_FILE = UPLOADS_DIR / "bg_music_track"
 BG_MUSIC_VOLUME = 0.22
 MIN_CHUNK_SECONDS = 2.0
@@ -55,7 +58,7 @@ process_state = {
     "job_id": 0,
 }
 active_video_file = VIDEO_FILE
-session_mode = "split"  # "split" | "chunks"
+session_mode = "split"  # "split" | "chunks" | "export"
 _process_job_counter = 0
 
 
@@ -102,7 +105,7 @@ def _begin_process_job(*, stage: str, message: str, total: int = 0) -> int:
 
 def _set_session_mode(mode: str) -> None:
     global session_mode
-    if mode not in {"split", "chunks"}:
+    if mode not in {"split", "chunks", "export"}:
         raise ValueError(f"Invalid session mode: {mode}")
     session_mode = mode
     SESSION_FILE.write_text(json.dumps({"mode": mode}, indent=2), encoding="utf-8")
@@ -113,11 +116,16 @@ def _get_session_mode() -> str:
         try:
             data = json.loads(SESSION_FILE.read_text(encoding="utf-8"))
             mode = data.get("mode")
-            if mode in {"split", "chunks"}:
+            if mode in {"split", "chunks", "export"}:
                 return mode
         except Exception:  # noqa: BLE001
             pass
     return session_mode
+
+
+def _is_multi_part_mode(mode: str | None = None) -> bool:
+    mode = mode or _get_session_mode()
+    return mode in {"chunks", "export"}
 
 
 def _read_transcript() -> list:
@@ -264,9 +272,9 @@ def _run_process_job(video_file: Path, chunk_size: int):
         )
 
 
-def _run_load_chunks_job(files: list[tuple[str, Path]]):
+def _run_load_chunks_job(files: list[tuple[str, Path]], *, target_mode: str = "chunks"):
     try:
-        _set_session_mode("chunks")
+        _set_session_mode(target_mode if target_mode in {"chunks", "export"} else "chunks")
         _set_process_state(
             running=True,
             done=False,
@@ -655,19 +663,8 @@ def _merge_final_video_chunks():
     part_files = []
     for item in transcript:
         chunk_id = int(item["chunk_id"])
-        video_path = _chunk_video_path(chunk_id)
-        start = float(item["start"])
-        end = float(item["end"])
-        chunk_dur = max(0.1, end - start)
         part_file = MERGED_PARTS_DIR / f"part_{chunk_id:03d}.mp4"
-
-        source_audio = _find_chunk_recording(chunk_id)
-        if source_audio is not None:
-            wav_file = MERGED_PARTS_DIR / f"chunk_{chunk_id:03d}.wav"
-            _prepare_fixed_wav_from_audio(source_audio, wav_file, chunk_dur)
-            _encode_part_with_vo(video_path, wav_file, part_file)
-        else:
-            _encode_part_keep_original(video_path, part_file, chunk_dur)
+        _build_part_video(item, part_file)
         part_files.append(part_file)
 
     # Concat demuxer list (relative paths are more reliable on Windows)
@@ -732,6 +729,69 @@ def _apply_background_music(
         "+faststart",
         str(output_path),
     ], capture_stderr=True)
+
+
+def _safe_export_filename(name: str, chunk_id: int) -> str:
+    raw = Path(name).name if name else f"part_{chunk_id:03d}.mp4"
+    stem = Path(raw).stem or f"part_{chunk_id:03d}"
+    ext = Path(raw).suffix.lower() or ".mp4"
+    if ext not in {".mp4", ".mov", ".mkv", ".webm", ".avi"}:
+        ext = ".mp4"
+    safe_stem = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", stem).strip(" .") or f"part_{chunk_id:03d}"
+    return f"{safe_stem}{ext}"
+
+
+def _build_part_video(item: dict, part_file: Path) -> None:
+    chunk_id = int(item["chunk_id"])
+    video_path = _chunk_video_path(chunk_id)
+    if not video_path.exists():
+        raise FileNotFoundError(f"Missing video for part {chunk_id}: {video_path.name}")
+
+    start = float(item["start"])
+    end = float(item["end"])
+    chunk_dur = max(0.1, end - start)
+
+    source_audio = _find_chunk_recording(chunk_id)
+    if source_audio is not None:
+        wav_file = MERGED_PARTS_DIR / f"chunk_{chunk_id:03d}.wav"
+        _prepare_fixed_wav_from_audio(source_audio, wav_file, chunk_dur)
+        _encode_part_with_vo(video_path, wav_file, part_file)
+    else:
+        _encode_part_keep_original(video_path, part_file, chunk_dur)
+
+
+def _export_parts_zip() -> Path:
+    """Option 3: export each part (VO if recorded, else original audio) as a ZIP."""
+    transcript = _read_transcript()
+    if MERGED_PARTS_DIR.exists():
+        shutil.rmtree(MERGED_PARTS_DIR)
+    MERGED_PARTS_DIR.mkdir(parents=True, exist_ok=True)
+
+    used_names: dict[str, int] = {}
+    zip_entries: list[tuple[str, Path]] = []
+
+    for item in transcript:
+        chunk_id = int(item["chunk_id"])
+        part_file = MERGED_PARTS_DIR / f"export_{chunk_id:03d}.mp4"
+        _build_part_video(item, part_file)
+
+        export_name = _safe_export_filename(item.get("source_name") or "", chunk_id)
+        count = used_names.get(export_name, 0)
+        used_names[export_name] = count + 1
+        if count:
+            stem = Path(export_name).stem
+            ext = Path(export_name).suffix
+            export_name = f"{stem}_{count + 1}{ext}"
+        zip_entries.append((export_name, part_file))
+
+    if EXPORT_PARTS_ZIP.exists():
+        EXPORT_PARTS_ZIP.unlink()
+
+    with zipfile.ZipFile(EXPORT_PARTS_ZIP, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for arc_name, file_path in zip_entries:
+            zf.write(file_path, arcname=arc_name)
+
+    return EXPORT_PARTS_ZIP
 
 
 def _merge_final_video():
@@ -847,7 +907,7 @@ def _handle_transcribe_chunk(handler: SimpleHTTPRequestHandler, query: dict) -> 
         text = transcribe_clip_text(str(video_path))
         match["text"] = text
         duration = probe_duration_seconds(video_path)
-        if _get_session_mode() == "chunks":
+        if _get_session_mode() in {"chunks", "export"}:
             match["start"] = 0.0
             match["end"] = round(duration, 3)
         _write_chunk_transcript_files(match)
@@ -984,12 +1044,21 @@ class AppHandler(SimpleHTTPRequestHandler):
                         raise FileNotFoundError(f"Missing staged file: {staged_name}")
                     files.append((name, staged_path))
 
+                target_mode = data.get("mode", "chunks")
+                if target_mode not in {"chunks", "export"}:
+                    target_mode = "chunks"
+
                 job_id = _begin_process_job(
                     stage="queued",
                     message=f"Starting load of {len(files)} video chunks...",
                     total=len(files),
                 )
-                worker = threading.Thread(target=_run_load_chunks_job, args=(files,), daemon=True)
+                worker = threading.Thread(
+                    target=_run_load_chunks_job,
+                    args=(files,),
+                    kwargs={"target_mode": target_mode},
+                    daemon=True,
+                )
                 worker.start()
                 _json_response(self, {"ok": True, "started": True, "count": len(files), "job_id": job_id})
             except Exception as exc:  # noqa: BLE001
@@ -1103,6 +1172,21 @@ class AppHandler(SimpleHTTPRequestHandler):
             _json_response(self, payload)
             return
 
+        if parsed.path == "/api/export-parts-zip":
+            try:
+                if _get_session_mode() != "export":
+                    raise ValueError("Export ZIP is only available in Option 3 mode.")
+                zip_path = _export_parts_zip()
+                _json_response(self, {
+                    "ok": True,
+                    "output_url": f"/{zip_path.name}?t={int(zip_path.stat().st_mtime)}",
+                    "filename": zip_path.name,
+                    "count": len(_read_transcript()),
+                })
+            except Exception as exc:  # noqa: BLE001
+                _json_response(self, {"ok": False, "error": str(exc)}, status=HTTPStatus.BAD_REQUEST)
+            return
+
         if parsed.path == "/api/merge-final":
             try:
                 _merge_final_video()
@@ -1209,7 +1293,8 @@ def run() -> None:
     server = ThreadingHTTPServer(("0.0.0.0", PORT), AppHandler)
     print(f"Serving at http://localhost:{PORT}")
     print("Option 1: Select video -> set chunk size -> process -> record -> merge.")
-    print("Option 2: Select video chunks -> load -> click to transcribe/record -> reorder -> merge.")
+    print("Option 2: Select video chunks -> load -> transcribe/record -> reorder -> merge.")
+    print("Option 3: Select video chunks -> transcribe/record -> Download ZIP (no merge).")
     server.serve_forever()
 
 

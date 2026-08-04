@@ -6,8 +6,10 @@ const loadChunksBtn = document.getElementById("loadChunksBtn");
 const selectedChunksLabel = document.getElementById("selectedChunksLabel");
 const modeSplitBtn = document.getElementById("modeSplitBtn");
 const modeChunksBtn = document.getElementById("modeChunksBtn");
+const modeExportBtn = document.getElementById("modeExportBtn");
 const splitModeControls = document.getElementById("splitModeControls");
 const chunksModeControls = document.getElementById("chunksModeControls");
+const mergeFlowControls = document.getElementById("mergeFlowControls");
 const chunkListTitle = document.getElementById("chunkListTitle");
 const micSelect = document.getElementById("micSelect");
 const refreshMicBtn = document.getElementById("refreshMicBtn");
@@ -18,6 +20,7 @@ const stopRecordingBtn = document.getElementById("stopRecordingBtn");
 const playRecordingBtn = document.getElementById("playRecordingBtn");
 const downloadRecordingLink = document.getElementById("downloadRecordingLink");
 const downloadFinalBtn = document.getElementById("downloadFinalBtn");
+const downloadZipBtn = document.getElementById("downloadZipBtn");
 const bgMusicCheckbox = document.getElementById("bgMusicCheckbox");
 const bgMusicPickLabel = document.getElementById("bgMusicPickLabel");
 const bgMusicFileInput = document.getElementById("bgMusicFileInput");
@@ -49,7 +52,7 @@ let recordingStartTime = 0;
 let previewAudio = null;
 let selectedVideoFile = null;
 let selectedChunkFiles = [];
-let appMode = "split"; // "split" | "chunks"
+let appMode = "split"; // "split" | "chunks" | "export"
 let transcribingChunkId = null;
 let selectedBgMusicFile = null;
 let bgMusicUploaded = false;
@@ -418,15 +421,27 @@ function updateTopActionsForChunk(index) {
     }
 }
 
+function isMultiPartMode() {
+    return appMode === "chunks" || appMode === "export";
+}
+
 function updateMergeState() {
+    if (!mergeBtn || appMode === "export") {
+        return;
+    }
     mergeBtn.disabled = !transcript.length;
 }
 
 function updateDownloadFinalState() {
-    if (!downloadFinalBtn) {
+    if (appMode === "export") {
+        if (downloadZipBtn) {
+            downloadZipBtn.disabled = !transcript.length;
+        }
         return;
     }
-    downloadFinalBtn.disabled = !finalReady;
+    if (downloadFinalBtn) {
+        downloadFinalBtn.disabled = !finalReady;
+    }
 }
 
 function resetFinalDownloadUi() {
@@ -476,16 +491,29 @@ function resetSessionUi() {
 }
 
 function setAppMode(mode) {
-    appMode = mode === "chunks" ? "chunks" : "split";
+    if (mode === "export") {
+        appMode = "export";
+    } else if (mode === "chunks") {
+        appMode = "chunks";
+    } else {
+        appMode = "split";
+    }
     document.body.dataset.mode = appMode;
     modeSplitBtn.classList.toggle("active", appMode === "split");
     modeChunksBtn.classList.toggle("active", appMode === "chunks");
+    modeExportBtn?.classList.toggle("active", appMode === "export");
     splitModeControls.classList.toggle("hidden", appMode !== "split");
-    chunksModeControls.classList.toggle("hidden", appMode !== "chunks");
-    chunkListTitle.textContent = appMode === "chunks" ? "Video Parts" : "Chunk Tabs";
+    chunksModeControls.classList.toggle("hidden", !isMultiPartMode());
+    chunkListTitle.textContent = isMultiPartMode() ? "Video Parts" : "Chunk Tabs";
+    mergeFlowControls?.classList.toggle("hidden", appMode === "export");
+    downloadZipBtn?.classList.toggle("hidden", appMode !== "export");
+    updateMergeState();
+    updateDownloadFinalState();
 
     if (appMode === "split") {
         setStatus("Option 1: select a video, set chunk size, then Process Video.");
+    } else if (appMode === "export") {
+        setStatus("Option 3: select multiple videos, record parts, then Download ZIP.");
     } else {
         setStatus("Option 2: select multiple videos (Ctrl+Click), they will appear on the left.");
     }
@@ -500,9 +528,9 @@ function renderChunkCards() {
         card.dataset.index = String(index);
         card.draggable = true;
         const duration = Math.max(0, Number(chunk.end) - Number(chunk.start));
-        const label = appMode === "chunks" ? "Part" : "Chunk";
+        const label = isMultiPartMode() ? "Part" : "Chunk";
         const sourceName = chunk.source_name ? ` · ${chunk.source_name}` : "";
-        const previewText = (chunk.text || "").trim() || (appMode === "chunks" ? "Click to transcribe..." : "");
+        const previewText = (chunk.text || "").trim() || (isMultiPartMode() ? "Click to transcribe..." : "");
 
         card.innerHTML = `
             <div class="chunk-head">
@@ -718,6 +746,7 @@ async function loadTranscriptFromFile() {
     transcript = data;
     renderChunkCards();
     updateMergeState();
+    updateDownloadFinalState();
 }
 
 async function waitForProcessDone(expectedJobId = null) {
@@ -848,7 +877,10 @@ async function loadSelectedChunks() {
         const loadResp = await fetch("/api/load-chunks", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ files: stagedFiles }),
+            body: JSON.stringify({
+                files: stagedFiles,
+                mode: appMode === "export" ? "export" : "chunks",
+            }),
         });
         const loadData = await loadResp.json().catch(() => ({}));
         if (!loadResp.ok || !loadData.ok) {
@@ -856,10 +888,13 @@ async function loadSelectedChunks() {
         }
 
         await waitForProcessDone(loadData.job_id);
-        appMode = "chunks";
-        document.body.dataset.mode = "chunks";
+        document.body.dataset.mode = appMode;
         await loadTranscriptFromFile();
-        setStatus(`Loaded ${transcript.length} videos on the left. Click one to transcribe and record.`);
+        if (appMode === "export") {
+            setStatus(`Loaded ${transcript.length} videos. Record parts, then Download ZIP.`);
+        } else {
+            setStatus(`Loaded ${transcript.length} videos on the left. Click one to transcribe and record.`);
+        }
     } catch (error) {
         setStatus(`Error: ${error.message}`);
     } finally {
@@ -881,13 +916,13 @@ function fillActiveChunkPanel(chunk) {
     activeChunkPanel.classList.remove("hidden");
     activeChunkId.textContent = `Part ${chunk.chunk_id}${chunk.source_name ? ` · ${chunk.source_name}` : ""}`;
     activeChunkTime.textContent = `${Number(chunk.start).toFixed(1)}s - ${Number(chunk.end).toFixed(1)}s`;
-    activeChunkText.textContent = chunk.text || (appMode === "chunks" ? "Transcribing..." : "");
+    activeChunkText.textContent = chunk.text || (isMultiPartMode() ? "Transcribing..." : "");
     activeProgress.style.width = "0%";
     activeRemaining.textContent = `Remaining: ${duration.toFixed(1)}s`;
 }
 
 async function ensureChunkTranscription(chunk, index) {
-    if (appMode !== "chunks") {
+    if (!isMultiPartMode()) {
         return chunk;
     }
     if ((chunk.text || "").trim()) {
@@ -975,7 +1010,7 @@ async function startChunkRecording(index) {
         }
 
         let chunk = transcript[index];
-        if (appMode === "chunks" && !(chunk.text || "").trim()) {
+        if (isMultiPartMode() && !(chunk.text || "").trim()) {
             chunk = await ensureChunkTranscription(chunk, index);
         }
 
@@ -1212,6 +1247,31 @@ function triggerBrowserDownload(url, filename) {
     link.remove();
 }
 
+async function downloadPartsZip() {
+    if (!transcript.length) {
+        setStatus("Load videos first.");
+        return;
+    }
+
+    downloadZipBtn.disabled = true;
+    setStatus("Building ZIP — each part with your voice-over where recorded...");
+
+    try {
+        const response = await fetch("/api/export-parts-zip", { method: "POST" });
+        const data = await response.json();
+        if (!response.ok || !data.ok) {
+            throw new Error(data.error || "export failed");
+        }
+
+        triggerBrowserDownload(data.output_url, data.filename || "voiceover_parts.zip");
+        setStatus(`Downloaded ZIP with ${data.count || transcript.length} video(s).`);
+    } catch (error) {
+        setStatus(`Export failed: ${error.message}`);
+    } finally {
+        updateDownloadFinalState();
+    }
+}
+
 async function downloadFinalVideo() {
     if (!finalReady) {
         setStatus("Click Merge first.");
@@ -1275,6 +1335,7 @@ function updateSelectedChunksLabel() {
 
 modeSplitBtn.addEventListener("click", () => setAppMode("split"));
 modeChunksBtn.addEventListener("click", () => setAppMode("chunks"));
+modeExportBtn?.addEventListener("click", () => setAppMode("export"));
 
 videoFileInput.addEventListener("change", (event) => {
     const file = event.target.files && event.target.files[0];
@@ -1300,6 +1361,7 @@ processBtn.addEventListener("click", processFromBeginning);
 loadChunksBtn.addEventListener("click", loadSelectedChunks);
 mergeBtn.addEventListener("click", mergeFinalVideo);
 downloadFinalBtn?.addEventListener("click", downloadFinalVideo);
+downloadZipBtn?.addEventListener("click", downloadPartsZip);
 
 bgMusicCheckbox?.addEventListener("change", () => {
     updateBgMusicUi();
@@ -1349,7 +1411,8 @@ function setupMicAutoInit() {
     document.addEventListener("click", () => ensureMicrophones(true), { once: true });
 }
 
-setAppMode(new URLSearchParams(window.location.search).get("mode") === "chunks" ? "chunks" : "split");
+const initialMode = new URLSearchParams(window.location.search).get("mode");
+setAppMode(initialMode === "export" ? "export" : initialMode === "chunks" ? "chunks" : "split");
 updateBgMusicUi();
 updateDownloadFinalState();
 

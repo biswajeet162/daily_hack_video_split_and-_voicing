@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voice Over Recorder</title>
-    <link rel="stylesheet" href="styles.css?v=8">
+    <link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
     <main class="container">
@@ -14,6 +14,9 @@
             </button>
             <button id="modeChunksBtn" class="mode-btn" type="button" data-mode="chunks">
                 Option 2: Load Video Chunks
+            </button>
+            <button id="modeExportBtn" class="mode-btn" type="button" data-mode="export">
+                Option 3: Export Parts ZIP
             </button>
         </section>
 
@@ -46,21 +49,24 @@
                 </select>
             </label>
             <span id="statusText" class="status">Waiting...</span>
-            <button id="mergeBtn" class="btn btn-primary controls-right" disabled>Merge</button>
-            <label class="bg-music-wrap" title="Add looping background music on download">
-                <input id="bgMusicCheckbox" type="checkbox">
-                BG Music
-            </label>
-            <label id="bgMusicLevelWrap" class="bg-music-level-wrap hidden" title="Background music level vs voice">
-                Level %
-                <input id="bgMusicLevelInput" type="number" min="1" max="100" step="1" value="20">
-            </label>
-            <label id="bgMusicPickLabel" class="btn btn-secondary file-label hidden">
-                Choose Music
-                <input id="bgMusicFileInput" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac" hidden>
-            </label>
-            <span id="bgMusicName" class="bg-music-name"></span>
-            <button id="downloadFinalBtn" class="btn btn-secondary" type="button" disabled>Download Final</button>
+            <div id="mergeFlowControls" class="merge-flow-controls controls-right">
+                <button id="mergeBtn" class="btn btn-primary" disabled>Merge</button>
+                <label class="bg-music-wrap" title="Add looping background music on download">
+                    <input id="bgMusicCheckbox" type="checkbox">
+                    BG Music
+                </label>
+                <label id="bgMusicLevelWrap" class="bg-music-level-wrap hidden" title="Background music level vs voice">
+                    Level %
+                    <input id="bgMusicLevelInput" type="number" min="1" max="100" step="1" value="20">
+                </label>
+                <label id="bgMusicPickLabel" class="btn btn-secondary file-label hidden">
+                    Choose Music
+                    <input id="bgMusicFileInput" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.ogg,.flac" hidden>
+                </label>
+                <span id="bgMusicName" class="bg-music-name"></span>
+                <button id="downloadFinalBtn" class="btn btn-secondary" type="button" disabled>Download Final</button>
+            </div>
+            <button id="downloadZipBtn" class="btn btn-primary controls-right hidden" type="button" disabled>Download ZIP</button>
         </section>
 
         <section class="workspace">
@@ -95,6 +101,6 @@
         </section>
     </main>
 
-    <script src="app.js?v=9"></script>
+    <script src="app.js?v=10"></script>
 </body>
 </html>
